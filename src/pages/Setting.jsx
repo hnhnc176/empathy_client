@@ -211,19 +211,42 @@ export default function Setting() {
         }
     };
 
+    // Mobile responsive styles
     const inputStyle = {
+        borderRadius: '5px',
+        fontSize: '14px',
+        height: '40px',
+        border: '1px solid #123E23',
+        fontWeight: '400',
+        backgroundColor: '#FFFFFF',
+        width: '100%',
+        outline: 'none',
+        padding: '0 10px'
+    };
+
+    const desktopInputStyle = {
         borderRadius: '5px',
         fontSize: '16px',
         height: '48px',
         border: '1px solid #123E23',
         fontWeight: '400',
         backgroundColor: '#FFFFFF',
-        width: '550px',
+        width: '2150px',
         outline: 'none',
         padding: '0 10px'
     };
 
     const socialInputContainerStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        borderRadius: '5px',
+        border: '1px solid #123E23',
+        backgroundColor: '#FFFFFF',
+        height: '40px',
+        width: '100%',
+    };
+
+    const desktopSocialInputContainerStyle = {
         display: 'flex',
         alignItems: 'center',
         borderRadius: '5px',
@@ -238,11 +261,31 @@ export default function Setting() {
         alignItems: 'center',
         justifyContent: 'center',
         borderRight: '1px solid #123E23',
+        padding: '0 12px',
+        height: '70%'
+    };
+
+    const desktopSocialIconContainerStyle = {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRight: '1px solid #123E23',
         padding: '0 20px',
         height: '70%'
     };
 
     const socialInputStyle = {
+        width: '100%',
+        height: '100%',
+        border: 'none',
+        outline: 'none',
+        padding: '0 12px',
+        fontSize: '14px',
+        backgroundColor: 'transparent',
+        fontWeight: '500'
+    };
+
+    const desktopSocialInputStyle = {
         width: '100%',
         height: '100%',
         border: 'none',
@@ -254,81 +297,369 @@ export default function Setting() {
     };
 
     const labelStyle = {
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#123E23',
+        width: '100%'
+    };
+
+    const desktopLabelStyle = {
         fontSize: '16px',
         fontWeight: '500',
         color: '#123E23',
-        with: '100%'
-    }
+        width: '100%'
+    };
 
     return (
-        <main className="body-content bg-[#FCFCF4] flex flex-col self-center p-[80px] gap-[80px] justify-between">
-            <div className="heading flex px-[0] py-[32px] flex-row items-center gap-[5px] justify-between border-[#CBD5E1] border-[0_0_1px_0]">
-                <div className="title flex px-[0] py-[12px] self-center flex-row items-center gap-[5px] text-[30px] font-bold justify-between w-full">Setting</div>
-                <Search />
+        <main className="body-content bg-[#FCFCF4] flex flex-col self-center p-4 sm:p-6 lg:p-[80px] gap-6 sm:gap-8 lg:gap-[80px] justify-between">
+            {/* Header - Mobile Responsive */}
+            <div className="heading flex flex-col sm:flex-row px-0 py-4 sm:py-6 lg:py-[32px] items-start sm:items-center gap-4 sm:gap-6 lg:gap-[5px] justify-between border-[#CBD5E1] border-[0_0_1px_0]">
+                <div className="title flex px-0 py-2 sm:py-3 lg:py-[12px] self-start sm:self-center flex-row items-center gap-1 sm:gap-2 lg:gap-[5px] text-xl sm:text-2xl lg:text-[30px] font-bold w-full sm:w-auto">
+                    Setting
+                </div>
+                <div className="w-full sm:w-auto">
+                    <Search />
+                </div>
             </div>
-            <div className="basic-info flex flex-row gap-[32px] justify-between py-[30px]">
-                <Pic />
-                <div className="profile-info flex flex-col gap-[32px] w-3/5 justify-between">
-                    <div className="profile-info-title font-bold text-2xl border-[#CBD5E1] border-[0_0_1px_0]">
+
+            {/* Basic Info Section - Mobile Responsive */}
+            <div className="basic-info flex flex-col lg:flex-row gap-6 sm:gap-8 lg:gap-[32px] justify-between py-4 sm:py-6 lg:py-[30px]">
+                <div className="w-full lg:w-auto flex justify-center lg:justify-start">
+                    <Pic />
+                </div>
+                <div className="profile-info flex flex-col gap-6 sm:gap-8 lg:gap-[32px] w-full lg:w-3/5 justify-between">
+                    <div className="profile-info-title font-bold text-lg sm:text-xl lg:text-2xl border-[#CBD5E1] border-[0_0_1px_0]">
                         <div className="title">Basic profile</div>
-                        <p className="sub-title !text-[16px] mb-3.5 mt-1">Please update your profile settings here</p>
+                        <p className="!text-sm sm:text-base lg:!text-[16px] mb-3 sm:mb-3.5 mt-1 text-[#123E23]/70">Please update your profile settings here</p>
                     </div>
-                    <div className="profile-item flex flex-col gap-[40px] w-full justify-between">
-                        <div className="input-profile flex flex-row gap-[160px] justify-between w-full">
-                            <label style={labelStyle} htmlFor="username">Username</label>
+                    <div className="profile-item flex flex-col gap-6 sm:gap-8 lg:gap-[40px] w-full justify-between">
+                        <div className="input-profile flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-[160px] justify-between w-full">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="username"
+                                className="lg:w-auto"
+                            >
+                                Username
+                            </label>
                             <input
-                                style={inputStyle}
+                                style={window.innerWidth >= 1024 ? desktopInputStyle : inputStyle}
                                 type="text"
                                 id="username"
-                                className="w-full"
-                                value={formData.username}
+                                className="w-full lg:w-auto"
+                                value={formData.username || ''}
                                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                             />
                         </div>
-                        <div className="input-profile flex flex-row gap-[160px] justify-between w-full">
-                            <label style={labelStyle} htmlFor="fullname">Full Name</label>
+                        <div className="input-profile flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-[160px] justify-between w-full">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="fullname"
+                                className="lg:w-auto"
+                            >
+                                Full Name
+                            </label>
                             <input
-                                style={inputStyle}
+                                style={window.innerWidth >= 1024 ? desktopInputStyle : inputStyle}
                                 type="text"
                                 id="fullname"
-                                value={formData.full_name}
+                                className="w-full lg:w-auto"
+                                value={formData.full_name || ''}
                                 onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                             />
                         </div>
-                        <div className="input-profile flex flex-row gap-[160px] justify-between w-full">
-                            <label style={labelStyle} htmlFor="email">Email</label>
+                        <div className="input-profile flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-[160px] justify-between w-full">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="email"
+                                className="lg:w-auto"
+                            >
+                                Email
+                            </label>
                             <input
-                                style={inputStyle}
+                                style={window.innerWidth >= 1024 ? desktopInputStyle : inputStyle}
                                 type="email"
                                 id="email"
-                                value={formData.email}
+                                className="w-full lg:w-auto"
+                                value={formData.email || ''}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             />
                         </div>
-                        <div className="input-profile flex flex-row gap-[160px] justify-between w-full">
-                            <label style={labelStyle} htmlFor="phone">Phone Number</label>
+                        <div className="input-profile flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-[160px] justify-between w-full">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="phone"
+                                className="lg:w-auto"
+                            >
+                                Phone Number
+                            </label>
                             <input
-                                style={inputStyle}
+                                style={window.innerWidth >= 1024 ? desktopInputStyle : inputStyle}
                                 type="tel"
                                 id="phone"
-                                value={formData.phone_number}
+                                className="w-full lg:w-auto"
+                                value={formData.phone_number || ''}
                                 onChange={(e) => setFormData({ ...formData, phone_number: e.target.value })}
                             />
                         </div>
-                        <div className="input-profile flex flex-row gap-[160px] justify-between w-full">
-                            <label style={labelStyle} htmlFor="bio">Biography</label>
+                        <div className="input-profile flex flex-col lg:flex-row gap-2 sm:gap-4 lg:gap-[160px] justify-between w-full">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="bio"
+                                className="lg:w-auto"
+                            >
+                                Biography
+                            </label>
                             <textarea
-                                style={inputStyle}
+                                style={{
+                                    ...(window.innerWidth >= 1024 ? desktopInputStyle : inputStyle),
+                                    height: '100px'
+                                }}
                                 id="bio"
                                 rows="4"
-                                className="!h-[150px] !py-2.5"
-                                value={formData.bio}
+                                className="w-full lg:w-auto !h-[100px] lg:!h-[150px] !py-2 lg:!py-2.5"
+                                value={formData.bio || ''}
                                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
                             ></textarea>
                         </div>
                     </div>
-                    <div className="yesno-btn">
-                        <button className="btnY" onClick={() => setFormData({
+                    <div className="yesno-btn flex justify-end gap-3 sm:gap-4 lg:gap-[20px]">
+                        <button 
+                            className="btnY px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#F0F4E6] text-[#123E23] border-none rounded-full lg:rounded-[120px] cursor-pointer text-sm sm:text-base lg:text-[20px]" 
+                            onClick={() => setFormData({
+                                username: '',
+                                full_name: '',
+                                email: '',
+                                phone_number: '',
+                                bio: '',
+                                social_links: {
+                                    website: '',
+                                    facebook: '',
+                                    instagram: '',
+                                    linkedin: '',
+                                    twitter: '',
+                                    github: '',
+                                    youtube: ''
+                                }
+                            })}
+                        >
+                            <span className="hidden sm:inline">Cancel</span>
+                            <span className="sm:hidden">Cancel</span>
+                            <i className="fa-solid fa-xmark ml-1 sm:ml-2" style={{ color: '#808080' }}></i>
+                        </button>
+                        <button 
+                            className="btnN px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#123E23] !text-[#F0F4E6] border-none rounded-full lg:rounded-[120px] cursor-pointer text-sm sm:text-base lg:text-[20px]" 
+                            onClick={handleProfileUpdate}
+                        >
+                            <span className="hidden sm:inline !text-[#F0F4E6]">Save</span>
+                            <span className="sm:hidden">Save</span>
+                            <i className="fa-solid fa-check fa-sm ml-1 sm:ml-2" style={{ color: '#f0f4e6' }}></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Social Profile Section - Mobile Responsive */}
+            <div className="social-life">
+                <div className="noti-title flex px-0 py-3 sm:py-4 lg:py-[12px] self-center flex-row items-center gap-1 sm:gap-2 lg:gap-[5px] text-xl sm:text-2xl lg:text-[30px] font-bold justify-between w-full border-[#CBD5E1] border-[0_0_1px_0]">
+                    Social Profile
+                </div>
+                <div className="social-item mx-0 my-6 sm:my-8 lg:my-[40px] space-y-4 sm:space-y-5 lg:space-y-6">
+                    {/* Personal Website Input - Mobile Responsive */}
+                    <div className="website-container">
+                        <label 
+                            style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                            htmlFor="website" 
+                            className="block mb-2"
+                        >
+                            Personal Website
+                        </label>
+                        <div style={window.innerWidth >= 1024 ? desktopSocialInputContainerStyle : socialInputContainerStyle}>
+                            <div style={window.innerWidth >= 1024 ? desktopSocialIconContainerStyle : socialIconContainerStyle}>
+                                <i className="fa-solid fa-paperclip text-sm sm:text-base" style={{ color: '#123e23' }}></i>
+                            </div>
+                            <input
+                                style={window.innerWidth >= 1024 ? desktopSocialInputStyle : socialInputStyle}
+                                type="text"
+                                id="website"
+                                placeholder="Personal website or portfolio url..."
+                                value={formData.social_links?.website || ''}
+                                onChange={(e) => setFormData({
+                                    ...formData,
+                                    social_links: { ...formData.social_links, website: e.target.value }
+                                })}
+                            />
+                        </div>
+                    </div>
+
+                    {/* Social Media Grid - Mobile Responsive */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+                        {/* Facebook */}
+                        <div className="social-input-container">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="facebook" 
+                                className="block mb-2"
+                            >
+                                Facebook
+                            </label>
+                            <div style={window.innerWidth >= 1024 ? desktopSocialInputContainerStyle : socialInputContainerStyle}>
+                                <div style={window.innerWidth >= 1024 ? desktopSocialIconContainerStyle : socialIconContainerStyle}>
+                                    <i className="fa-brands fa-facebook-f text-sm sm:text-base" style={{ color: '#123e23' }}></i>
+                                </div>
+                                <input
+                                    style={window.innerWidth >= 1024 ? desktopSocialInputStyle : socialInputStyle}
+                                    type="text"
+                                    id="facebook"
+                                    placeholder="Username"
+                                    value={formData.social_links?.facebook || ''}
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        social_links: { ...formData.social_links, facebook: e.target.value }
+                                    })}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Instagram */}
+                        <div className="social-input-container">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="instagram" 
+                                className="block mb-2"
+                            >
+                                Instagram
+                            </label>
+                            <div style={window.innerWidth >= 1024 ? desktopSocialInputContainerStyle : socialInputContainerStyle}>
+                                <div style={window.innerWidth >= 1024 ? desktopSocialIconContainerStyle : socialIconContainerStyle}>
+                                    <i className="fa-brands fa-instagram text-sm sm:text-base" style={{ color: '#123e23' }}></i>
+                                </div>
+                                <input
+                                    style={window.innerWidth >= 1024 ? desktopSocialInputStyle : socialInputStyle}
+                                    type="text"
+                                    id="instagram"
+                                    placeholder="Username"
+                                    value={formData.social_links?.instagram || ''}
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        social_links: { ...formData.social_links, instagram: e.target.value }
+                                    })}
+                                />
+                            </div>
+                        </div>
+
+                        {/* LinkedIn */}
+                        <div className="social-input-container">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="linkedin" 
+                                className="block mb-2"
+                            >
+                                LinkedIn
+                            </label>
+                            <div style={window.innerWidth >= 1024 ? desktopSocialInputContainerStyle : socialInputContainerStyle}>
+                                <div style={window.innerWidth >= 1024 ? desktopSocialIconContainerStyle : socialIconContainerStyle}>
+                                    <i className="fa-brands fa-linkedin-in text-sm sm:text-base" style={{ color: '#123e23' }}></i>
+                                </div>
+                                <input
+                                    style={window.innerWidth >= 1024 ? desktopSocialInputStyle : socialInputStyle}
+                                    type="text"
+                                    id="linkedin"
+                                    placeholder="Username"
+                                    value={formData.social_links?.linkedin || ''}
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        social_links: { ...formData.social_links, linkedin: e.target.value }
+                                    })}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Twitter/X */}
+                        <div className="social-input-container">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="twitter" 
+                                className="block mb-2"
+                            >
+                                X
+                            </label>
+                            <div style={window.innerWidth >= 1024 ? desktopSocialInputContainerStyle : socialInputContainerStyle}>
+                                <div style={window.innerWidth >= 1024 ? desktopSocialIconContainerStyle : socialIconContainerStyle}>
+                                    <i className="fa-brands fa-x-twitter text-sm sm:text-base" style={{ color: '#123e23' }}></i>
+                                </div>
+                                <input
+                                    style={window.innerWidth >= 1024 ? desktopSocialInputStyle : socialInputStyle}
+                                    type="text"
+                                    id="twitter"
+                                    placeholder="Username"
+                                    value={formData.social_links?.twitter || ''}
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        social_links: { ...formData.social_links, twitter: e.target.value }
+                                    })}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Github */}
+                        <div className="social-input-container">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="github" 
+                                className="block mb-2"
+                            >
+                                Github
+                            </label>
+                            <div style={window.innerWidth >= 1024 ? desktopSocialInputContainerStyle : socialInputContainerStyle}>
+                                <div style={window.innerWidth >= 1024 ? desktopSocialIconContainerStyle : socialIconContainerStyle}>
+                                    <i className="fa-brands fa-github text-sm sm:text-base" style={{ color: '#123e23' }}></i>
+                                </div>
+                                <input
+                                    style={window.innerWidth >= 1024 ? desktopSocialInputStyle : socialInputStyle}
+                                    type="text"
+                                    id="github"
+                                    placeholder="Username"
+                                    value={formData.social_links?.github || ''}
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        social_links: { ...formData.social_links, github: e.target.value }
+                                    })}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Youtube */}
+                        <div className="social-input-container">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="youtube" 
+                                className="block mb-2"
+                            >
+                                Youtube
+                            </label>
+                            <div style={window.innerWidth >= 1024 ? desktopSocialInputContainerStyle : socialInputContainerStyle}>
+                                <div style={window.innerWidth >= 1024 ? desktopSocialIconContainerStyle : socialIconContainerStyle}>
+                                    <i className="fa-brands fa-youtube text-sm sm:text-base" style={{ color: '#123e23' }}></i>
+                                </div>
+                                <input
+                                    style={window.innerWidth >= 1024 ? desktopSocialInputStyle : socialInputStyle}
+                                    type="text"
+                                    id="youtube"
+                                    placeholder="Username"
+                                    value={formData.social_links?.youtube || ''}
+                                    onChange={(e) => setFormData({
+                                        ...formData,
+                                        social_links: { ...formData.social_links, youtube: e.target.value }
+                                    })}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="yesno-btn flex justify-end gap-3 sm:gap-4 lg:gap-[20px] text-sm sm:text-base lg:text-[20px] border-[#CBD5E1] border-[1px_0_0_0] pt-4 sm:pt-5 lg:pt-[20px]">
+                    <button 
+                        className="btnY px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#F0F4E6] text-[#123E23] border-none rounded-full lg:rounded-[120px] cursor-pointer" 
+                        onClick={() => setFormData({
                             username: '',
                             full_name: '',
                             email: '',
@@ -343,212 +674,32 @@ export default function Setting() {
                                 github: '',
                                 youtube: ''
                             }
-                        })}>Cancle <i className="fa-solid fa-xmark" style={{ color: '#808080' }}></i></button>
-                        <button className="btnN" onClick={handleProfileUpdate}>Save <i className="fa-solid fa-check fa-sm" style={{ color: '#f0f4e6' }}></i></button>
-                    </div>
+                        })}
+                    >
+                        Cancel <i className="fa-solid fa-xmark ml-1 sm:ml-2" style={{ color: '#808080' }}></i>
+                    </button>
+                    <button 
+                        className="btnN px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#123E23] !text-[#F0F4E6] border-none rounded-full lg:rounded-[120px] cursor-pointer" 
+                        onClick={handleProfileUpdate}
+                    >
+                        Save <i className="fa-solid fa-check fa-sm ml-1 sm:ml-2" style={{ color: '#f0f4e6' }}></i>
+                    </button>
                 </div>
             </div>
-            <div className="social-life">
-                <div className="noti-title flex px-[0] py-[12px] self-center flex-row items-center gap-[5px] text-[30px] font-bold justify-between w-full border-[#CBD5E1] border-[0_0_1px_0]">
-                    Social Profile
-                </div>
-                <div className="social-item mx-[0] my-[40px] space-y-6">
-                    {/* Personal Website Input */}
-                    <div className="website-container">
-                        <label style={labelStyle} htmlFor="website" className="block mb-2">
-                            Personal Website
-                        </label>
-                        <div style={socialInputContainerStyle}>
-                            <div style={socialIconContainerStyle}>
-                                <i className="fa-solid fa-paperclip" style={{ color: '#123e23' }}></i>
-                            </div>
+
+            {/* Notification and Password Section - Mobile Responsive */}
+            <div className="noti-pw flex flex-col lg:flex-row gap-8 sm:gap-12 lg:gap-[80px] justify-between pt-6 sm:pt-8 lg:pt-[30px]">
+                {/* Notification Section - Mobile Responsive */}
+                <div className="notification flex flex-col gap-4 sm:gap-5 lg:gap-[24px] w-full lg:w-2/5">
+                    <div className="noti-title border-b border-[#CBD5E1] pb-3 sm:pb-4">
+                        <div className="text-lg sm:text-xl lg:text-[2rem] font-bold text-[#123E23]">Notification</div>
+                        <p className="!text-xs sm:text-sm lg:!text-[14px] text-[#123E23]/70 mt-1 sm:mt-2">Choose what notifications you want to receive</p>
+                    </div>
+
+                    <div className="notification-list flex flex-col gap-6 sm:gap-8 lg:gap-[36px]">
+                        <div className="notification-item flex items-start gap-3 sm:gap-4 lg:gap-[12px] group">
                             <input
-                                style={socialInputStyle}
-                                type="text"
-                                id="website"
-                                placeholder="Personal website or portfolio url..."
-                                value={formData.social_links.website}
-                                onChange={(e) => setFormData({
-                                    ...formData,
-                                    social_links: { ...formData.social_links, website: e.target.value }
-                                })}
-                            />
-                        </div>
-                    </div>
-
-                    {/* Social Media Grid */}
-                    <div className="grid grid-cols-3 gap-6">
-                        {/* Facebook */}
-                        <div className="social-input-container">
-                            <label style={labelStyle} htmlFor="facebook" className="block mb-2">
-                                Facebook
-                            </label>
-                            <div style={socialInputContainerStyle}>
-                                <div style={socialIconContainerStyle}>
-                                    <i className="fa-brands fa-facebook-f" style={{ color: '#123e23' }}></i>
-                                </div>
-                                <input
-                                    style={socialInputStyle}
-                                    type="text"
-                                    id="facebook"
-                                    placeholder="Username"
-                                    value={formData.social_links.facebook}
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        social_links: { ...formData.social_links, facebook: e.target.value }
-                                    })}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Instagram */}
-                        <div className="social-input-container">
-                            <label style={labelStyle} htmlFor="instagram" className="block mb-2">
-                                Instagram
-                            </label>
-                            <div style={socialInputContainerStyle}>
-                                <div style={socialIconContainerStyle}>
-                                    <i className="fa-brands fa-instagram" style={{ color: '#123e23' }}></i>
-                                </div>
-                                <input
-                                    style={socialInputStyle}
-                                    type="text"
-                                    id="instagram"
-                                    placeholder="Username"
-                                    value={formData.social_links.instagram}
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        social_links: { ...formData.social_links, instagram: e.target.value }
-                                    })}
-                                />
-                            </div>
-                        </div>
-
-                        {/* LinkedIn */}
-                        <div className="social-input-container">
-                            <label style={labelStyle} htmlFor="linkedin" className="block mb-2">
-                                LinkedIn
-                            </label>
-                            <div style={socialInputContainerStyle}>
-                                <div style={socialIconContainerStyle}>
-                                    <i className="fa-brands fa-linkedin-in" style={{ color: '#123e23' }}></i>
-                                </div>
-                                <input
-                                    style={socialInputStyle}
-                                    type="text"
-                                    id="linkedin"
-                                    placeholder="Username"
-                                    value={formData.social_links.linkedin}
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        social_links: { ...formData.social_links, linkedin: e.target.value }
-                                    })}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Twitter/X */}
-                        <div className="social-input-container">
-                            <label style={labelStyle} htmlFor="twitter" className="block mb-2">
-                                X
-                            </label>
-                            <div style={socialInputContainerStyle}>
-                                <div style={socialIconContainerStyle}>
-                                    <i className="fa-brands fa-x-twitter" style={{ color: '#123e23' }}></i>
-                                </div>
-                                <input
-                                    style={socialInputStyle}
-                                    type="text"
-                                    id="twitter"
-                                    placeholder="Username"
-                                    value={formData.social_links.twitter}
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        social_links: { ...formData.social_links, twitter: e.target.value }
-                                    })}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Github */}
-                        <div className="social-input-container">
-                            <label style={labelStyle} htmlFor="github" className="block mb-2">
-                                Github
-                            </label>
-                            <div style={socialInputContainerStyle}>
-                                <div style={socialIconContainerStyle}>
-                                    <i className="fa-brands fa-github" style={{ color: '#123e23' }}></i>
-                                </div>
-                                <input
-                                    style={socialInputStyle}
-                                    type="text"
-                                    id="github"
-                                    placeholder="Username"
-                                    value={formData.social_links.github}
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        social_links: { ...formData.social_links, github: e.target.value }
-                                    })}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Youtube */}
-                        <div className="social-input-container">
-                            <label style={labelStyle} htmlFor="youtube" className="block mb-2">
-                                Youtube
-                            </label>
-                            <div style={socialInputContainerStyle}>
-                                <div style={socialIconContainerStyle}>
-                                    <i className="fa-brands fa-youtube" style={{ color: '#123e23' }}></i>
-                                </div>
-                                <input
-                                    style={socialInputStyle}
-                                    type="text"
-                                    id="youtube"
-                                    placeholder="Username"
-                                    value={formData.social_links.youtube}
-                                    onChange={(e) => setFormData({
-                                        ...formData,
-                                        social_links: { ...formData.social_links, youtube: e.target.value }
-                                    })}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="yesno-btn flex justify-end gap-[20px] text-[20px] border-[#CBD5E1] border-[1px_0_0_0] pt-[20px]">
-                    <button className="btnY px-[20px] py-[10px] bg-[#F0F4E6] text-[#123E23] border-[none] rounded-[120px] cursor-pointer" onClick={() => setFormData({
-                        username: '',
-                        full_name: '',
-                        email: '',
-                        phone_number: '',
-                        bio: '',
-                        social_links: {
-                            website: '',
-                            facebook: '',
-                            instagram: '',
-                            linkedin: '',
-                            twitter: '',
-                            github: '',
-                            youtube: ''
-                        }
-                    })}>Cancle <i className="fa-solid fa-xmark" style={{ color: '#808080' }}></i></button>
-                    <button className="btnN px-[20px] py-[10px] bg-[#123E23] text-[#F0F4E6] border-[none] rounded-[120px] cursor-pointer" onClick={handleProfileUpdate}>Save <i className="fa-solid fa-check fa-sm" style={{ color: '#f0f4e6' }}></i></button>
-                </div>
-            </div>
-            <div className="noti-pw flex flex-row gap-[80px] justify-between pt-[30px]">
-                {/* Notification Section */}
-                <div className="notification flex flex-col gap-[24px] w-2/5">
-                    <div className="noti-title border-b border-[#CBD5E1] pb-4">
-                        <div className="text-[2rem] font-bold text-[#123E23]">Notification</div>
-                        <p className="!text-[14px] text-[#123E23]/70 mt-2">Choose what notifications you want to receive</p>
-                    </div>
-
-                    <div className="notification-list flex flex-col gap-[36px]">
-                        <div className="notification-item flex items-center gap-[12px] group">
-                            <input
-                                className="check-noti w-5 h-5 accent-[#123E23] cursor-pointer"
+                                className="check-noti w-4 h-4 sm:w-5 sm:h-5 accent-[#123E23] cursor-pointer mt-0.5"
                                 type="checkbox"
                                 id="email-notification"
                                 checked={notifications.likes}
@@ -558,14 +709,14 @@ export default function Setting() {
                                 className="flex flex-col cursor-pointer"
                                 htmlFor="email-notification"
                             >
-                                <span className="text-[16px] font-medium text-[#123E23]">News & Announcements</span>
-                                <span className="text-[14px] text-[#123E23]/70">Get notified about latest news and updates</span>
+                                <span className="text-sm sm:text-base lg:text-[16px] font-medium text-[#123E23]">News & Announcements</span>
+                                <span className="text-xs sm:text-sm lg:text-[14px] text-[#123E23]/70">Get notified about latest news and updates</span>
                             </label>
                         </div>
 
-                        <div className="notification-item flex items-center gap-[12px] group">
+                        <div className="notification-item flex items-start gap-3 sm:gap-4 lg:gap-[12px] group">
                             <input
-                                className="check-noti w-5 h-5 accent-[#123E23] cursor-pointer"
+                                className="check-noti w-4 h-4 sm:w-5 sm:h-5 accent-[#123E23] cursor-pointer mt-0.5"
                                 type="checkbox"
                                 id="thread-updates"
                                 checked={notifications.comments}
@@ -575,14 +726,14 @@ export default function Setting() {
                                 className="flex flex-col cursor-pointer"
                                 htmlFor="thread-updates"
                             >
-                                <span className="text-[16px] font-medium text-[#123E23]">Thread Updates</span>
-                                <span className="text-[14px] text-[#123E23]/70">Receive updates on threads you follow</span>
+                                <span className="text-sm sm:text-base lg:text-[16px] font-medium text-[#123E23]">Thread Updates</span>
+                                <span className="text-xs sm:text-sm lg:text-[14px] text-[#123E23]/70">Receive updates on threads you follow</span>
                             </label>
                         </div>
 
-                        <div className="notification-item flex items-center gap-[12px] group">
+                        <div className="notification-item flex items-start gap-3 sm:gap-4 lg:gap-[12px] group">
                             <input
-                                className="check-noti w-5 h-5 accent-[#123E23] cursor-pointer"
+                                className="check-noti w-4 h-4 sm:w-5 sm:h-5 accent-[#123E23] cursor-pointer mt-0.5"
                                 type="checkbox"
                                 id="interactions"
                                 checked={notifications.mentions}
@@ -592,14 +743,14 @@ export default function Setting() {
                                 className="flex flex-col cursor-pointer"
                                 htmlFor="interactions"
                             >
-                                <span className="text-[16px] font-medium text-[#123E23]">Comment & Reply Alerts</span>
-                                <span className="text-[14px] text-[#123E23]/70">Get notified when someone interacts with your posts</span>
+                                <span className="text-sm sm:text-base lg:text-[16px] font-medium text-[#123E23]">Comment & Reply Alerts</span>
+                                <span className="text-xs sm:text-sm lg:text-[14px] text-[#123E23]/70">Get notified when someone interacts with your posts</span>
                             </label>
                         </div>
 
-                        <div className="notification-item flex items-center gap-[12px] group">
+                        <div className="notification-item flex items-start gap-3 sm:gap-4 lg:gap-[12px] group">
                             <input
-                                className="check-noti w-5 h-5 accent-[#123E23] cursor-pointer"
+                                className="check-noti w-4 h-4 sm:w-5 sm:h-5 accent-[#123E23] cursor-pointer mt-0.5"
                                 type="checkbox"
                                 id="system-updates"
                                 checked={notifications.system}
@@ -609,90 +760,125 @@ export default function Setting() {
                                 className="flex flex-col cursor-pointer"
                                 htmlFor="system-updates"
                             >
-                                <span className="text-[16px] font-medium text-[#123E23]">Account & System Updates</span>
-                                <span className="text-[14px] text-[#123E23]/70">Important updates about your account and system</span>
+                                <span className="text-sm sm:text-base lg:text-[16px] font-medium text-[#123E23]">Account & System Updates</span>
+                                <span className="text-xs sm:text-sm lg:text-[14px] text-[#123E23]/70">Important updates about your account and system</span>
                             </label>
                         </div>
 
-                        <div className="yesno-btn flex justify-end gap-[20px]">
-                            <button className="btnY px-[20px] py-[10px] bg-[#F0F4E6] text-[#123E23] border-[none] rounded-[120px] cursor-pointer" onClick={() => setNotifications({
-                                likes: true,
-                                comments: true,
-                                mentions: true,
-                                system: true
-                            })}>
+                        <div className="yesno-btn flex justify-end gap-3 sm:gap-4 lg:gap-[20px]">
+                            <button 
+                                className="btnY px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#F0F4E6] text-[#123E23] border-none rounded-full lg:rounded-[120px] cursor-pointer text-sm sm:text-base" 
+                                onClick={() => setNotifications({
+                                    likes: true,
+                                    comments: true,
+                                    mentions: true,
+                                    system: true
+                                })}
+                            >
                                 <i className="fa-solid fa-xmark" style={{ color: '#808080' }}></i>
                             </button>
-                            <button className="btnN px-[20px] py-[10px] bg-[#123E23] text-[#F0F4E6] border-[none] rounded-[120px] cursor-pointer" onClick={handleNotificationUpdate}>
+                            <button 
+                                className="btnN px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#123E23] !text-[#F0F4E6] border-none rounded-full lg:rounded-[120px] cursor-pointer text-sm sm:text-base" 
+                                onClick={handleNotificationUpdate}
+                            >
                                 <i className="fa-solid fa-check fa-sm" style={{ color: '#f0f4e6' }}></i>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* Change Password Section */}
-                <div className="change-pw flex flex-col gap-[24px] w-2/5">
-                    <div className="title border-b border-[#CBD5E1] pb-4">
-                        <div className="text-[2rem] font-bold text-[#123E23]">Change Password</div>
-                        <p className="!text-[14px] text-[#123E23]/70 mt-2">Ensure your account is secure with a strong password</p>
+                {/* Change Password Section - Mobile Responsive */}
+                <div className="change-pw flex flex-col gap-4 sm:gap-5 lg:gap-[24px] w-full lg:w-2/5">
+                    <div className="title border-b border-[#CBD5E1] pb-3 sm:pb-4">
+                        <div className="text-lg sm:text-xl lg:text-[2rem] font-bold text-[#123E23]">Change Password</div>
+                        <p className="!text-xs sm:text-sm lg:!text-[14px] text-[#123E23]/70 mt-1 sm:mt-2">Ensure your account is secure with a strong password</p>
                     </div>
-                    <div className="change-pw-form flex flex-col gap-[24px]">
-                        <div className="input-group flex flex-col gap-[12px]">
-                            <label style={labelStyle} htmlFor="old-password">Current Password</label>
+                    <div className="change-pw-form flex flex-col gap-4 sm:gap-5 lg:gap-[24px]">
+                        <div className="input-group flex flex-col gap-2 sm:gap-3 lg:gap-[12px]">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="old-password"
+                            >
+                                Current Password
+                            </label>
                             <input
-                                style={inputStyle}
+                                style={window.innerWidth >= 1024 ? {...desktopInputStyle, width: '100%'} : inputStyle}
                                 className="!w-full"
                                 type="password"
                                 id="old-password"
                                 placeholder="Password"
-                                value={passwordData.current_password}
+                                value={passwordData.current_password || ''}
                                 onChange={(e) => setPasswordData({ ...passwordData, current_password: e.target.value })}
                             />
                         </div>
 
-                        <div className="input-group flex flex-col gap-[12px]">
-                            <label style={labelStyle} htmlFor="new-password">New Password</label>
+                        <div className="input-group flex flex-col gap-2 sm:gap-3 lg:gap-[12px]">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="new-password"
+                            >
+                                New Password
+                            </label>
                             <input
-                                style={inputStyle}
+                                style={window.innerWidth >= 1024 ? {...desktopInputStyle, width: '100%'} : inputStyle}
                                 className="!w-full"
                                 type="password"
                                 id="new-password"
                                 placeholder="Password"
-                                value={passwordData.new_password}
+                                value={passwordData.new_password || ''}
                                 onChange={(e) => setPasswordData({ ...passwordData, new_password: e.target.value })}
                             />
                         </div>
 
-                        <div className="input-group flex flex-col gap-[12px]">
-                            <label style={labelStyle} htmlFor="confirm-password">Confirm Password</label>
+                        <div className="input-group flex flex-col gap-2 sm:gap-3 lg:gap-[12px]">
+                            <label 
+                                style={window.innerWidth >= 1024 ? desktopLabelStyle : labelStyle} 
+                                htmlFor="confirm-password"
+                            >
+                                Confirm Password
+                            </label>
                             <input
-                                style={inputStyle}
+                                style={window.innerWidth >= 1024 ? {...desktopInputStyle, width: '100%'} : inputStyle}
                                 className="!w-full"
                                 type="password"
                                 id="confirm-password"
                                 placeholder="Confirm new password"
-                                value={passwordData.confirm_password}
+                                value={passwordData.confirm_password || ''}
                                 onChange={(e) => setPasswordData({ ...passwordData, confirm_password: e.target.value })}
                             />
                         </div>
                     </div>
 
-                    <div className="yesno-btn flex justify-end gap-[20px]">
-                        <button className="btnY px-[20px] py-[10px] bg-[#F0F4E6] text-[#123E23] border-[none] rounded-[120px] cursor-pointer" onClick={() => setPasswordData({
-                            current_password: '',
-                            new_password: '',
-                            confirm_password: ''
-                        })}>
+                    <div className="yesno-btn flex justify-end gap-3 sm:gap-4 lg:gap-[20px]">
+                        <button 
+                            className="btnY px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#F0F4E6] text-[#123E23] border-none rounded-full lg:rounded-[120px] cursor-pointer text-sm sm:text-base" 
+                            onClick={() => setPasswordData({
+                                current_password: '',
+                                new_password: '',
+                                confirm_password: ''
+                            })}
+                        >
                             <i className="fa-solid fa-xmark" style={{ color: '#808080' }}></i>
                         </button>
-                        <button className="btnN px-[20px] py-[10px] bg-[#123E23] text-[#F0F4E6] border-[none] rounded-[120px] cursor-pointer" onClick={handlePasswordChange}>
+                        <button 
+                            className="btnN px-3 sm:px-4 lg:px-[20px] py-2 sm:py-2.5 lg:py-[10px] bg-[#123E23] !text-[#F0F4E6] border-none rounded-full lg:rounded-[120px] cursor-pointer text-sm sm:text-base" 
+                            onClick={handlePasswordChange}
+                        >
                             <i className="fa-solid fa-check fa-sm" style={{ color: '#f0f4e6' }}></i>
                         </button>
                     </div>
                 </div>
             </div>
-            <div className="deactive-account w-fit bg-[#FF6868] self-end rounded-3xl">
-                <button className="btn flex items-center justify-center gap-2.5" style={{ color: '#f0f4e6' }} onClick={handleDeactivateAccount}>Deactive Account <i className="fa-solid fa-xmark" style={{ color: '#f0f4e6' }}></i></button>
+
+            {/* Deactivate Account Button - Mobile Responsive */}
+            <div className="deactive-account w-full sm:w-fit flex justify-center items-center bg-[#FF6868] self-end rounded-2xl sm:rounded-3xl">
+                <button 
+                    className="btn flex items-center justify-center gap-2 sm:gap-2.5 px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base" 
+                    style={{ color: '#f0f4e6' }} 
+                    onClick={handleDeactivateAccount}
+                >
+                    Deactive Account <i className="fa-solid fa-xmark" style={{ color: '#f0f4e6' }}></i>
+                </button>
             </div>
         </main>
     );

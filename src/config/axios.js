@@ -17,7 +17,8 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
   async (config) => {
     try {
-      const token = localStorage.getItem('token');
+      // Changed from 'token' to 'sessionToken' to match your Signin.jsx
+      const token = localStorage.getItem('sessionToken');
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -30,7 +31,8 @@ axiosInstance.interceptors.request.use(
           url: config.url,
           method: config.method,
           data: config.data,
-          params: config.params
+          params: config.params,
+          token: token ? 'Present' : 'Missing' // Debug token presence
         });
       }
 
@@ -92,9 +94,15 @@ axiosInstance.interceptors.response.use(
 
     // Handle specific error cases
     if (response?.status === 401) {
-      // Handle unauthorized access
-      localStorage.removeItem('token');
-      // You might want to redirect to login or refresh token here
+      // Handle unauthorized access - clear all auth data
+      localStorage.removeItem('sessionToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('tokenExpiry');
+      
+      // Redirect to login if not already there
+      if (window.location.pathname !== '/signin') {
+        window.location.href = '/signin';
+      }
     }
 
     return Promise.reject(error);

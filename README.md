@@ -40,6 +40,19 @@ A modern, responsive web application built with React that provides a platform f
 - **Headless UI** - Accessible UI components
 - **Lucide React** - Beautiful icon library
 
+### Backend
+- **Node.js** - JavaScript runtime environment
+- **Express.js** - Web application framework
+- **MongoDB** - NoSQL database for data storage
+- **Mongoose** - MongoDB object modeling for Node.js
+- **JWT** - JSON Web Tokens for authentication
+- **Bcrypt** - Password hashing and security
+- **Nodemailer** - Email service integration
+- **Express Rate Limit** - API rate limiting
+- **Helmet** - Security middleware
+- **CORS** - Cross-origin resource sharing
+- **Dotenv** - Environment variable management
+
 ### UI/UX Libraries
 - **Material-UI (MUI)** - React components and charts
 - **React Toastify** - Toast notifications
@@ -54,30 +67,110 @@ A modern, responsive web application built with React that provides a platform f
 
 ## 📁 Project Structure
 
+### Frontend (`src/`)
 ```
 src/
-├── components/          # Reusable UI components
+├── App.jsx             # Main application component
+├── main.jsx            # Application entry point
+├── index.css           # Global styles
+├── style.js            # Style configuration
+├── components/         # Reusable UI components
 │   ├── Admin/          # Admin-specific components
+│   │   ├── ReportAdmin.jsx
+│   │   └── SideMenu.jsx
 │   ├── Comment.jsx     # Comment system
 │   ├── Header.jsx      # Navigation header
 │   ├── Post.jsx        # Post display component
 │   ├── ProfileInfo.jsx # User profile information
-│   └── ...
+│   ├── ProfilePic.jsx  # Profile picture component
+│   ├── SearchBar.jsx   # Search functionality
+│   ├── SideTopics.jsx  # Side topics panel
+│   ├── Pagination.jsx  # Pagination component
+│   ├── Report.jsx      # Report functionality
+│   ├── ReportModal.jsx # Report modal dialog
+│   ├── Footer.jsx      # Footer component
+│   └── Curved.jsx      # Curved design element
 ├── pages/              # Page components
 │   ├── Admin/          # Admin panel pages
+│   │   ├── Admin.jsx   # Main admin dashboard
+│   │   ├── Users.jsx   # User management
+│   │   ├── Posts.jsx   # Post management
+│   │   ├── Reports.jsx # Report management
+│   │   └── Notifications.jsx # Notification management
 │   ├── Community.jsx   # Main community feed
 │   ├── Profile.jsx     # User profile page
 │   ├── Search.jsx      # Search functionality
-│   └── ...
+│   ├── CreatePost.jsx  # Post creation
+│   ├── PostDetail.jsx  # Individual post view
+│   ├── Home.jsx        # Landing page
+│   ├── About.jsx       # About page
+│   ├── Signin.jsx      # Sign in page
+│   ├── Signup.jsx      # Sign up page
+│   ├── Forgot.jsx      # Password reset
+│   ├── Setting.jsx     # User settings
+│   ├── Privacy.jsx     # Privacy policy
+│   ├── EmailVerification.jsx # Email verification
+│   └── RequestVerification.jsx # Verification request
 ├── redux/              # State management
 │   ├── slices/         # Redux slices
+│   │   ├── authSlice.js # Authentication state
+│   │   └── userSlice.js # User state
 │   └── store.js        # Redux store configuration
 ├── utils/              # Utility functions
 │   ├── toast.jsx       # Toast notification helpers
-│   └── notificationService.js
+│   └── notificationService.js # Notification service
 ├── config/             # Configuration files
 │   └── axios.js        # API configuration
 └── assets/             # Static assets (images, icons)
+    ├── Logo.png        # Application logo
+    ├── banner.png      # Banner images
+    ├── social_*.png    # Social media icons
+    └── *.svg           # Vector icons
+```
+
+### Backend (`backend/`)
+```
+backend/
+├── package.json        # Backend dependencies
+├── README.md           # Backend documentation
+└── server/             # Express.js server
+    ├── index.js        # Server entry point
+    ├── package.json    # Server dependencies
+    ├── README.md       # Server documentation
+    ├── OTP_AUTHENTICATION_GUIDE.md # OTP setup guide
+    └── src/            # Source code
+        ├── config/     # Configuration files
+        │   └── database.js # Database connection
+        ├── models/     # Mongoose models
+        │   ├── User.js # User model
+        │   ├── Post.js # Post model
+        │   ├── Comment.js # Comment model
+        │   ├── Like.js # Like model
+        │   ├── Report.js # Report model
+        │   ├── Tag.js  # Tag model
+        │   └── Notification.js # Notification model
+        ├── controllers/ # Business logic
+        │   ├── userController.js # User operations
+        │   ├── postController.js # Post operations
+        │   ├── commentController.js # Comment operations
+        │   ├── likeController.js # Like operations
+        │   ├── reportController.js # Report operations
+        │   └── notificationController.js # Notification operations
+        ├── routes/     # API routes
+        │   ├── userRoute.js # User endpoints
+        │   ├── postRoute.js # Post endpoints
+        │   ├── commentRoute.js # Comment endpoints
+        │   ├── likeRoute.js # Like endpoints
+        │   ├── reportRoute.js # Report endpoints
+        │   └── notificationRoute.js # Notification endpoints
+        ├── middleware/ # Custom middleware
+        │   ├── auth.js # Authentication middleware
+        │   ├── validation.js # Input validation
+        │   └── rateLimit.js # Rate limiting
+        └── utils/      # Utility functions
+            ├── emailService.js # Email functionality
+            ├── otpService.js # OTP generation
+            └── helpers.js # General helpers
 ```
 
 ## 🚀 Getting Started
@@ -85,9 +178,12 @@ src/
 ### Prerequisites
 - Node.js (v16 or higher)
 - npm or yarn package manager
-- Backend API server running on `http://localhost:3019`
+- MongoDB (local installation or MongoDB Atlas)
+- Git for version control
 
 ### Installation
+
+#### Frontend Setup
 
 1. **Clone the repository**
    ```bash
@@ -95,19 +191,19 @@ src/
    cd empathy
    ```
 
-2. **Install dependencies**
+2. **Install frontend dependencies**
    ```bash
    npm install
    ```
 
-3. **Environment Setup**
+3. **Frontend Environment Setup**
    Create a `.env` file in the root directory:
    ```env
    VITE_API_BASE_URL=http://localhost:3019
    API_TOKEN=your_api_token_here
    ```
 
-4. **Start the development server**
+4. **Start the frontend development server**
    ```bash
    npm run dev
    ```
@@ -115,12 +211,68 @@ src/
 5. **Open your browser**
    Navigate to `http://localhost:5173` to view the application
 
+#### Backend Setup
+
+1. **Navigate to backend directory**
+   ```bash
+   cd backend/server
+   ```
+
+2. **Install backend dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Backend Environment Setup**
+   Create a `.env` file in the `backend/server` directory:
+   ```env
+   PORT=3019
+   MONGODB_URI=mongodb://localhost:27017/empathy
+   JWT_SECRET=your_jwt_secret_key
+   JWT_EXPIRES_IN=7d
+   EMAIL_HOST=smtp.gmail.com
+   EMAIL_PORT=587
+   EMAIL_USER=your_email@gmail.com
+   EMAIL_PASS=your_app_password
+   FRONTEND_URL=http://localhost:5173
+   ```
+
+4. **Start the backend server**
+   ```bash
+   npm start
+   ```
+
+   The backend API will be available at `http://localhost:3019`
+
+#### Database Setup
+
+1. **Install MongoDB** (if running locally)
+   - Download and install MongoDB from [mongodb.com](https://www.mongodb.com/try/download/community)
+   - Start MongoDB service
+
+2. **Or use MongoDB Atlas** (cloud option)
+   - Create account at [mongodb.com/atlas](https://www.mongodb.com/atlas)
+   - Create cluster and get connection string
+   - Update `MONGODB_URI` in backend `.env` file
+
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
+#### Frontend Scripts
+- `npm run dev` - Start frontend development server
+- `npm run build` - Build frontend for production
 - `npm run preview` - Preview production build
 - `npm run lint` - Run ESLint for code quality
+
+#### Backend Scripts
+- `npm start` - Start backend server with `node index.js` (production mode)
+- `npm run dev` - Start backend server with `nodemon index.js` (development mode)
+- `npm test` - Run backend tests
+
+#### Development Workflow
+1. Start backend server: `cd backend/server && npm start` (or `npm run dev` for development)
+2. Start frontend server: `npm run dev`
+3. Access application at `http://localhost:5173`
+4. API endpoints available at `http://localhost:3019`
 
 ## 🎨 Design System
 

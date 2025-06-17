@@ -17,7 +17,6 @@ import featherMore from '../assets/feather_more-vertical.svg';
 import likeIcon from '../assets/like.svg';
 import { showSuccessToast, showErrorToast } from '../utils/toast'; 
 
-
 export default function PostDetail() {
     const location = useLocation();
     const { postId } = useParams();
@@ -280,19 +279,19 @@ export default function PostDetail() {
     };
 
     if (loading) return (
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="flex justify-center items-center min-h-screen p-4">
             <div className="text-center p-8">Loading post...</div>
         </div>
     );
 
     if (error) return (
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="flex justify-center items-center min-h-screen p-4">
             <div className="text-center text-red-500 p-8">{error}</div>
         </div>
     );
 
     if (!post) return (
-        <div className="flex justify-center items-center min-h-screen">
+        <div className="flex justify-center items-center min-h-screen p-4">
             <div className="text-center p-8">Post not found</div>
         </div>
     );
@@ -321,46 +320,51 @@ export default function PostDetail() {
     };
 
     return (
-        <section className="body-content bg-[#FCFCF4] flex flex-row self-center p-[80px] gap-[80px] justify-evenly">
-            <main className="content flex flex-col gap-[40px] w-[fit-content] items-center justify-center">
+        <section className="body-content bg-[#FCFCF4] flex flex-col lg:flex-row self-center !p-2 lg:!p-[80px] gap-6 lg:gap-[80px] justify-evenly">
+            <main className="content flex flex-col gap-6 lg:gap-[40px] w-full lg:w-[fit-content] items-center justify-center">
                 {/* Search and Navigation Section */}
-                <div className="search-bar-section flex items-center gap-[40px] w-full border-[none] justify-between">
-                    <SearchBar />
-                    <div className="search-bar-btn flex gap-[24px] w-fit">
-                        <div className="topic-btn">
-                            <img src={clock} alt="clock" /> New
+                <div className="search-bar-section flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-[40px] w-full border-[none] lg:justify-between">
+                    <div className="w-full lg:w-auto">
+                        <SearchBar />
+                    </div>
+                    <div className="search-bar-btn flex flex-wrap gap-3 lg:gap-[24px] w-full lg:w-fit justify-center lg:justify-start">
+                        <div className="topic-btn flex items-center gap-2 px-3 py-2 text-sm lg:text-base bg-white rounded-lg border border-gray-200">
+                            <img src={clock} alt="clock" className="w-4 h-4" /> 
+                            <span className="hidden sm:inline">New</span>
                         </div>
-                        <div className="topic-btn">
-                            <img src={arrow} alt="arrow" /> Top
+                        <div className="topic-btn flex items-center gap-2 px-3 py-2 text-sm lg:text-base bg-white rounded-lg border border-gray-200">
+                            <img src={arrow} alt="arrow" className="w-4 h-4" /> 
+                            <span className="hidden sm:inline">Top</span>
                         </div>
-                        <div className="topic-btn">
-                            <img src={hot} alt="hot" /> Hot
+                        <div className="topic-btn flex items-center gap-2 px-3 py-2 text-sm lg:text-base bg-white rounded-lg border border-gray-200">
+                            <img src={hot} alt="hot" className="w-4 h-4" /> 
+                            <span className="hidden sm:inline">Hot</span>
                         </div>
                         <div className="topic-btn-create">
-                            <Link to="/createpost" className='w-[45px] h-[25px] rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-[14px] px-[10px] py-[5px] text-center'>+</Link>
+                            <Link to="/createpost" className='w-8 h-8 lg:w-[45px] lg:h-[25px] rounded-full lg:rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-sm lg:text-[14px] px-2 lg:px-[10px] py-1 lg:py-[5px] text-center'>+</Link>
                         </div>
                     </div>
                 </div>
 
                 {/* Post Detail Section */}
-                <div className="post-detail flex flex-col gap-[32px] w-[980px] p-[40px] border-[1px] border-[#123E23] rounded-[10px] bg-[#fff] [box-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
-                    <div className="post-header flex flex-row justify-between items-center text-[16px] text-[#133018]">
+                <div className="post-detail flex flex-col gap-6 lg:gap-[32px] w-full lg:w-[980px] p-4 lg:p-[40px] border-[1px] border-[#123E23] rounded-[10px] bg-[#fff] [box-shadow:0px_4px_4px_rgba(0,_0,_0,_0.25)]">
+                    <div className="post-header flex flex-row justify-between items-center text-sm lg:text-[16px] text-[#133018]">
                         <div className="post-header-title flex items-center gap-2">
                             <span>{getPostUser().username}</span>
                             <span className="text-[#133018]/70">• {getPostDate()}</span>
                         </div>
                         {user && (user._id === post.user_id) && (
                             <div className="post-more p-2 cursor-pointer hover:bg-[#123E23]/10 rounded-full">
-                                <img src={featherMore} alt="more" />
+                                <img src={featherMore} alt="more" className="w-4 h-4 lg:w-auto lg:h-auto" />
                             </div>
                         )}
                     </div>
 
-                    <div className="space-y-6">
-                        <div className="post-title font-bold text-[18px] text-[#133018]">
+                    <div className="space-y-4 lg:space-y-6">
+                        <div className="post-title font-bold text-base lg:text-[18px] text-[#133018]">
                             {post.title}
                         </div>
-                        <div className="post-content font-bold text-[18px] text-[#133018] space-y-6">
+                        <div className="post-content font-bold text-base lg:text-[18px] text-[#133018] space-y-4 lg:space-y-6">
                             <p>{post.content}</p>
                             {post.image && (
                                 <img
@@ -372,8 +376,8 @@ export default function PostDetail() {
                         </div>
                     </div>
 
-                    <div className="btn-tag flex justify-between items-center w-full pt-4">
-                        <div className="tags flex gap-[16px]">
+                    <div className="btn-tag flex flex-col lg:flex-row lg:justify-between lg:items-center w-full pt-4 gap-4 lg:gap-0">
+                        <div className="tags flex flex-wrap gap-2 lg:gap-[16px]">
                             {post.tags && Array.isArray(post.tags) && post.tags.map((tag, index) => (
                                 <span
                                     key={index}
@@ -383,11 +387,11 @@ export default function PostDetail() {
                                 </span>
                             ))}
                         </div>
-                        <div className="relative">
+                        <div className="relative flex justify-end lg:justify-start">
                             <button 
                                 onClick={handleLike}
                                 disabled={isLikeLoading}
-                                className={`vote font-bold rounded-[6px] px-[12px] py-[5px] flex items-center justify-center gap-[15px] text-[14px] border-[none] cursor-pointer w-[115px] h-[35px] transition-all duration-200 ${
+                                className={`vote font-bold rounded-[6px] px-[12px] py-[5px] flex self-end items-center justify-center gap-2 lg:gap-[15px] text-[14px] border-[none] cursor-pointer w-[115px] h-[35px] transition-all duration-200 ${
                                     isLiked 
                                         ? 'bg-[#123e23] hover:bg-[#123e23]/90 !text-white' 
                                         : 'bg-[#123E23] hover:bg-[#123E23]/90 !text-white'
@@ -396,7 +400,7 @@ export default function PostDetail() {
                                 <img 
                                     src={likeIcon} 
                                     alt="like" 
-                                    className={`transition-all duration-200 ${
+                                    className={`w-4 h-4 lg:w-auto lg:h-auto transition-all duration-200 ${
                                         isLiked ? 'filter-red' : 'brightness-0 invert'
                                     }`}
                                 /> 
@@ -416,15 +420,15 @@ export default function PostDetail() {
                 </div>
 
                 {/* Comments Section */}
-                <div className="comment-section flex flex-col gap-[32px] w-full">
-                    <div className="flex justify-between items-center">
-                        <div className="comment-title text-[20px] font-bold text-[#123E23]">
+                <div className="comment-section flex flex-col gap-6 lg:gap-[32px] w-full">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                        <div className="comment-title text-lg lg:text-[20px] font-bold text-[#123E23]">
                             Comments ({comments.length})
                         </div>
                         {user && (
                             <button
                                 onClick={() => setShowCommentForm(!showCommentForm)}
-                                className="flex items-center gap-2 text-[#123E23] text-[14px] px-4 py-2 hover:bg-[#123E23]/10 rounded-full"
+                                className="flex items-center justify-center sm:justify-start gap-2 text-[#123E23] text-[14px] px-4 py-2 hover:bg-[#123E23]/10 rounded-full w-full sm:w-auto"
                             >
                                 {showCommentForm ? 'Cancel' : '+ Add Comment'}
                             </button>
@@ -433,16 +437,16 @@ export default function PostDetail() {
 
                     {showCommentForm && (
                         <div className="w-full">
-                            <form onSubmit={handleAddComment} className="flex flex-row items-center justify-between w-full rounded-full border border-[#123E23]/20 focus-within:border-[#123E23] bg-white mb-6">
+                            <form onSubmit={handleAddComment} className="flex flex-row items-center justify-between w-full rounded-full border border-[#123E23]/20 focus-within:border-[#123E23] bg-white mb-6 gap-2 sm:gap-0 p-2 sm:p-0">
                                 <input
                                     type="text"
-                                    className="w-full px-6 py-3 rounded-full outline-none"
+                                    className="w-full px-3 sm:px-6 py-2 sm:py-3 rounded-full outline-none"
                                     placeholder="Write a comment..."
                                     value={commentText}
                                     onChange={(e) => setCommentText(e.target.value)}
                                     required
                                 />
-                                <div className="flex items-center gap-2 px-4">
+                                <div className="flex items-center gap-2 px-2 sm:px-4">
                                     <button
                                         type="submit"
                                         className="p-2 hover:bg-[#123E23]/10 rounded-full disabled:opacity-50"
@@ -467,11 +471,11 @@ export default function PostDetail() {
 
                     {!user && (
                         <div className="text-center p-4 bg-[#F0F4E6] rounded-lg">
-                            <p className="text-[#123E23]">Please sign in to view and add comments</p>
+                            <p className="text-[#123E23] text-sm lg:text-base">Please sign in to view and add comments</p>
                         </div>
                     )}
 
-                    <div className="space-y-8">
+                    <div className="space-y-6 lg:space-y-8">
                         {commentsLoading ? (
                             <div className="text-center p-4">Loading comments...</div>
                         ) : comments.length > 0 ? (
@@ -492,9 +496,15 @@ export default function PostDetail() {
                 </div>
             </main>
 
-            <aside className="side-content sticky top-[80px] self-start">
+            {/* Sidebar - Desktop Only */}
+            <aside className="side-content hidden lg:block sticky top-[80px] self-start">
                 <SideTopics />
             </aside>
+
+            {/* Mobile Sidebar */}
+            <div className="mobile-sidebar lg:hidden mt-6">
+                <SideTopics />
+            </div>
         </section>
     );
 }

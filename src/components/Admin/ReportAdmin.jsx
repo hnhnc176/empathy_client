@@ -85,22 +85,42 @@ const ReportAnswerForm = ({ report, currentAdmin, onUpdate, onClose }) => {
       console.error('Error parsing session admin data:', e);
     }
     
-    // Check for token-based admin info
+    // Check for session token (this app uses session tokens, not JWT)
     try {
-      const token = localStorage.getItem('token') || localStorage.getItem('adminToken') || sessionStorage.getItem('token') || sessionStorage.getItem('adminToken');
-      if (token) {
-        // Decode JWT token to get admin ID
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        console.log('Token payload:', payload);
-        if (payload.id && /^[0-9a-fA-F]{24}$/.test(payload.id)) {
-          return payload.id;
-        }
-        if (payload._id && /^[0-9a-fA-F]{24}$/.test(payload._id)) {
-          return payload._id;
+      const sessionToken = localStorage.getItem('sessionToken') || sessionStorage.getItem('sessionToken');
+      if (sessionToken) {
+        // Session tokens are hex strings, not JWT - we need to get user info from stored user data
+        console.log('Found session token, checking stored user data for admin info');
+        
+        // Try to get user data from localStorage/sessionStorage
+        const sources = [
+          localStorage.getItem('user'),
+          sessionStorage.getItem('user')
+        ];
+        
+        for (const source of sources) {
+          if (source) {
+            try {
+              const userData = JSON.parse(source);
+              console.log('Found user data:', userData);
+              
+              // Check if this user is an admin and has a valid ID
+              if (userData.role === 'admin' && userData._id && /^[0-9a-fA-F]{24}$/.test(userData._id)) {
+                console.log('Found valid admin ID from user data:', userData._id);
+                return userData._id;
+              }
+              if (userData.role === 'admin' && userData.id && /^[0-9a-fA-F]{24}$/.test(userData.id)) {
+                console.log('Found valid admin ID from user data:', userData.id);
+                return userData.id;
+              }
+            } catch (parseError) {
+              console.error('Error parsing user data:', parseError);
+            }
+          }
         }
       }
     } catch (e) {
-      console.error('Error parsing admin token:', e);
+      console.error('Error checking session token:', e);
     }
     
     // Fallback: If admin username matches, use the known admin ID from database

@@ -381,30 +381,30 @@ export default function Notifications() {
     const endIndex = Math.min(currentPage * notificationsPerPage, totalNotifications);
 
     return (
-        <div className="flex flex-row w-full h-screen">
+        <div className="flex flex-col lg:flex-row w-full h-screen">
             <SideMenu />
-            <div className="body_contain flex-1 p-8 bg-[#FCFCF4]">
+            <div className="body_contain flex-1 p-4 lg:p-8 bg-[#FCFCF4] overflow-x-auto">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold text-[#123E23]">Notifications ({totalNotifications})</h1>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 lg:mb-6 gap-4 sm:gap-0">
+                    <h1 className="text-2xl lg:text-3xl font-bold text-[#123E23]">Notifications ({totalNotifications})</h1>
                     <button className="admin-icon p-2 hover:bg-[#FCFCF4] rounded-lg transition-all duration-200">
-                        <img src={logo_ad} className="w-8 h-8" alt="Admin" />
+                        <img src={logo_ad} className="w-6 h-6 lg:w-8 lg:h-8" alt="Admin" />
                     </button>
                 </div>
 
-                {/* Add Content */}
-                <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-[#123E23]">Add New Notification</h2>
-                    <form onSubmit={handleSubmit} className="mt-4 flex w-full flex-row items-center gap-5 justify-around bg-[#F0F4E6] rounded-[4px] shadow-md p-6 border-b-[7px] border-b-[#123E23]">
-                        <img src={report_ico} alt="Report Icon" className="w-8 h-8 mb-4" />
-                        <div className="form-input w-11/12">
+                {/* Add Content Form - Mobile Responsive */}
+                <div className="mb-4 lg:mb-6">
+                    <h2 className="text-lg lg:text-xl font-semibold text-[#123E23]">Add New Notification</h2>
+                    <form onSubmit={handleSubmit} className="mt-4 flex flex-col lg:flex-row w-full items-start lg:items-center gap-3 lg:gap-5 justify-around bg-[#F0F4E6] rounded-[4px] shadow-md p-4 lg:p-6 border-b-[7px] border-b-[#123E23]">
+                        <img src={report_ico} alt="Report Icon" className="w-6 h-6 lg:w-8 lg:h-8 mb-2 lg:mb-4 self-center lg:self-start" />
+                        <div className="form-input w-full lg:w-11/12">
                             <input
                                 type="text"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleInputChange}
                                 placeholder="Notification Title"
-                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-4"
+                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-3 lg:mb-4 text-sm lg:text-base"
                                 required
                             />
                             <textarea
@@ -412,7 +412,7 @@ export default function Notifications() {
                                 value={formData.content}
                                 onChange={handleInputChange}
                                 placeholder="Notification Content"
-                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-4 h-20"
+                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-3 lg:mb-4 h-16 lg:h-20 text-sm lg:text-base"
                                 required
                             />
                             <input
@@ -421,13 +421,13 @@ export default function Notifications() {
                                 value={formData.userIds}
                                 onChange={handleInputChange}
                                 placeholder="Send To Specific Users (User IDs separated by commas)"
-                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-4"
+                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-3 lg:mb-4 text-sm lg:text-base"
                             />
                             <select
                                 name="type"
                                 value={formData.type}
                                 onChange={handleInputChange}
-                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-4"
+                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-3 lg:mb-4 text-sm lg:text-base"
                             >
                                 <option value="system">System</option>
                                 <option value="like">Like</option>
@@ -435,10 +435,10 @@ export default function Notifications() {
                                 <option value="mention">Mention</option>
                                 <option value="report">Report</option>
                             </select>
-                            <div className="btn-control w-full flex items-center justify-between">
+                            <div className="btn-control w-full flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-1">
                                 <button 
                                     type="submit" 
-                                    className="px-4 py-2 bg-[#123E23] !text-white rounded-lg w-full mr-2"
+                                    className="px-3 lg:px-4 py-2 bg-[#123E23] !text-white rounded-lg w-full text-sm lg:text-base"
                                     disabled={loading || !formData.userIds.trim()}
                                 >
                                     {loading ? 'Sending...' : 'Send to Specific Users'}
@@ -446,7 +446,7 @@ export default function Notifications() {
                                 <button 
                                     type="button" 
                                     onClick={handleSendToAll}
-                                    className="px-4 py-2 bg-[#4A5D23] !text-white rounded-lg w-full mr-2"
+                                    className="px-3 lg:px-4 py-2 bg-[#4A5D23] !text-white rounded-lg w-full text-sm lg:text-base"
                                     disabled={loading}
                                 >
                                     {loading ? 'Sending...' : 'Send to All Users'}
@@ -454,7 +454,7 @@ export default function Notifications() {
                                 <button 
                                     type="button" 
                                     onClick={handleReset} 
-                                    className="px-4 py-2 text-[#123E23] border border-[#123E23] rounded-lg w-full"
+                                    className="px-3 lg:px-4 py-2 text-[#123E23] border border-[#123E23] rounded-lg w-full text-sm lg:text-base"
                                     disabled={loading}
                                 >
                                     Reset
@@ -467,9 +467,9 @@ export default function Notifications() {
                 {/* Table Container */}
                 <div className="bg-white rounded-xl shadow-md overflow-hidden border border-[#123E23]/20">
                     {/* Table Controls */}
-                    <div className="flex items-center justify-between p-4 border-b border-[#123E23]/10">
-                        <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 lg:p-4 border-b border-[#123E23]/10 gap-4 sm:gap-0">
+                        <div className="flex flex-wrap items-center gap-2 lg:gap-4 w-full sm:w-auto">
+                            <div className="flex items-center gap-2">
                                 <input 
                                     type="checkbox" 
                                     className="form-checkbox w-4 h-4 rounded border-[#123E23]/20"
@@ -481,42 +481,44 @@ export default function Notifications() {
 
                             {/* Bulk Delete Action */}
                             {selectedIds.length > 0 && (
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center gap-1 lg:gap-2">
                                     <button
                                         onClick={handleBulkDelete}
                                         disabled={isDeleting}
-                                        className="px-3 py-1.5 text-sm bg-[#FFE9DA] !text-[#7A0E27] flex items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#FFE9DA] !text-[#7A0E27] flex items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isDeleting ? (
                                             <>
-                                                <i className="fa-solid fa-spinner fa-spin mr-2"></i>
-                                                Deleting...
+                                                <i className="fa-solid fa-spinner fa-spin mr-1 lg:mr-2"></i>
+                                                <span className="hidden sm:inline">Deleting...</span>
+                                                <span className="sm:hidden">Del...</span>
                                             </>
                                         ) : (
                                             <>
-                                                <BadgeMinus className="w-4 h-4 self-center inline-block mr-2" color="#7A0E27" />
-                                                ({selectedIds.length})
+                                                <BadgeMinus className="w-3 h-3 lg:w-4 lg:h-4 self-center inline-block mr-1 lg:mr-2" color="#7A0E27" />
+                                                <span className="hidden sm:inline">({selectedIds.length})</span>
+                                                <span className="sm:hidden">{selectedIds.length}</span>
                                             </>
                                         )}
                                     </button>
                                 </div>
                             )}
                             
-                            <button className="px-3 py-1.5 text-sm bg-[#FCFCF4] text-[#123E23] rounded-lg hover:bg-[#FCFCF4]/70 transition-colors">
-                                <Filter className="w-4 h-4 inline-block mr-2" />
-                                Filter
+                            <button className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#FCFCF4] text-[#123E23] rounded-lg hover:bg-[#FCFCF4]/70 transition-colors">
+                                <Filter className="w-3 h-3 lg:w-4 lg:h-4 inline-block mr-1 lg:mr-2" />
+                                <span className="hidden sm:inline">Filter</span>
                             </button>
                         </div>
-                        <div className="text-sm text-[#123E23]/60">
+                        <div className="text-xs lg:text-sm text-[#123E23]/60 w-full sm:w-auto text-left sm:text-right">
                             {selectedIds.length} selected
                         </div>
                     </div>
 
                     {/* Bulk Action Confirmation Bar */}
                     {selectedIds.length > 0 && (
-                        <div className="bg-red-50 border-b border-red-200 px-4 py-2">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-red-800">
+                        <div className="bg-red-50 border-b border-red-200 px-3 lg:px-4 py-2">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                <span className="text-xs lg:text-sm text-red-800">
                                     <i className="fa-solid fa-info-circle mr-2"></i>
                                     {selectedIds.length} notification(s) selected. Choose an action above.
                                 </span>
@@ -525,7 +527,7 @@ export default function Notifications() {
                                         setSelectedIds([]);
                                         setSelectAll(false);
                                     }}
-                                    className="text-sm text-red-600 hover:text-red-800 underline"
+                                    className="text-xs lg:text-sm text-red-600 hover:text-red-800 underline"
                                 >
                                     Clear Selection
                                 </button>
@@ -533,7 +535,102 @@ export default function Notifications() {
                         </div>
                     )}
 
-                    <div className="overflow-x-auto">
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden">
+                        {loading ? (
+                            <div className="p-8 text-center text-[#123E23]">
+                                <div className="flex items-center justify-center space-x-2">
+                                    <i className="fa-solid fa-spinner fa-spin"></i>
+                                    <span>Loading notifications...</span>
+                                </div>
+                            </div>
+                        ) : error ? (
+                            <div className="p-8 text-center text-red-600">
+                                <div className="flex flex-col items-center space-y-2">
+                                    <span>{error}</span>
+                                    <button 
+                                        onClick={fetchNotifications}
+                                        className="px-4 py-2 bg-[#123E23] text-white rounded-lg hover:bg-[#123E23]/80"
+                                    >
+                                        Retry
+                                    </button>
+                                </div>
+                            </div>
+                        ) : notifications.length === 0 ? (
+                            <div className="p-8 text-center text-[#123E23]/60">
+                                No notifications found
+                            </div>
+                        ) : (
+                            notifications.map((notification) => (
+                                <div 
+                                    key={notification._id} 
+                                    className={`border-b border-[#123E23]/10 p-4 ${
+                                        selectedIds.includes(notification._id) ? 'bg-red-50' : ''
+                                    }`}
+                                >
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                className="form-checkbox w-4 h-4 rounded border-[#123E23]/20"
+                                                checked={selectedIds.includes(notification._id)}
+                                                onChange={() => toggleSelect(notification._id)}
+                                            />
+                                            <div>
+                                                <div className="font-medium text-[#123E23] line-clamp-2">{getNotificationTitle(notification)}</div>
+                                                <div className="text-sm text-[#123E23]/60">#{notification._id.slice(-6)}</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
+                                                onClick={() => handleViewNotification(notification)}
+                                            >
+                                                <Eye className="w-4 h-4 text-[#123E23]" />
+                                            </button>
+                                            <button 
+                                                className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
+                                                onClick={() => handleDeleteNotification(notification._id)}
+                                            >
+                                                <Trash2 className="w-4 h-4 text-[#123E23]" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="space-y-2 mb-3">
+                                        <div className="text-sm">
+                                            <span className="font-medium text-[#123E23]">Type:</span>{' '}
+                                            <span className="capitalize text-[#123E23]/80">{notification.type}</span>
+                                        </div>
+                                        <div className="text-sm">
+                                            <span className="font-medium text-[#123E23]">Content:</span>{' '}
+                                            <span className="text-[#123E23]/80 line-clamp-2">{notification.content}</span>
+                                        </div>
+                                        <div className="text-sm">
+                                            <span className="font-medium text-[#123E23]">User:</span>{' '}
+                                            <span className="text-[#123E23]/80">{notification.user_id?.username || 'Unknown User'}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-xs text-[#123E23]/60">
+                                            {formatDate(notification.created_at)}
+                                        </div>
+                                        <span className={`px-2 py-1 text-xs rounded-full ${
+                                            notification.is_read 
+                                                ? 'bg-green-100 text-green-800' 
+                                                : 'bg-yellow-100 text-yellow-800'
+                                        }`}>
+                                            {notification.is_read ? 'Read' : 'Unread'}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+
+                    {/* Desktop Table - Your Exact Original Design */}
+                    <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead className="bg-[#F0F4E6] text-[#123E23]/70">
                                 <tr>
@@ -651,7 +748,8 @@ export default function Notifications() {
                         </table>
                     </div>
 
-                    <div className="flex items-center justify-between px-4 py-3 border-t border-[#123E23]/10">
+                    {/* Pagination */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between px-3 lg:px-4 py-3 border-t border-[#123E23]/10 gap-4 sm:gap-0">
                         <button 
                             className="text-sm font-medium text-[#123E23] hover:bg-[#FCFCF4] px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}

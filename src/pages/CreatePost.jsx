@@ -10,7 +10,6 @@ import sendIcon from '../assets/send.svg';
 import { showSuccessToast, showErrorToast, showInfoToast } from '../utils/toast.jsx';
 import { notificationService } from '../utils/notificationService';
 
-
 export default function CreatePost() {
     const navigate = useNavigate();
     const { user, isAuthenticated } = useSelector((state) => state.auth);
@@ -128,10 +127,10 @@ export default function CreatePost() {
     }
 
     return (
-        <section className="main-content bg-[#FCFCF4] flex flex-row self-center justify-evenly">
-            <main className="body-content flex flex-col self-center justify-between gap-[20px] w-[fit-content]">
+        <section className="main-content bg-[#FCFCF4] flex flex-col lg:!p-[80px] lg:flex-row self-center justify-evenly !p-2">
+            <main className="body-content flex flex-col self-center justify-between gap-4 lg:gap-[20px] w-full lg:w-[fit-content]">
                 <SearchBar />
-                <form onSubmit={handleSubmit} className="create-post w-[890px] h-[670px] flex flex-col self-center justify-around px-[36px] py-[48px] border-[1px] border-[#123E23] bg-[#F0F4E6] rounded-[7px]">
+                <form onSubmit={handleSubmit} className="create-post w-full lg:w-[890px] h-auto lg:h-[670px] flex flex-col self-center justify-around p-4 lg:px-[36px] lg:py-[48px] border-[1px] border-[#123E23] bg-[#F0F4E6] rounded-[7px] gap-4 lg:gap-0">
                     {error && (
                         <div className="error-message bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                             {error}
@@ -163,7 +162,7 @@ export default function CreatePost() {
                         id="content" 
                         value={formData.content}
                         onChange={handleInputChange}
-                        className="content bg-white h-[400px] p-[10px] text-[15px] border-[1px] border-[#808080] rounded-[6px] focus:border-[#123E23] focus:outline-none resize-none" 
+                        className="content bg-white h-[200px] lg:h-[400px] p-[10px] text-[15px] border-[1px] border-[#808080] rounded-[6px] focus:border-[#123E23] focus:outline-none resize-none" 
                         rows="10" 
                         cols="30" 
                         placeholder="Type your question" 
@@ -171,22 +170,22 @@ export default function CreatePost() {
                         disabled={loading}
                     />
                     
-                    <div className="create-post-btn flex flex-row gap-[20px] items-center justify-between">
+                    <div className="create-post-btn flex flex-col lg:flex-row gap-4 lg:gap-[20px] items-center justify-between">
                         <button 
                             type="button"
                             onClick={handleAddImage}
-                            className="btn-add flex gap-[10px] w-[150px] h-[40px] rounded-[6px] bg-[#DDF4A6] text-[#123E23] text-[20px] px-[14px] py-[24px] border-[none] items-center justify-center cursor-pointer hover:bg-[#d0e89a] transition-colors"
+                            className="btn-add flex gap-[10px] w-full lg:w-[150px] h-[40px] rounded-[6px] bg-[#DDF4A6] text-[#123E23] text-[20px] px-[14px] py-[24px] border-[none] items-center justify-center cursor-pointer hover:bg-[#d0e89a] transition-colors"
                             disabled={loading}
                         >
                             <img src={imageIcon} className="btn-add-img" alt="Add image" />
                             Add image
                         </button>
                         
-                        <div className="btn-submit-no flex gap-[35px] items-center justify-between">
+                        <div className="btn-submit-no flex flex-col lg:flex-row gap-3 lg:gap-[35px] items-center justify-between w-full lg:w-auto">
                             <button 
                                 type="button"
                                 onClick={handleCancel}
-                                className="cancel-btn flex w-[100px] h-[40px] rounded-[6px] bg-[#EAEAEA] text-[#808080] text-[20px] px-[14px] py-[24px] border-[none] items-center justify-center cursor-pointer hover:bg-[#d5d5d5] transition-colors"
+                                className="cancel-btn flex w-full lg:w-[100px] h-[40px] rounded-[6px] bg-[#EAEAEA] text-[#808080] text-[20px] px-[14px] py-[24px] border-[none] items-center justify-center cursor-pointer hover:bg-[#d5d5d5] transition-colors"
                                 disabled={loading}
                             >
                                 Cancel
@@ -194,7 +193,7 @@ export default function CreatePost() {
                             
                             <button 
                                 type="submit"
-                                className="submit-btn flex gap-[10px] w-[130px] h-[40px] rounded-[6px] bg-[#123E23] !text-[#F0F4E6] text-[20px] px-[14px] py-[24px] border-[none] items-center justify-center cursor-pointer hover:bg-[#0f2f1a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="submit-btn flex gap-[10px] w-full lg:w-[130px] h-[40px] rounded-[6px] bg-[#123E23] !text-[#F0F4E6] text-[20px] px-[14px] py-[24px] border-[none] items-center justify-center cursor-pointer hover:bg-[#0f2f1a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 disabled={loading}
                             >
                                 {loading ? (
@@ -210,9 +209,14 @@ export default function CreatePost() {
                     </div>
                 </form>
             </main>
-            <aside className="side-bar">
+            <aside className="side-bar hidden lg:block">
                 <SideTopics />
             </aside>
+            
+            {/* Mobile SideTopics */}
+            <div className="mobile-sidebar lg:hidden mt-4">
+                <SideTopics />
+            </div>
         </section>
     );
 }

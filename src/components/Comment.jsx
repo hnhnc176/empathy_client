@@ -220,49 +220,52 @@ const Comment = ({ comment, postId, onCommentUpdate }) => {
         <div className="comment-thread w-full">
             {/* Main comment */}
             <div className="comment-container mb-4">
-                <div className="main-comment bg-[#F0F4E6] rounded-[10px] p-6 w-full">
+                <div className="main-comment bg-[#F0F4E6] rounded-[10px] p-3 sm:p-4 lg:p-6 w-full">
                     {/* Comment header with delete option for owner only */}
-                    <div className="comment-header flex justify-between items-center mb-3">
-                        <div className="comment-meta flex items-center gap-2">
-                            <span className="comment-author font-semibold text-[#123E23]">
+                    <div className="comment-header flex justify-between items-start sm:items-center mb-3 gap-2">
+                        <div className="comment-meta flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0">
+                            <span className="comment-author font-semibold text-[#123E23] text-sm sm:text-base truncate">
                                 {comment.userusername || commentUser.username || 'Anonymous'}
                             </span>
-                            <span className="comment-date text-sm text-[#123E23]/70">
-                                • {getCommentDate()}
+                            <span className="comment-date text-xs sm:text-sm text-[#123E23]/70">
+                                {/* Hide bullet on mobile */}
+                                <span className="hidden sm:inline">• </span>{getCommentDate()}
                             </span>
                         </div>
                         {/* Only show delete button if current user owns this comment */}
                         {isCommentOwner(comment) && (
                             <button 
-                                className="comment-action-btn delete-btn p-1 rounded-full hover:bg-red-50 transition-colors"
+                                className="comment-action-btn delete-btn p-1.5 sm:p-1 rounded-full hover:bg-red-50 transition-colors flex-shrink-0"
                                 onClick={() => handleDeleteComment(comment._id || comment.id)}
                                 title="Delete comment"
                             >
-                                <i className="fa-solid fa-minus text-red-600 hover:text-red-700"></i>
+                                <i className="fa-solid fa-minus text-red-600 hover:text-red-700 text-sm"></i>
                             </button>
                         )}
                     </div>
 
                     {/* Comment Content */}
-                    <div className="text-[#133018] mb-4 break-words">
+                    <div className="text-[#133018] mb-4 break-words text-sm sm:text-base">
                         {comment.content}
                     </div>
 
                     {/* Comment Actions */}
-                    <div className="comment-actions flex justify-between items-center">
-                        <div className="flex gap-4">
+                    <div className="comment-actions flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-4">
+                        <div className="flex flex-wrap gap-2 sm:gap-4">
                             {/* Show replies button if there are replies */}
                             {replies && replies.length > 0 && (
                                 <button
-                                    className="comment-action-btn show-replies-btn flex items-center gap-1.5 px-3 py-1 rounded-full hover:bg-[#123E23]/10 transition-colors"
+                                    className="comment-action-btn show-replies-btn flex items-center gap-1.5 px-3 py-1.5 sm:py-1 rounded-full hover:bg-[#123E23]/10 transition-colors text-sm"
                                     onClick={() => setShowReplies(!showReplies)}
                                 >
-                                    <i className={`fa-solid ${showReplies ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i> 
-                                    {showReplies ? 'Hide' : 'Show'} {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
+                                    <i className={`fa-solid ${showReplies ? 'fa-chevron-up' : 'fa-chevron-down'} text-xs`}></i> 
+                                    <span className="text-xs sm:text-sm">
+                                        {showReplies ? 'Hide' : 'Show'} {replies.length} {replies.length === 1 ? 'reply' : 'replies'}
+                                    </span>
                                 </button>
                             )}
                             {isLoadingReplies && (
-                                <span className="text-sm text-[#123E23]/70">
+                                <span className="text-xs sm:text-sm text-[#123E23]/70">
                                     <i className="fa-solid fa-spinner fa-spin"></i> Loading replies...
                                 </span>
                             )}
@@ -270,14 +273,14 @@ const Comment = ({ comment, postId, onCommentUpdate }) => {
                         {/* Anyone can reply if they're logged in */}
                         {canReply() && (
                             <button
-                                className="comment-action-btn flex items-center gap-1.5 reply-btn px-3 py-1 rounded-full hover:bg-[#123E23]/10 transition-colors"
+                                className="comment-action-btn flex items-center gap-1.5 reply-btn px-3 py-1.5 sm:py-1 rounded-full hover:bg-[#123E23]/10 transition-colors w-fit"
                                 onClick={() => {
                                     setIsReplying(!isReplying);
                                     setReplyText('');
                                 }}
                             >
-                                <i className="fa-solid fa-reply"></i>
-                                <span>{isReplying ? 'Cancel' : 'Reply'}</span>
+                                <i className="fa-solid fa-reply text-xs"></i>
+                                <span className="text-xs sm:text-sm">{isReplying ? 'Cancel' : 'Reply'}</span>
                             </button>
                         )}
                     </div>
@@ -285,42 +288,44 @@ const Comment = ({ comment, postId, onCommentUpdate }) => {
 
                 {/* Reply form */}
                 {isReplying && (
-                    <div className="reply-form mt-4 w-full flex flex-col rounded-lg p-4">
+                    <div className="reply-form mt-4 w-full flex flex-col rounded-lg p-3 sm:p-4">
                         <form onSubmit={handleReplySubmit} className="w-full flex flex-col">
-                            <div className="reply-input-container flex items-center gap-2 mb-2 w-full justify-between">
+                            <div className="reply-input-container flex flex-row items-center gap-2 mb-2 w-full">
                                 <input
                                     type="text"
                                     value={replyText}
                                     onChange={(e) => setReplyText(e.target.value)}
-                                    className="reply-input flex justify-start !m-0"
+                                    className="reply-input flex-1 !m-0 text-sm sm:text-base px-3 py-2 border border-[#123E23]/20 rounded-lg focus:border-[#123E23] focus:outline-none"
                                     placeholder="Write a reply..."
                                     required
                                 />
-                                <button
-                                    type="submit"
-                                    disabled={!replyText.trim() || isSubmittingReply}
-                                    className="reply-submit-btn"
-                                    title="Send reply"
-                                >
-                                    {isSubmittingReply ? (
-                                        <i className="fa-solid fa-spinner fa-spin text-[#123E23]"></i>
-                                    ) : (
-                                        <i className="fa-solid fa-paper-plane text-[#123E23]"></i>
-                                    )}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setIsReplying(false);
-                                        setReplyText('');
-                                    }}
-                                    className="reply-cancel-btn"
-                                    title="Cancel reply"
-                                >
-                                    <i className="fa-solid fa-times text-[#123E23]"></i>
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        type="submit"
+                                        disabled={!replyText.trim() || isSubmittingReply}
+                                        className="reply-submit-btn p-2 hover:bg-[#123E23]/10 rounded-full disabled:opacity-50 transition-colors"
+                                        title="Send reply"
+                                    >
+                                        {isSubmittingReply ? (
+                                            <i className="fa-solid fa-spinner fa-spin text-[#123E23]"></i>
+                                        ) : (
+                                            <i className="fa-solid fa-paper-plane text-[#123E23]"></i>
+                                        )}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsReplying(false);
+                                            setReplyText('');
+                                        }}
+                                        className="reply-cancel-btn p-2 hover:bg-red-50 rounded-full transition-colors"
+                                        title="Cancel reply"
+                                    >
+                                        <i className="fa-solid fa-times text-[#123E23]"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div className="reply-context">
+                            <div className="reply-context text-xs sm:text-sm text-[#123E23]/70 px-3 sm:px-0">
                                 Replying to {comment.userusername || commentUser.username || 'Anonymous'}
                             </div>
                         </form>
@@ -330,37 +335,37 @@ const Comment = ({ comment, postId, onCommentUpdate }) => {
                 {/* Show replies section */}
                 {showReplies && replies && replies.length > 0 && (
                     <div className="replies-container w-full mt-4">
-                        <div className="replies-wrapper ml-6 w-full">
+                        <div className="replies-wrapper ml-3 sm:ml-6 w-full">
                             {replies.map(reply => {
                                 const replyUser = getCommentUser(reply);
                                 return (
-                                    <div key={reply._id || reply.id} className="reply-item w-full mb-4">
-                                        <div className="reply-content bg-[#F0F4E6] rounded-lg p-4 shadow-sm border border-[#123E23]/10 relative">
+                                    <div key={reply._id || reply.id} className="reply-item w-full mb-3 sm:mb-4">
+                                        <div className="reply-content bg-[#F0F4E6] rounded-lg p-3 sm:p-4 shadow-sm border border-[#123E23]/10 relative">
                                             
                                             {/* Reply header */}
-                                            <div className="flex justify-between items-center mb-2">
-                                                <div className="flex items-center gap-2">
-                                                    <span className="font-medium text-[#123E23] text-sm">
+                                            <div className="flex justify-between items-start sm:items-center mb-2 gap-2">
+                                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 flex-1 min-w-0">
+                                                    <span className="font-medium text-[#123E23] text-xs sm:text-sm truncate">
                                                         {reply.userusername || replyUser.username || 'Anonymous'}
                                                     </span>
                                                     <span className="text-xs text-[#123E23]/70">
-                                                        • {getCommentDate(reply)}
+                                                        <span className="hidden sm:inline">• </span>{getCommentDate(reply)}
                                                     </span>
                                                 </div>
                                                 {/* Only show delete button if current user owns this reply */}
                                                 {isCommentOwner(reply) && (
                                                     <button 
-                                                        className="p-1 rounded-full hover:bg-red-50 flex-shrink-0 transition-colors"
+                                                        className="p-1.5 sm:p-1 rounded-full hover:bg-red-50 flex-shrink-0 transition-colors"
                                                         onClick={() => handleDeleteReply(reply._id || reply.id, reply)}
                                                         title="Delete reply"
                                                     >
-                                                        <i className="fa-solid fa-minus text-red-500 hover:text-red-600 text-sm"></i>
+                                                        <i className="fa-solid fa-minus text-red-500 hover:text-red-600 text-xs sm:text-sm"></i>
                                                     </button>
                                                 )}
                                             </div>
                                             
                                             {/* Reply content */}
-                                            <div className="text-[#133018] text-sm break-words">
+                                            <div className="text-[#133018] text-xs sm:text-sm break-words mb-2 sm:mb-0">
                                                 {reply.content}
                                             </div>
 
@@ -376,7 +381,7 @@ const Comment = ({ comment, postId, onCommentUpdate }) => {
                                                         }}
                                                     >
                                                         <i className="fa-solid fa-reply text-xs mr-1"></i>
-                                                        Reply
+                                                        <span className="text-xs">Reply</span>
                                                     </button>
                                                 </div>
                                             )}

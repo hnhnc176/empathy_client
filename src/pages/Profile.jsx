@@ -137,24 +137,32 @@ export default function Profile() {
     return (
         <div className="relative min-h-screen">
             <div className="profile-page bg-[#FCFCF4] min-h-screen">
-                <main className="body-content flex flex-col self-center p-[80px] gap-[32px] justify-evenly relative">
-                    <div className="title flex px-[0] py-[32px] flex-row items-center gap-[5px] text-[30px] font-bold justify-between border-[#CBD5E1] border-[0_0_1px_0] mb-[50px]">
+                <main className="body-content flex flex-col self-center p-4 sm:p-6 lg:p-[80px] gap-4 sm:gap-6 lg:gap-[32px] justify-evenly relative">
+                    {/* Page Title - Mobile Responsive */}
+                    <div className="title flex px-0 py-4 sm:py-6 lg:py-[32px] flex-row items-center gap-2 sm:gap-3 lg:gap-[5px] text-xl sm:text-2xl lg:text-[30px] font-bold justify-between border-[#CBD5E1] border-[0_0_1px_0] mb-6 sm:mb-8 lg:mb-[50px]">
                         Profile 
                         <Link 
                             to="/setting" 
                             className="hover:opacity-80 transition-opacity"
                         >
-                            <i className="fa-solid fa-gear fa-sm" style={{ color: '#123e23' }}></i>
+                            <i className="fa-solid fa-gear text-sm sm:text-base lg:fa-sm" style={{ color: '#123e23' }}></i>
                         </Link>
                     </div>
+
+                    {/* Profile Info Component */}
                     <ProfileInfo />
-                    <div className="menu-post flex flex-col gap-[32px] items-center justify-center w-full">
-                        <div className="menu-post-list flex flex-row pt-[80px] gap-[32px] w-[fit-content] items-center justify-center text-[25px]">
+
+                    {/* Menu and Posts Section - Mobile Responsive */}
+                    <div className="menu-post flex flex-col gap-4 sm:gap-6 lg:gap-[32px] items-center justify-center w-full">
+                        {/* Tab Menu - Mobile Responsive */}
+                        <div className="menu-post-list flex flex-row pt-6 sm:pt-12 lg:pt-[80px] gap-3 sm:gap-4 lg:gap-[32px] w-fit items-center justify-center text-sm sm:text-lg lg:text-[25px] overflow-x-auto scrollbar-hide">
                             {tabs.map(tab => (
                                 <div 
                                     key={tab.key}
-                                    className={`menu-post-item cursor-pointer ${
-                                        activeTab === tab.key ? 'font-bold text-[#123E23]' : ''
+                                    className={`menu-post-item cursor-pointer whitespace-nowrap px-2 sm:px-3 lg:px-0 py-1 sm:py-2 lg:py-0 rounded-lg sm:rounded-none transition-colors ${
+                                        activeTab === tab.key 
+                                            ? 'font-bold text-[#123E23] bg-[#F0F4E6] sm:bg-transparent' 
+                                            : 'hover:bg-[#F0F4E6] sm:hover:bg-transparent'
                                     }`}
                                     onClick={() => handleTabClick(tab.key)}
                                 >
@@ -162,27 +170,32 @@ export default function Profile() {
                                 </div>
                             ))}
                         </div>
-                        <div className="post-part w-full flex flex-col gap-[32px] items-center justify-between">
-                            <div className="head-part flex flex-row gap-[32px] w-full items-center justify-between">
-                                <div className="title-post flex flex-row gap-[32px] w-[fit-content] items-center justify-center">
-                                    <h3 className="title-post-h3 text-[25px] font-bold text-[#123E23]">{getTabTitle()}</h3>
+
+                        {/* Posts Section - Mobile Responsive */}
+                        <div className="post-part w-full flex flex-col gap-4 sm:gap-6 lg:gap-[32px] items-center justify-between">
+                            {/* Header Section - Mobile Responsive */}
+                            <div className="head-part flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-[32px] w-full items-start sm:items-center justify-between">
+                                <div className="title-post flex flex-row gap-3 sm:gap-4 lg:gap-[32px] w-fit items-center justify-center">
+                                    <h3 className="title-post-h3 text-lg sm:text-xl lg:text-[25px] font-bold text-[#123E23]">{getTabTitle()}</h3>
                                     {activeTab === 'mine' && (
                                         <Link 
                                             to="/createpost"
-                                            className="title-post-btn w-[45px] h-[25px] rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-[12px] px-[10px] py-[5px] text-center border-[none] hover:text-[800] hover:-translate-y-[2px] no-underline"
+                                            className="title-post-btn w-8 h-6 sm:w-10 sm:h-7 lg:w-[45px] lg:h-[25px] rounded-full lg:rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-xs sm:text-sm lg:text-[12px] px-2 sm:px-3 lg:px-[10px] py-1 lg:py-[5px] text-center border-none hover:text-[800] hover:-translate-y-[2px] no-underline transition-transform"
                                         >
                                             +
                                         </Link>
                                     )}
                                 </div>
-                                <div className="search-bar">
+                                <div className="search-bar w-full sm:w-auto">
                                     <Search />
                                 </div>
                             </div>
-                            <div className="post-list grid grid-cols-2 gap-[32px] w-full">
+
+                            {/* Posts Grid - Mobile Responsive */}
+                            <div className="post-list grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-[32px] w-full">
                                 {loading ? (
-                                    <div className="col-span-2 text-center py-8">
-                                        Loading posts...
+                                    <div className="col-span-1 lg:col-span-2 text-center py-8">
+                                        <div className="text-sm sm:text-base">Loading posts...</div>
                                     </div>
                                 ) : posts.length > 0 ? (
                                     posts.map(post => (
@@ -195,17 +208,23 @@ export default function Profile() {
                                         />
                                     ))
                                 ) : (
-                                    <div className="col-span-2 text-center py-8">
-                                        {!isAuthenticated ? 'Please sign in to view posts' : `No ${activeTab} posts found`}
+                                    <div className="col-span-1 lg:col-span-2 text-center py-8">
+                                        <div className="text-sm sm:text-base">
+                                            {!isAuthenticated ? 'Please sign in to view posts' : `No ${activeTab} posts found`}
+                                        </div>
                                     </div>
                                 )}
                             </div>
+
+                            {/* Pagination - Mobile Responsive */}
                             {totalPages > 1 && (
-                                <Pagination 
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    onPageChange={setCurrentPage}
-                                />
+                                <div className="w-full flex justify-center">
+                                    <Pagination 
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={setCurrentPage}
+                                    />
+                                </div>
                             )}
                         </div>
                     </div>

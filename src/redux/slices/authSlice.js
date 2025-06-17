@@ -18,8 +18,8 @@ const getUserFromStorage = () => {
 
 const initialState = {
   user: getUserFromStorage(),
-  token: localStorage.getItem('token') || null,
-  isAuthenticated: !!localStorage.getItem('token')
+  token: localStorage.getItem('sessionToken') || null,
+  isAuthenticated: !!localStorage.getItem('sessionToken')
 };
 
 const authSlice = createSlice({
@@ -38,7 +38,7 @@ const authSlice = createSlice({
         
         if (token) {
           state.token = token;
-          localStorage.setItem('token', token);
+          localStorage.setItem('sessionToken', token);
         }
         
         state.isAuthenticated = !!token;
@@ -51,7 +51,8 @@ const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      localStorage.removeItem('sessionToken');
+      localStorage.removeItem('tokenExpiry');
     }
   }
 });

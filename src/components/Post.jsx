@@ -426,59 +426,61 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
         }
     };
 
-    // Enhanced Report Review Modal
+    // Enhanced Report Review Modal - Mobile Responsive
     const ReportReviewModal = useMemo(() => {
         if (!isReportReviewOpen) return null;
 
         return (
             <div
-                className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+                className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4"
                 onClick={(e) => {
                     e.stopPropagation();
                     setIsReportReviewOpen(false);
                 }}
             >
                 <div
-                    className="bg-white rounded-lg w-full max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col"
+                    className="bg-white rounded-lg w-full max-w-[95vw] sm:max-w-md lg:max-w-[600px] max-h-[95vh] overflow-hidden flex flex-col"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    {/* Header */}
-                    <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
-                        <h3 className="text-xl font-bold text-[#123E23] flex items-center gap-2">
-                            <span>📋</span> Report Review
+                    {/* Header - Mobile Responsive */}
+                    <div className="flex justify-between items-center p-3 sm:p-4 lg:p-6 border-b border-gray-200 bg-gray-50">
+                        <h3 className="text-base sm:text-lg lg:text-xl font-bold text-[#123E23] flex items-center gap-1 sm:gap-2">
+                            <span>📋</span> 
+                            <span className="hidden sm:inline">Report Review</span>
+                            <span className="sm:hidden">Report</span>
                         </h3>
                         <button
                             onClick={() => setIsReportReviewOpen(false)}
-                            className="text-gray-500 hover:text-gray-700 text-2xl leading-none p-1 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+                            className="text-gray-500 hover:text-gray-700 text-xl lg:text-2xl leading-none p-1 hover:bg-gray-200 rounded-full w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 flex items-center justify-center transition-colors"
                         >
                             ✕
                         </button>
                     </div>
 
-                    {/* Content */}
-                    <div className="flex-1 overflow-y-auto p-6">
+                    {/* Content - Mobile Responsive */}
+                    <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6">
                         {isLoadingReportReview ? (
-                            <div className="flex items-center justify-center py-12">
-                                <div className="flex items-center space-x-3">
-                                    <div className="w-6 h-6 border-2 border-[#123E23] border-t-transparent rounded-full animate-spin"></div>
-                                    <span className="text-gray-600">Loading report details...</span>
+                            <div className="flex items-center justify-center py-8 lg:py-12">
+                                <div className="flex items-center space-x-2 sm:space-x-3">
+                                    <div className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 border-2 border-[#123E23] border-t-transparent rounded-full animate-spin"></div>
+                                    <span className="text-gray-600 text-xs sm:text-sm lg:text-base">Loading report details...</span>
                                 </div>
                             </div>
                         ) : reportReviewData ? (
-                            <div className="space-y-6">
-                                {/* Report Status */}
-                                <div className="bg-gray-50 rounded-lg p-4">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <span className="font-semibold text-gray-700">Report Status</span>
+                            <div className="space-y-3 sm:space-y-4 lg:space-y-6">
+                                {/* Report Status - Mobile Responsive */}
+                                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                                    <div className="flex items-center justify-between mb-2 sm:mb-3">
+                                        <span className="font-semibold text-gray-700 text-sm sm:text-base">Report Status</span>
                                         <span
-                                            className="px-4 py-2 rounded-full text-sm font-medium text-white shadow-sm"
+                                            className="px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 lg:py-2 rounded-full text-xs sm:text-sm font-medium text-white shadow-sm"
                                             style={{ backgroundColor: getStatusColor(reportReviewData.status) }}
                                         >
                                             {reportReviewData.status?.toUpperCase()}
                                         </span>
                                     </div>
 
-                                    <div className="text-sm text-gray-600">
+                                    <div className="text-xs sm:text-sm text-gray-600">
                                         Reported on {formatDate(reportReviewData.created_at)}
                                         {reportReviewData.updated_at && reportReviewData.status !== 'pending' && (
                                             <span> • Resolved on {formatDate(reportReviewData.updated_at)}</span>
@@ -486,43 +488,45 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                     </div>
                                 </div>
 
-                                {/* Your Report */}
-                                <div className="space-y-4">
-                                    <h4 className="font-semibold text-[#123E23] text-lg border-b border-gray-200 pb-2">
+                                {/* Your Report - Mobile Responsive */}
+                                <div className="space-y-2 sm:space-y-3 lg:space-y-4">
+                                    <h4 className="font-semibold text-[#123E23] text-sm sm:text-base lg:text-lg border-b border-gray-200 pb-1 sm:pb-2">
                                         Your Report
                                     </h4>
 
-                                    <div className="bg-blue-50 rounded-lg p-4 space-y-3">
+                                    <div className="bg-blue-50 rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3">
                                         <div>
-                                            <span className="font-semibold text-blue-900">Reason:</span>
-                                            <p className="mt-1 text-blue-800 capitalize">
+                                            <span className="font-semibold text-blue-900 text-xs sm:text-sm">Reason:</span>
+                                            <p className="mt-1 text-blue-800 capitalize text-xs sm:text-sm">
                                                 {reportReviewData.reason || 'No reason provided'}
                                             </p>
                                         </div>
 
                                         <div>
-                                            <span className="font-semibold text-blue-900">Details:</span>
-                                            <p className="mt-1 text-blue-800 leading-relaxed">
+                                            <span className="font-semibold text-blue-900 text-xs sm:text-sm">Details:</span>
+                                            <p className="mt-1 text-blue-800 leading-relaxed text-xs sm:text-sm">
                                                 {reportReviewData.details || 'No additional details provided'}
                                             </p>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Admin Response */}
+                                {/* Admin Response - Mobile Responsive */}
                                 {reportReviewData.status !== 'pending' && (
-                                    <div className="space-y-4">
-                                        <h4 className="font-semibold text-[#123E23] text-lg border-b border-gray-200 pb-2 flex items-center gap-2">
-                                            <span>👨‍💼</span> Admin Response
+                                    <div className="space-y-2 sm:space-y-3 lg:space-y-4">
+                                        <h4 className="font-semibold text-[#123E23] text-sm sm:text-base lg:text-lg border-b border-gray-200 pb-1 sm:pb-2 flex items-center gap-1 sm:gap-2">
+                                            <span>👨‍💼</span> 
+                                            <span className="hidden sm:inline">Admin Response</span>
+                                            <span className="sm:hidden">Response</span>
                                         </h4>
 
-                                        <div className={`rounded-lg p-4 space-y-3 ${reportReviewData.status === 'solved' ? 'bg-green-50' :
+                                        <div className={`rounded-lg p-3 sm:p-4 space-y-2 sm:space-y-3 ${reportReviewData.status === 'solved' ? 'bg-green-50' :
                                                 reportReviewData.status === 'rejected' ? 'bg-red-50' : 'bg-gray-50'
                                             }`}>
                                             {reportReviewData.resolved_by && (
                                                 <div>
-                                                    <span className="font-semibold text-gray-700">Handled by:</span>
-                                                    <span className="ml-2 text-gray-900 bg-white px-2 py-1 rounded text-sm">
+                                                    <span className="font-semibold text-gray-700 text-xs sm:text-sm">Handled by:</span>
+                                                    <span className="ml-1 sm:ml-2 text-gray-900 bg-white px-1 sm:px-2 py-0.5 sm:py-1 rounded text-xs">
                                                         {reportReviewData.resolved_by.username || 'Admin Team'}
                                                     </span>
                                                 </div>
@@ -530,15 +534,15 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
 
                                             {reportReviewData.resolution_notes ? (
                                                 <div>
-                                                    <span className="font-semibold text-gray-700">Admin Notes:</span>
-                                                    <div className="mt-2 bg-white border border-gray-200 rounded p-3">
-                                                        <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">
+                                                    <span className="font-semibold text-gray-700 text-xs sm:text-sm">Admin Notes:</span>
+                                                    <div className="mt-1 sm:mt-2 bg-white border border-gray-200 rounded p-2 sm:p-3">
+                                                        <p className="text-gray-800 leading-relaxed whitespace-pre-wrap text-xs sm:text-sm">
                                                             {reportReviewData.resolution_notes}
                                                         </p>
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div className="text-gray-600 italic">
+                                                <div className="text-gray-600 italic text-xs sm:text-sm">
                                                     No additional notes provided by the admin team.
                                                 </div>
                                             )}
@@ -546,18 +550,17 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                     </div>
                                 )}
 
-                                {/* Status-specific messages */}
-                                <div className="mt-6">
+                                {/* Status-specific messages - Mobile Responsive */}
+                                <div className="mt-4 sm:mt-5 lg:mt-6">
                                     {reportReviewData.status === 'pending' && (
-                                        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                                        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-3 sm:p-4 rounded-r-lg">
                                             <div className="flex items-start">
-                                                <span className="text-yellow-600 text-xl mr-3">⏳</span>
+                                                <span className="text-yellow-600 text-lg sm:text-xl mr-2 sm:mr-3">⏳</span>
                                                 <div>
-                                                    <h5 className="font-semibold text-yellow-800 mb-1">Under Review</h5>
-                                                    <p className="text-yellow-700 text-sm leading-relaxed">
+                                                    <h5 className="font-semibold text-yellow-800 mb-1 text-xs sm:text-sm">Under Review</h5>
+                                                    <p className="text-yellow-700 text-xs leading-relaxed">
                                                         Your report is currently being reviewed by our admin team.
                                                         We'll update the status and provide feedback once a decision has been made.
-                                                        Thank you for helping keep our community safe.
                                                     </p>
                                                 </div>
                                             </div>
@@ -565,12 +568,12 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                     )}
 
                                     {reportReviewData.status === 'solved' && (
-                                        <div className="bg-green-50 border-l-4 border-green-400 p-4 rounded-r-lg">
+                                        <div className="bg-green-50 border-l-4 border-green-400 p-3 sm:p-4 rounded-r-lg">
                                             <div className="flex items-start">
-                                                <span className="text-green-600 text-xl mr-3">✅</span>
+                                                <span className="text-green-600 text-lg sm:text-xl mr-2 sm:mr-3">✅</span>
                                                 <div>
-                                                    <h5 className="font-semibold text-green-800 mb-1">Report Resolved</h5>
-                                                    <p className="text-green-700 text-sm leading-relaxed">
+                                                    <h5 className="font-semibold text-green-800 mb-1 text-xs sm:text-sm">Report Resolved</h5>
+                                                    <p className="text-green-700 text-xs leading-relaxed">
                                                         Your report has been reviewed and action has been taken.
                                                         Thank you for helping maintain our community standards.
                                                     </p>
@@ -580,12 +583,12 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                     )}
 
                                     {reportReviewData.status === 'rejected' && (
-                                        <div className="bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg">
+                                        <div className="bg-red-50 border-l-4 border-red-400 p-3 sm:p-4 rounded-r-lg">
                                             <div className="flex items-start">
-                                                <span className="text-red-600 text-xl mr-3">❌</span>
+                                                <span className="text-red-600 text-lg sm:text-xl mr-2 sm:mr-3">❌</span>
                                                 <div>
-                                                    <h5 className="font-semibold text-red-800 mb-1">Report Not Actionable</h5>
-                                                    <p className="text-red-700 text-sm leading-relaxed">
+                                                    <h5 className="font-semibold text-red-800 mb-1 text-xs sm:text-sm">Report Not Actionable</h5>
+                                                    <p className="text-red-700 text-xs leading-relaxed">
                                                         After review, our team determined that no action is needed for this report.
                                                         Please see the admin notes above for more details.
                                                     </p>
@@ -596,20 +599,20 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                 </div>
                             </div>
                         ) : (
-                            <div className="text-center py-12 text-gray-500">
-                                <div className="text-6xl mb-4">📭</div>
-                                <p className="text-lg">No report details available</p>
-                                <p className="text-sm mt-2">Unable to load the report information at this time.</p>
+                            <div className="text-center py-8 lg:py-12 text-gray-500">
+                                <div className="text-4xl sm:text-5xl lg:text-6xl mb-3 sm:mb-4">📭</div>
+                                <p className="text-sm sm:text-base lg:text-lg">No report details available</p>
+                                <p className="text-xs sm:text-sm mt-1 sm:mt-2">Unable to load the report information at this time.</p>
                             </div>
                         )}
                     </div>
 
-                    {/* Footer */}
-                    <div className="border-t border-gray-200 p-4 bg-gray-50">
+                    {/* Footer - Mobile Responsive */}
+                    <div className="border-t border-gray-200 p-3 sm:p-4 bg-gray-50">
                         <div className="flex justify-end">
                             <button
                                 onClick={() => setIsReportReviewOpen(false)}
-                                className="px-6 py-2 bg-[#123E23] text-white rounded-lg hover:bg-[#0d2d19] transition-colors shadow-sm"
+                                className="px-4 sm:px-5 lg:px-6 py-1.5 sm:py-2 bg-[#123E23] text-white rounded-lg hover:bg-[#0d2d19] transition-colors shadow-sm text-sm sm:text-base"
                             >
                                 Close
                             </button>
@@ -636,18 +639,19 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                     }
                 }
             })}
-            className="post-card border-[1px] border-[#123E23] rounded-[10px] px-[35px] py-[30px] w-full font-['DM_Sans'] gap-[5px] flex flex-col cursor-pointer p-0 transition-0.2s ease hover:scale-[1.01] h-full"
+            className="post-card border-[1px] border-[#123E23] rounded-[10px] px-4 sm:px-6 lg:px-[35px] py-4 sm:py-5 lg:py-[30px] w-full font-['DM_Sans'] gap-[5px] flex flex-col cursor-pointer p-0 transition-0.2s ease hover:scale-[1.01] h-full"
             style={{ backgroundImage: `url(${post.image || defaultBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
-            <div className="post-header flex justify-between text-[16px] text-[#133018]">
-                <div className="post-header-title gap-[10px] flex items-center justify-center">
-                    <span>{getUsername()}</span> /
-                    <span className='text-[12px] self-center font-normal'>
+            {/* Post Header - Mobile Responsive */}
+            <div className="post-header flex justify-between text-sm sm:text-base lg:text-[16px] text-[#133018]">
+                <div className="post-header-title gap-2 sm:gap-2.5 lg:gap-[10px] flex items-center justify-center">
+                    <span className="truncate max-w-[120px] sm:max-w-none">{getUsername()}</span> /
+                    <span className='text-xs sm:text-sm lg:text-[12px] self-center font-normal'>
                         {formatDate(post.created_at)}
                     </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                     <Popover className="post-more relative">
                         {({ open }) => (
                             <div
@@ -657,9 +661,9 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                             >
                                 <Popover.Button
                                     ref={triggerRef}
-                                    className="w-[20px] h-[20px] flex items-center justify-center cursor-pointer"
+                                    className="w-4 h-4 sm:w-5 sm:h-5 lg:w-[20px] lg:h-[20px] flex items-center justify-center cursor-pointer"
                                 >
-                                    <img src={moreVerticalIcon} alt="more" />
+                                    <img src={moreVerticalIcon} alt="more" className="w-full h-full" />
                                 </Popover.Button>
 
                                 <Transition
@@ -671,11 +675,11 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                     leaveFrom="opacity-100 translate-y-0"
                                     leaveTo="opacity-0 translate-y-1"
                                 >
-                                    <Popover.Panel className="absolute right-0 mt-2 w-32 rounded-xl shadow-lg bg-white z-10">
+                                    <Popover.Panel className="absolute right-0 mt-2 w-28 sm:w-32 rounded-xl shadow-lg bg-white z-10">
                                         <ul className="flex flex-col py-2">
                                             {/* Save option - always available */}
                                             <li onClick={handleSavePost}
-                                                className="hover:bg-[#F0F4E6] px-4 py-2 text-sm text-[#133018] cursor-pointer"
+                                                className="hover:bg-[#F0F4E6] px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-[#133018] cursor-pointer"
                                             >
                                                 Save
                                             </li>
@@ -689,13 +693,13 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                                             e.stopPropagation();
                                                             navigate(`/edit-post/${post._id}`);
                                                         }}
-                                                        className='hover:bg-[#F0F4E6] px-4 py-2 text-sm text-[#133018] cursor-pointer'
+                                                        className='hover:bg-[#F0F4E6] px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-[#133018] cursor-pointer'
                                                     >
                                                         Edit
                                                     </li>
                                                     <li
                                                         onClick={handleDeletePost}
-                                                        className='hover:bg-red-50 px-4 py-2 text-sm text-red-600 cursor-pointer border-t border-gray-100'
+                                                        className='hover:bg-red-50 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-red-600 cursor-pointer border-t border-gray-100'
                                                     >
                                                         Delete
                                                     </li>
@@ -709,7 +713,7 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                                             onReportClick(post);
                                                         }
                                                     }}
-                                                    className='hover:bg-[#F0F4E6] px-4 py-2 text-sm text-[#133018] cursor-pointer'
+                                                    className='hover:bg-[#F0F4E6] px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-[#133018] cursor-pointer'
                                                 >
                                                     Report
                                                 </li>
@@ -721,10 +725,10 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                         )}
                     </Popover>
 
-                    {/* Report Status Icon - Only show if user has reported and doesn't own the post */}
+                    {/* Report Status Icon - Mobile Responsive */}
                     {post.report_info && !isPostOwner() && (
                         <div
-                            className="w-[20px] h-[20px] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
+                            className="w-4 h-4 sm:w-5 sm:h-5 lg:w-[20px] lg:h-[20px] flex items-center justify-center cursor-pointer hover:scale-110 transition-transform"
                             onClick={handleReportStatusClick}
                             title={`Click to view report details - Status: ${post.report_info.status}`}
                         >
@@ -738,36 +742,41 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                 </div>
             </div>
 
-            <div className="post-title font-bold text-[18px] mx-[0] my-[10px] text-[#133018]">
+            {/* Post Title - Mobile Responsive */}
+            <div className="post-title font-bold text-base sm:text-lg lg:text-[18px] mx-[0] my-2 sm:my-2.5 lg:my-[10px] text-[#133018] line-clamp-2">
                 {post.title}
             </div>
 
-            <p className="post-content !text-[16px] text-[#133018] ">
+            {/* Post Content - Mobile Responsive */}
+            <p className="post-content text-sm sm:text-base lg:!text-[16px] text-[#133018] line-clamp-3 sm:line-clamp-4 lg:line-clamp-none">
                 {post.content}
             </p>
 
-            <div className="post-footer flex justify-between items-center gap-[20px] text-[16px] text-[#133018]">
-                <div className="tags mx-[0] my-[15px] gap-[12px]">
+            {/* Post Footer - Mobile Responsive */}
+            <div className="post-footer flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 lg:gap-[20px] text-sm sm:text-base lg:text-[16px] text-[#133018]">
+                {/* Tags - Mobile Responsive */}
+                <div className="tags mx-[0] my-2 sm:my-3 lg:my-[15px] gap-2 sm:gap-2.5 lg:gap-[12px] flex flex-wrap">
                     {post.tags?.map((tag, index) => (
                         <span
                             key={index}
-                            className="tag bg-[#DDF4A6] text-[#133018] rounded-[6px] px-[12px] py-[5px] mr-[10px] inline-block text-[14px]"
+                            className="tag bg-[#DDF4A6] text-[#133018] rounded-[6px] px-2 sm:px-2.5 lg:px-[12px] py-1 sm:py-1.5 lg:py-[5px] inline-block text-xs sm:text-sm lg:text-[14px]"
                         >
                             {tag}
                         </span>
                     ))}
                 </div>
 
-                <div className="post-ico-list flex flex-row items-center text-center h-[fit-content] w-[180px] gap-[20px]"
+                {/* Post Icons - Mobile Responsive */}
+                <div className="post-ico-list flex flex-row items-center text-center h-[fit-content] w-full sm:w-auto justify-between sm:justify-end gap-3 sm:gap-4 lg:gap-[20px]"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <div className="post-ico-items flex items-center gap-[5px]">
-                        <img className="post-ico w-[16px] h-[16px]" src={eyeIcon} alt="views" />
-                        <span>{post.view_count || 0}</span>
+                    <div className="post-ico-items flex items-center gap-1 sm:gap-1.5 lg:gap-[5px]">
+                        <img className="post-ico w-3 h-3 sm:w-4 sm:h-4 lg:w-[16px] lg:h-[16px]" src={eyeIcon} alt="views" />
+                        <span className="text-xs sm:text-sm lg:text-base">{post.view_count || 0}</span>
                     </div>
-                    <div className="post-ico-items flex items-center gap-[5px]">
-                        <img className="post-ico w-[16px] h-[16px]" src={cmtIcon} alt="comments" />
-                        <span>{commentCount}</span>
+                    <div className="post-ico-items flex items-center gap-1 sm:gap-1.5 lg:gap-[5px]">
+                        <img className="post-ico w-3 h-3 sm:w-4 sm:h-4 lg:w-[16px] lg:h-[16px]" src={cmtIcon} alt="comments" />
+                        <span className="text-xs sm:text-sm lg:text-base">{commentCount}</span>
                     </div>
                     <button
                         className={`btn-tag flex items-center gap-1 transition-colors duration-200 ${isLiked ? 'text-[#123e23]' : 'text-[#133018] hover:text-[#123e23]'
@@ -776,7 +785,7 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                         disabled={isLikeLoading}
                     >
                         <img
-                            className={`post-ico w-[16px] h-[16px] transition-all duration-200 ${isLiked ? 'filter-red' : ''
+                            className={`post-ico w-3 h-3 sm:w-4 sm:h-4 lg:w-[16px] lg:h-[16px] transition-all duration-200 ${isLiked ? 'filter-red' : ''
                                 }`}
                             src={likeIcon}
                             alt="likes"
@@ -787,7 +796,7 @@ export default function Post({ post, currentUser, onPostUpdate, onReportClick })
                                 opacity: '0.7'
                             }}
                         />
-                        <span>{likeCount}</span>
+                        <span className="text-xs sm:text-sm lg:text-base">{likeCount}</span>
                     </button>
                 </div>
             </div>

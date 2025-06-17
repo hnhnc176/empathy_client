@@ -1,13 +1,12 @@
-import React, { Fragment, useRef, useEffect, useState } from "react";
+import React, { useState, useEffect, useRef, Fragment } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { Popover, Transition } from '@headlessui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/slices/authSlice';
 import { showSuccessToast, showErrorToast, showInfoToast } from '../utils/toast';
 import axiosInstance from '../config/axios';
-import {Bell} from 'lucide-react'
+import { Bell, Menu, X, AlignJustify } from 'lucide-react'
 import user from "../assets/user.svg";
-import bell from "../assets/bell.svg";
 import styles from "../style";
 import avatar from "../assets/avt.png";
 
@@ -20,12 +19,20 @@ export default function Header() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    // Mobile menu state
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     const { user: currentUser, isAuthenticated } = useSelector((state) => state.auth);
 
     // Notification state
     const [notifications, setNotifications] = useState([]);
     const [notificationLoading, setNotificationLoading] = useState(false);
     const [notificationError, setNotificationError] = useState(null);
+
+    // Close mobile menu when route changes
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [navigate]);
 
     // Check if user is admin and redirect
     useEffect(() => {
@@ -354,37 +361,43 @@ export default function Header() {
     }, [currentUser, isAuthenticated]);
 
     return (
-        <header className="header flex flex-col justify-between items-center w-full z-10">
-            <div className="announcement-bar w-full flex items-center justify-center font-medium text-xl py-4 border-b-[2px]"
+        <header className="header flex flex-col justify-between items-center w-full z-20 relative">
+            {/* Announcement Bar - Phone Responsive */}
+            <div className="announcement-bar w-full flex items-center justify-center font-medium text-xs sm:text-sm md:text-lg lg:text-xl py-2 sm:py-3 md:py-4 border-b-[2px]"
                 style={{ backgroundColor: styles.colors.secodary, fontFamily: styles.font.body }}>
-                <p className="announcement-text">Priority in Vietnam, Vietnam based</p>
+                <p className="announcement-text text-center px-2 sm:px-4">Priority in Vietnam, Vietnam based</p>
             </div>
 
-            <nav className="main-nav flex w-full justify-between px-20 border-b-[2px]"
+            {/* Main Navigation - Phone Responsive */}
+            <nav className="main-nav flex w-full justify-between items-center px-2 sm:px-4 md:px-8 lg:px-20 py-3 sm:py-4 lg:py-0 border-b-[2px] relative"
                 style={{ backgroundColor: styles.colors.background }}>
+                
+                {/* Brand Logo - Phone Responsive */}
                 <div className="brand-logo flex items-center">
-                    <Link className="nav-link font-normal text-[40px]"
+                    <Link className="nav-link font-normal text-xl sm:text-2xl md:text-3xl lg:text-[40px]"
                         style={{ fontFamily: styles.font.logo }}
                         to="/home">
                         Empathy
                     </Link>
                 </div>
 
-                <ul className="nav-menu flex items-center justify-between w-md gap-6 py-6 text-xl pl-8 border-l-[2px] border-[#000000]"
+                {/* Desktop Navigation - Hidden on Phone/Tablet */}
+                <ul className="nav-menu hidden lg:flex items-center justify-between w-md gap-6 py-6 text-xl pl-8 border-l-[2px] border-[#000000]"
                     style={{ fontFamily: styles.font.body }}>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/about">About</Link>
+                        <Link className="nav-link hover:opacity-80 transition-opacity" to="/about">About</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link" to="/community">Community</Link>
+                        <Link className="nav-link hover:opacity-80 transition-opacity" to="/community">Community</Link>
                     </li>
                     {isAuthenticated && (
                         <>
                             <li className="nav-item">
-                                <Link className="nav-link" to="/profile">Profile</Link>
+                                <Link className="nav-link hover:opacity-80 transition-opacity" to="/profile">Profile</Link>
                             </li>
+
                             <li className="nav-item">
-                                {/* Notification Popover */}
+                                {/* Desktop Notification Popover */}
                                 <Popover className="relative">
                                     {({ open }) => (
                                         <>
@@ -394,11 +407,11 @@ export default function Header() {
                                             >
                                                 <Popover.Button
                                                     ref={notificationTriggerRef}
-                                                    className="outline-none relative"
+                                                    className="outline-none noti-button relative"
                                                 >
-                                                    <Bell className="w-5 h-5 cursor-pointer " strokeWidth={3}/>
+                                                    <Bell className="noti w-5 h-5 cursor-pointer" strokeWidth={3} />
                                                     {unreadCount > 0 && (
-                                                        <span className="absolute -top-1 -right-1 bg-[#DDF4A6] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                                                        <span className="absolute -top-1 -right-1 bg-[#123E23] !text-white text-[10px] rounded-full w-3.5 h-3.5 flex items-center justify-center">
                                                             {unreadCount > 9 ? '9+' : unreadCount}
                                                         </span>
                                                     )}
@@ -418,7 +431,7 @@ export default function Header() {
                                                     leaveFrom="opacity-100 translate-y-0"
                                                     leaveTo="opacity-0 translate-y-1"
                                                 >
-                                                    <Popover.Panel static className="absolute -right-20 mt-3 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+                                                    <Popover.Panel static className="absolute -right-16 mt-3 w-72 bg-white rounded-xl shadow-lg border border-gray-200 z-40">
                                                         <div className="notification-popup">
                                                             {/* Header */}
                                                             <div className="flex items-center justify-between p-4 border-b border-gray-100">
@@ -526,18 +539,101 @@ export default function Header() {
                         </>
                     )}
 
-                    <Popover className="relative">
-                        {({ open }) => (
-                            <>
-                                <div
-                                    onMouseEnter={() => handleEnter(open)}
-                                    onMouseLeave={() => handleLeave(open)}
-                                >
-                                    <Popover.Button ref={triggerRef} className="outline-none">
-                                        <img src={isAuthenticated ? avatar : user} alt="User" className="w-8 h-8 rounded-full" />
+                    <li className="nav-item">
+                        <Popover className="relative">
+                            {({ open }) => (
+                                <>
+                                    <div
+                                        onMouseEnter={() => handleEnter(open)}
+                                        onMouseLeave={() => handleLeave(open)}
+                                    >
+                                        <Popover.Button ref={triggerRef} className="outline-none">
+                                            <img src={isAuthenticated ? avatar : user} alt="User" className="w-8 h-8 rounded-full" />
+                                        </Popover.Button>
+                                    </div>
+                                    <div onMouseEnter={() => handleEnter(open)} onMouseLeave={() => handleLeave(open)}>
+                                        <Transition
+                                            as={Fragment}
+                                            enter="transition ease-out duration-200"
+                                            enterFrom="opacity-0 translate-y-1"
+                                            enterTo="opacity-100 translate-y-0"
+                                            leave="transition ease-in duration-150"
+                                            leaveFrom="opacity-100 translate-y-0"
+                                            leaveTo="opacity-0 translate-y-1"
+                                        >
+                                            {isAuthenticated ? (
+                                                <Popover.Panel static
+                                                    className="nav-popup absolute -right-8 mt-3 shadow-lg rounded-xl w-fit px-5 h-fit text-base bg-white z-50">
+                                                    <ul className="popup-list flex flex-col items-center justify-between">
+                                                        {/* Show verification button for unverified users */}
+                                                        {currentUser && !currentUser.verification_status && (
+                                                            <li className="popup-items py-3 w-full text-center border-b border-gray-100">
+                                                                <Link 
+                                                                    to="/request-verification" 
+                                                                    className="flex items-center gap-2 px-4 py-2 bg-yellow-100 text-yellow-800 hover:bg-yellow-200 rounded-md transition-colors font-medium text-sm"
+                                                                >
+                                                                    <i className="fa-solid fa-envelope-circle-check"></i>
+                                                                    <span>Verify Email</span>
+                                                                </Link>
+                                                            </li>
+                                                        )}
+                                                        <li className="popup-items py-5 w-full text-center">
+                                                            <button
+                                                                onClick={handleLogout}
+                                                                className="flex items-center gap-2 px-4 py-2 text-[#123e23] hover:text-[#0f2f1a] transition-colors"
+                                                            >
+                                                                <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                                                                <span>Logout</span>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </Popover.Panel>
+                                            ) : (
+                                                <Popover.Panel static
+                                                    className="nav-popup absolute -right-10 mt-7 shadow-lg rounded-xl w-24 h-fit text-base bg-white">
+                                                    <ul className="popup-list flex gap-1.5 flex-col items-center justify-between">
+                                                        <li className="popup-items hover:bg-gray-100 pt-5 pb-[5px] w-full text-center">
+                                                            <Link to="/signin" className="block px-4 pt-2">Sign In</Link>
+                                                        </li>
+                                                        <li className="popup-items hover:bg-gray-100 pb-5 pt-[5px] w-full text-center">
+                                                            <Link to="/signup" className="block px-4">Sign Up</Link>
+                                                        </li>
+                                                    </ul>
+                                                </Popover.Panel>
+                                            )}
+                                        </Transition>
+                                    </div>
+                                </>
+                            )}
+                        </Popover>
+                    </li>
+                </ul>
+
+                {/* Mobile Menu Controls - Show on Phone/Tablet */}
+                <div className="lg:hidden flex items-center gap-2 sm:gap-3">
+                    {/* Mobile User Avatar - Phone Responsive */}
+                    <div className="flex items-center">
+                        <img 
+                            src={isAuthenticated ? avatar : user} 
+                            alt="User" 
+                            className="w-6 h-6 sm:w-7 sm:h-7 rounded-full"
+                        />
+                    </div>
+
+                    {/* Mobile Notifications - Phone Responsive */}
+                    {isAuthenticated && (
+                        <Popover className="relative">
+                            {({ open }) => (
+                                <>
+                                    <Popover.Button className="outline-none noti-button relative p-1">
+                                        <Bell className="noti w-4 h-4 sm:w-5 sm:h-5 cursor-pointer" strokeWidth={3} />
+                                        {unreadCount > 0 && (
+                                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-3 h-3 sm:w-4 sm:h-4 flex items-center justify-center text-[9px] sm:text-[10px]">
+                                                {unreadCount > 9 ? '9+' : unreadCount}
+                                            </span>
+                                        )}
                                     </Popover.Button>
-                                </div>
-                                <div onMouseEnter={() => handleEnter(open)} onMouseLeave={() => handleLeave(open)}>
+
                                     <Transition
                                         as={Fragment}
                                         enter="transition ease-out duration-200"
@@ -547,41 +643,175 @@ export default function Header() {
                                         leaveFrom="opacity-100 translate-y-0"
                                         leaveTo="opacity-0 translate-y-1"
                                     >
-                                        {isAuthenticated ? (
-                                            <Popover.Panel static
-                                                className="nav-popup absolute -right-10 mt-7 shadow-lg rounded-xl w-fit px-5 h-fit text-base bg-white">
-                                                <ul className="popup-list flex flex-col items-center justify-between">
-                                                    <li className="popup-items py-5 w-full text-center">
+                                        <Popover.Panel className="absolute right-0 mt-3 w-72 sm:w-80 max-w-[calc(100vw-1rem)] sm:max-w-[calc(100vw-2rem)] bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+                                            <div className="notification-popup">
+                                                {/* Phone Responsive Notification Header */}
+                                                <div className="flex items-center justify-between p-2 sm:p-3 border-b border-gray-100">
+                                                    <h3 className="text-sm sm:text-base font-semibold text-[#123E23]">
+                                                        Notifications
+                                                    </h3>
+                                                    {unreadCount > 0 && (
                                                         <button
-                                                            onClick={handleLogout}
-                                                            className="flex items-center gap-2 px-4 py-2 text-[#123e23] hover:text-[#0f2f1a] transition-colors"
+                                                            onClick={markAllAsRead}
+                                                            className="text-xs text-[#123E23] hover:text-[#0f2f1a] transition-colors"
                                                         >
-                                                            <i className="fa-solid fa-arrow-right-from-bracket"></i>
-                                                            <span>Logout</span>
+                                                            Mark all read
                                                         </button>
-                                                    </li>
-                                                </ul>
-                                            </Popover.Panel>
-                                        ) : (
-                                            <Popover.Panel static
-                                                className="nav-popup absolute -right-10 mt-7 shadow-lg rounded-xl w-24 h-fit text-base bg-white">
-                                                <ul className="popup-list flex gap-1.5 flex-col items-center justify-between">
-                                                    <li className="popup-items hover:bg-gray-100 pt-5 pb-[5px] w-full text-center">
-                                                        <Link to="/signin" className="block px-4 pt-2">Sign In</Link>
-                                                    </li>
-                                                    <li className="popup-items hover:bg-gray-100 pb-5 pt-[5px] w-full text-center">
-                                                        <Link to="/signup" className="block px-4">Sign Up</Link>
-                                                    </li>
-                                                </ul>
-                                            </Popover.Panel>
-                                        )}
+                                                    )}
+                                                </div>
+
+                                                {/* Phone Responsive Notifications List */}
+                                                <div className="max-h-72 sm:max-h-80 overflow-y-auto">
+                                                    {notificationLoading ? (
+                                                        <div className="p-4 sm:p-6 text-center">
+                                                            <div className="flex items-center justify-center space-x-2">
+                                                                <i className="fa-solid fa-spinner fa-spin text-[#123E23]"></i>
+                                                                <span className="text-xs sm:text-sm text-[#123E23]">Loading...</span>
+                                                            </div>
+                                                        </div>
+                                                    ) : notifications.length > 0 ? (
+                                                        notifications.map((notification) => (
+                                                            <div
+                                                                key={notification.id}
+                                                                className={`p-2 sm:p-3 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50' : ''
+                                                                    }`}
+                                                                onClick={() => markAsRead(notification.id)}
+                                                            >
+                                                                <div className="flex items-start gap-2">
+                                                                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center">
+                                                                        <i className="fa-solid fa-bell text-xs text-gray-600"></i>
+                                                                    </div>
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <h4 className="text-xs sm:text-sm font-medium text-[#123E23] truncate">
+                                                                            {notification.title}
+                                                                        </h4>
+                                                                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                                                            {notification.message}
+                                                                        </p>
+                                                                        <span className="text-[9px] sm:text-[10px] text-gray-500 mt-1 block">
+                                                                            {notification.time}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <div className="p-4 sm:p-6 text-center">
+                                                            <p className="text-gray-500 text-xs sm:text-sm">No notifications yet</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </Popover.Panel>
                                     </Transition>
-                                </div>
+                                </>
+                            )}
+                        </Popover>
+                    )}
+
+                    {/* Phone Responsive Menu Button */}
+                    <button
+                        className="lg:hidden p-1 sm:p-2 hover:bg-gray-100 rounded-md transition-colors"
+                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                        aria-label="Toggle menu"
+                    >
+                        {isMobileMenuOpen ? (
+                            <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                        ) : (
+                            <AlignJustify className="w-5 h-5 sm:w-6 sm:h-6" />
+                        )}
+                    </button>
+                </div>
+            </nav>
+
+            {/* Phone Responsive Mobile Dropdown Menu */}
+            {isMobileMenuOpen && (
+                <div 
+                    className="lg:hidden w-full bg-white border-b-2 border-gray-200 shadow-md z-30"
+                    style={{ backgroundColor: styles.colors.background }}
+                >
+                    <nav className="px-2 sm:px-4 py-2" style={{ fontFamily: styles.font.body }}>
+                        <ul className="space-y-0">
+                            <li>
+                                <Link 
+                                    to="/about" 
+                                    className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                About
+                            </Link>
+                        </li>
+                        <li>
+                            <Link 
+                                to="/community" 
+                                className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                                Community
+                            </Link>
+                        </li>
+                        {isAuthenticated ? (
+                            <>
+                                {/* Show verification button for unverified users */}
+                                {currentUser && !currentUser.verification_status && (
+                                    <li>
+                                        <Link 
+                                            to="/request-verification" 
+                                            className="block py-2 sm:py-3 px-2 text-sm sm:text-base bg-yellow-50 text-yellow-800 hover:bg-yellow-100 rounded-md transition-colors border-b border-gray-100 font-medium"
+                                            onClick={() => setIsMobileMenuOpen(false)}
+                                        >
+                                            ⚠️ Verify Email
+                                        </Link>
+                                    </li>
+                                )}
+                                <li>
+                                    <Link 
+                                        to="/profile" 
+                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Profile
+                                    </Link>
+                                </li>
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            handleLogout();
+                                            setIsMobileMenuOpen(false);
+                                        }}
+                                        className="flex items-center gap-2 py-2 sm:py-3 px-2 text-sm sm:text-base text-red-600 hover:bg-red-50 rounded-md transition-colors w-full text-left"
+                                    >
+                                        <i className="fa-solid fa-arrow-right-from-bracket"></i>
+                                        <span>Logout</span>
+                                    </button>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li>
+                                    <Link 
+                                        to="/signin" 
+                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Sign In
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link 
+                                        to="/signup" 
+                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base text-[#123E23] font-semibold hover:bg-green-50 rounded-md transition-colors"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Sign Up
+                                    </Link>
+                                </li>
                             </>
                         )}
-                    </Popover>
-                </ul>
-            </nav>
-        </header>
+                    </ul>
+                </nav>
+            </div>
+        )}
+    </header>
     );
 }

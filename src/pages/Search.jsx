@@ -133,48 +133,48 @@ export default function Search() {
     };
 
     return (
-        <div className="body-content bg-[#FCFCF4] flex flex-row self-center p-[80px] gap-[80px] justify-evenly">
-            <main className="content flex flex-col gap-[32px] w-full items-center justify-center">
-                <div className="search-bar-section flex items-center gap-[32px] w-full border-[none]">
+        <div className="body-content bg-[#FCFCF4] flex flex-row self-center p-4 sm:p-8 lg:p-[80px] gap-4 sm:gap-8 lg:gap-[80px] justify-evenly">
+            <main className="content flex flex-col gap-4 sm:gap-6 lg:gap-[32px] w-full items-center justify-center">
+                <div className="search-bar-section flex flex-col sm:flex-row items-center gap-4 sm:gap-6 lg:gap-[32px] w-full border-[none]">
                     <div id="search-bar-compo" className="flex-1">
                         <SearchBar />
                     </div>
-                    <div className="search-bar-btn flex gap-[16px] w-fit">
+                    <div className="search-bar-btn flex flex-wrap gap-2 sm:gap-3 lg:gap-[16px] w-full sm:w-fit justify-center sm:justify-start">
                         <button 
                             onClick={() => handleSortChange('new')}
-                            className={`topic-btn flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-full transition-colors ${
                                 sortType === 'new' 
                                     ? 'bg-[#123E23] text-white' 
                                     : 'bg-white hover:bg-[#F0F4E6]'
                             }`}
                         >
-                            <img src={GroupIcon} alt="clock" className="w-4 h-4" /> 
+                            <img src={GroupIcon} alt="clock" className="w-3 h-3 sm:w-4 sm:h-4" /> 
                             <span>New</span>
                         </button>
                         <button 
                             onClick={() => handleSortChange('top')}
-                            className={`topic-btn flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-full transition-colors ${
                                 sortType === 'top' 
                                     ? 'bg-[#123E23] text-white' 
                                     : 'bg-white hover:bg-[#F0F4E6]'
                             }`}
                         >
-                            <img src={ArrowIcon} alt="arrow" className="w-4 h-4" /> 
+                            <img src={ArrowIcon} alt="arrow" className="w-3 h-3 sm:w-4 sm:h-4" /> 
                             <span>Top</span>
                         </button>
                         <button 
                             onClick={() => handleSortChange('hot')}
-                            className={`topic-btn flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
+                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-full transition-colors ${
                                 sortType === 'hot' 
                                     ? 'bg-[#123E23] text-white' 
                                     : 'bg-white hover:bg-[#F0F4E6]'
                             }`}
                         >
-                            <img src={HotIcon} alt="hot" className="w-4 h-4" /> 
+                            <img src={HotIcon} alt="hot" className="w-3 h-3 sm:w-4 sm:h-4" /> 
                             <span>Hot</span>
                         </button>
                         <button className="topic-btn-create">
-                            <Link to="/createpost" className="create-post-btn w-[45px] h-[25px] rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-[14px] px-[10px] py-[5px] text-center hover:bg-[#123E23]/90 transition-colors">
+                            <Link to="/createpost" className="create-post-btn w-8 h-6 sm:w-10 sm:h-7 lg:w-[45px] lg:h-[25px] rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-xs sm:text-sm lg:text-[14px] px-2 py-1 sm:px-3 sm:py-1.5 lg:px-[10px] lg:py-[5px] text-center hover:bg-[#123E23]/90 transition-colors">
                                 +
                             </Link>
                         </button>
@@ -182,13 +182,13 @@ export default function Search() {
                 </div>
 
                 <div className="post-list-header w-full">
-                    <div className="flex items-center justify-between mb-6 px-4">
-                        <h2 className="text-xl font-semibold text-[#123E23]">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 px-2 sm:px-4 gap-2 sm:gap-0">
+                        <h2 className="text-lg sm:!text-xs lg:text-xl font-semibold text-[#123E23]">
                             {query ? (
                                 <>
                                     Search Results for: "<span className="text-[#4A5568]">{query}</span>"
                                     {!loading && (
-                                        <span className="text-sm font-normal text-gray-500 ml-2">
+                                        <span className="text-xs sm:text-sm font-normal text-gray-500 ml-1 sm:ml-2">
                                             ({posts.length} result{posts.length !== 1 ? 's' : ''})
                                         </span>
                                     )}
@@ -197,9 +197,9 @@ export default function Search() {
                                 'Search Results'
                             )}
                         </h2>
-                        <div className="flex items-center gap-2">
-                            <span className="text-sm text-gray-600">Sort:</span>
-                            <span className="text-sm font-medium text-[#123E23] capitalize">{sortType}</span>
+                        <div className="flex items-center gap-1 sm:gap-2">
+                            <span className="text-xs sm:text-sm text-gray-600">Sort:</span>
+                            <span className="text-xs sm:text-sm font-medium text-[#123E23] capitalize">{sortType}</span>
                         </div>
                     </div>
 
@@ -212,7 +212,7 @@ export default function Search() {
                             </div>
                         </div>
                     ) : posts.length > 0 ? (
-                        <div className="post-list flex flex-col gap-[24px] w-full">
+                        <div className="post-list flex flex-col gap-4 sm:gap-6 lg:gap-[24px] w-full">
                             {posts.map((post) => (
                                 <Post 
                                     key={post._id} 
@@ -223,41 +223,41 @@ export default function Search() {
                             ))}
                         </div>
                     ) : query ? (
-                        <div className="text-center py-12">
-                            <div className="text-6xl mb-4 w-full flex items-center justify-center"><img src={SearchIco} alt="search icon" className=" flex self-center search-icon w-[60px] h-[60px]" /></div>
-                            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                        <div className="text-center py-8 sm:py-12 px-4">
+                            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4 w-full flex items-center justify-center"><img src={SearchIco} alt="search icon" className="flex self-center search-icon w-10 h-10 sm:w-12 sm:h-12 lg:w-[60px] lg:h-[60px]" /></div>
+                            <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">
                                 No results found
                             </h3>
-                            <p className="text-gray-500 mb-4">
+                            <p className="text-sm sm:text-base text-gray-500 mb-4">
                                 We couldn't find any posts matching "<strong>{query}</strong>"
                             </p>
-                            <div className="flex justify-center gap-4">
+                            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
                                 <Link 
                                     to="/community"
-                                    className="px-6 py-2 bg-[#123E23] !text-white rounded-lg hover:bg-[#0d2d19] transition-colors"
+                                    className="px-4 sm:px-6 py-2 bg-[#123E23] !text-white text-sm sm:text-base rounded-lg hover:bg-[#0d2d19] transition-colors"
                                 >
                                     Browse All Posts
                                 </Link>
                                 <Link 
                                     to="/createpost"
-                                    className="px-6 py-2 border-2 border-[#123E23] text-[#123E23] rounded-lg hover:bg-[#F0F4E6] transition-colors"
+                                    className="px-4 sm:px-6 py-2 border-2 border-[#123E23] text-[#123E23] text-sm sm:text-base rounded-lg hover:bg-[#F0F4E6] transition-colors"
                                 >
                                     Create New Post
                                 </Link>
                             </div>
                         </div>
                     ) : (
-                        <div className="text-center py-12">
-                            <div className="text-6xl mb-4"><img src={SearchIco} alt="search icon" className="search-icon w-[25px] h-[25px]" /></div>
-                            <h3 className="text-xl font-semibold text-gray-700 mb-2">
+                        <div className="text-center py-8 sm:py-12 px-4">
+                            <div className="text-4xl sm:text-6xl mb-3 sm:mb-4 w-full flex items-center justify-center"><img src={SearchIco} alt="search icon" className="search-icon w-6 h-6 sm:w-8 sm:h-8 lg:w-[25px] lg:h-[25px]" /></div>
+                            <h3 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">
                                 Enter a search term
                             </h3>
-                            <p className="text-gray-500 mb-4">
+                            <p className="text-sm sm:text-base text-gray-500 mb-4">
                                 Use the search bar above to find posts by title, content, or tags
                             </p>
                             <Link 
                                 to="/community"
-                                className="px-6 py-2 bg-[#123E23] text-white rounded-lg hover:bg-[#0d2d19] transition-colors"
+                                className="px-4 sm:px-6 py-2 bg-[#123E23] text-white text-sm sm:text-base rounded-lg hover:bg-[#0d2d19] transition-colors"
                             >
                                 Browse All Posts
                             </Link>

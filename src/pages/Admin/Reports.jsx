@@ -211,23 +211,23 @@ export default function Reports() {
     const endIndex = Math.min(currentPage * reportsPerPage, totalReports);
 
     return (
-        <div className="flex flex-row w-full h-screen">
+        <div className="flex flex-col lg:flex-row w-full h-screen">
             <SideMenu />
-            <div className="body_contain flex-1 p-8 bg-[#FCFCF4]">
+            <div className="body_contain flex-1 p-4 lg:p-8 bg-[#FCFCF4] overflow-x-auto">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold text-[#123E23]">Reports ({totalReports})</h1>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 lg:mb-6 gap-4 sm:gap-0">
+                    <h1 className="text-2xl lg:text-3xl font-bold text-[#123E23]">Reports ({totalReports})</h1>
                     <button className="admin-icon p-2 hover:bg-[#FCFCF4] rounded-lg transition-all duration-200">
-                        <img src={logo_ad} className="w-8 h-8" alt="Admin" />
+                        <img src={logo_ad} className="w-6 h-6 lg:w-8 lg:h-8" alt="Admin" />
                     </button>
                 </div>
 
                 {/* Reports Table */}
                 <div className="bg-white rounded-xl shadow-md overflow-hidden border border-[#123E23]/20">
                     {/* Table Controls */}
-                    <div className="flex items-center justify-between p-4 border-b border-[#123E23]/10">
-                        <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 lg:p-4 border-b border-[#123E23]/10 gap-4 sm:gap-0">
+                        <div className="flex flex-wrap items-center gap-2 lg:gap-4 w-full sm:w-auto">
+                            <div className="flex items-center gap-2">
                                 <input 
                                     type="checkbox" 
                                     className="form-checkbox w-4 h-4 rounded border-[#123E23]/20"
@@ -239,21 +239,23 @@ export default function Reports() {
 
                             {/* Bulk Delete Action */}
                             {selectedIds.length > 0 && (
-                                <div className="flex items-center space-x-2">
+                                <div className="flex items-center gap-1 lg:gap-2">
                                     <button
                                         onClick={handleBulkDelete}
                                         disabled={isDeleting}
-                                        className="px-3 py-1.5 text-sm bg-[#FFE9DA] !text-[#7A0E27] flex items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#FFE9DA] !text-[#7A0E27] flex items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isDeleting ? (
                                             <>
-                                                <i className="fa-solid fa-spinner fa-spin mr-2"></i>
-                                                Deleting...
+                                                <i className="fa-solid fa-spinner fa-spin mr-1 lg:mr-2"></i>
+                                                <span className="hidden sm:inline">Deleting...</span>
+                                                <span className="sm:hidden">Del...</span>
                                             </>
                                         ) : (
                                             <>
-                                                <BadgeMinus className="w-4 h-4 self-center inline-block mr-2" color="#7A0E27" />
-                                                ({selectedIds.length})
+                                                <BadgeMinus className="w-3 h-3 lg:w-4 lg:h-4 self-center inline-block mr-1 lg:mr-2" color="#7A0E27" />
+                                                <span className="hidden sm:inline">({selectedIds.length})</span>
+                                                <span className="sm:hidden">{selectedIds.length}</span>
                                             </>
                                         )}
                                     </button>
@@ -263,7 +265,7 @@ export default function Reports() {
                             <select
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
-                                className="px-3 py-1.5 text-sm bg-[#FCFCF4] text-[#123E23] rounded-lg border border-[#123E23]/20"
+                                className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#FCFCF4] text-[#123E23] rounded-lg border border-[#123E23]/20"
                             >
                                 <option value="all">All Status</option>
                                 <option value="pending">Pending</option>
@@ -271,16 +273,16 @@ export default function Reports() {
                                 <option value="rejected">Rejected</option>
                             </select>
                         </div>
-                        <div className="text-sm text-[#123E23]/60">
+                        <div className="text-xs lg:text-sm text-[#123E23]/60 w-full sm:w-auto text-left sm:text-right">
                             {selectedIds.length} selected
                         </div>
                     </div>
 
                     {/* Bulk Action Confirmation Bar */}
                     {selectedIds.length > 0 && (
-                        <div className="bg-red-50 border-b border-red-200 px-4 py-2">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-red-800">
+                        <div className="bg-red-50 border-b border-red-200 px-3 lg:px-4 py-2">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                <span className="text-xs lg:text-sm text-red-800">
                                     <i className="fa-solid fa-info-circle mr-2"></i>
                                     {selectedIds.length} report(s) selected. Choose an action above.
                                 </span>
@@ -289,7 +291,7 @@ export default function Reports() {
                                         setSelectedIds([]);
                                         setSelectAll(false);
                                     }}
-                                    className="text-sm text-red-600 hover:text-red-800 underline"
+                                    className="text-xs lg:text-sm text-red-600 hover:text-red-800 underline"
                                 >
                                     Clear Selection
                                 </button>
@@ -297,8 +299,98 @@ export default function Reports() {
                         </div>
                     )}
 
-                    {/* Table */}
-                    <div className="overflow-x-auto">
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden">
+                        {loading ? (
+                            <div className="p-8 text-center text-[#123E23]">
+                                <div className="flex items-center justify-center space-x-2">
+                                    <i className="fa-solid fa-spinner fa-spin"></i>
+                                    <span>Loading reports...</span>
+                                </div>
+                            </div>
+                        ) : error ? (
+                            <div className="p-8 text-center text-red-600">
+                                <div className="flex flex-col items-center space-y-2">
+                                    <span>{error}</span>
+                                    <button 
+                                        onClick={fetchReports}
+                                        className="px-4 py-2 bg-[#123E23] text-white rounded-lg hover:bg-[#123E23]/80"
+                                    >
+                                        Retry
+                                    </button>
+                                </div>
+                            </div>
+                        ) : reports.length === 0 ? (
+                            <div className="p-8 text-center text-[#123E23]/60">
+                                No reports found
+                            </div>
+                        ) : (
+                            reports.map((report) => (
+                                <div 
+                                    key={report._id} 
+                                    className={`border-b border-[#123E23]/10 p-4 ${
+                                        selectedIds.includes(report._id) ? 'bg-red-50' : ''
+                                    }`}
+                                >
+                                    <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                type="checkbox"
+                                                className="form-checkbox w-4 h-4 rounded border-[#123E23]/20"
+                                                checked={selectedIds.includes(report._id)}
+                                                onChange={() => toggleSelect(report._id)}
+                                            />
+                                            <div>
+                                                <div className="font-medium text-[#123E23] line-clamp-2">{report.reason}</div>
+                                                <div className="text-sm text-[#123E23]/60">#{report._id.slice(-6)}</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
+                                                onClick={() => handleViewReport(report)}
+                                            >
+                                                <SquarePen className="w-4 h-4 text-[#123E23]" />
+                                            </button>
+                                            <button 
+                                                className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
+                                                onClick={() => handleDeleteReport(report._id)}
+                                            >
+                                                <Trash2 className="w-4 h-4 text-[#123E23]" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="space-y-2 mb-3">
+                                        <div className="text-sm">
+                                            <span className="font-medium text-[#123E23]">Type:</span>{' '}
+                                            <span className="capitalize text-[#123E23]/80">{report.content_type}</span>
+                                        </div>
+                                        <div className="text-sm">
+                                            <span className="font-medium text-[#123E23]">Content:</span>{' '}
+                                            <span className="text-[#123E23]/80 line-clamp-2">{getContentTitle(report)}</span>
+                                        </div>
+                                        <div className="text-sm">
+                                            <span className="font-medium text-[#123E23]">Reported by:</span>{' '}
+                                            <span className="text-[#123E23]/80">{report.reported_by?.username || 'Unknown User'}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center justify-between">
+                                        <div className="text-xs text-[#123E23]/60">
+                                            {formatDate(report.created_at)}
+                                        </div>
+                                        <div>
+                                            {getStatusBadge(report.status)}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
+                    </div>
+
+                    {/* Desktop Table - Your Exact Original Design */}
+                    <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead className="bg-[#F0F4E6] text-[#123E23]/70">
                                 <tr>
@@ -417,7 +509,7 @@ export default function Reports() {
                     </div>
 
                     {/* Pagination */}
-                    <div className="flex items-center justify-between px-4 py-3 border-t border-[#123E23]/10">
+                    <div className="flex flex-col sm:flex-row items-center justify-between px-3 lg:px-4 py-3 border-t border-[#123E23]/10 gap-4 sm:gap-0">
                         <button 
                             className="text-sm font-medium text-[#123E23] hover:bg-[#FCFCF4] px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
@@ -438,22 +530,23 @@ export default function Reports() {
                     </div>
                 </div>
 
-                {/* Report Answer Form Modal */}
+                {/* Report Answer Form Modal - Mobile Responsive */}
                 {showReportForm && selectedReport && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-                            <div className="sticky top-0 bg-white border-b border-[#123E23]/10 px-6 py-4 flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-[#123E23]">
-                                    Report Details & Response
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+                        <div className="bg-white rounded-xl shadow-xl w-full max-w-[95vw] sm:max-w-2xl max-h-[95vh] overflow-y-auto">
+                            <div className="sticky top-0 bg-white border-b border-[#123E23]/10 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+                                <h2 className="text-lg sm:text-xl font-bold text-[#123E23]">
+                                    <span className="hidden sm:inline">Report Details & Response</span>
+                                    <span className="sm:hidden">Report Response</span>
                                 </h2>
                                 <button 
                                     onClick={handleCloseReportForm}
                                     className="text-[#123E23] hover:bg-[#F0F4E6] p-2 rounded-lg transition-colors"
                                 >
-                                    <i className="fa-solid fa-times text-lg"></i>
+                                    <i className="fa-solid fa-times text-base sm:text-lg"></i>
                                 </button>
                             </div>
-                            <div className="p-6">
+                            <div className="p-4 sm:p-6">
                                 <ReportAnswerForm 
                                     report={selectedReport}
                                     currentAdmin={{ _id: 'admin_user_id', username: 'Admin' }} // Replace with actual admin data

@@ -462,9 +462,6 @@ input[type="checkbox"] {
         transform: translateY(0) scale(1);
     }
 }
-
-/* Add these styles to enhance the reply width behavior: */
-
 .replies-container {
     position: relative;
     width: 90%;
@@ -590,4 +587,8 @@ body.modal-open {
 
 .modal-exit {
     animation: modalSlideOut 0.2s ease-in forwards;
+}
+.Toastify__toast-container {
+  position: fixed !important;
+  z-index: 9999 !important;
 }

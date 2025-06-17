@@ -246,12 +246,12 @@ export default function Users() {
 
     if (loading) {
         return (
-            <div className="flex flex-row w-full h-screen">
+            <div className="flex flex-col lg:flex-row w-full h-screen">
                 <SideMenu />
-                <div className="body_contain flex-1 p-8 bg-[#FCFCF4] flex items-center justify-center">
+                <div className="body_contain flex-1 p-4 lg:p-8 bg-[#FCFCF4] flex items-center justify-center">
                     <div className="text-center">
-                        <div className="text-2xl text-[#123E23] mb-4">Loading users...</div>
-                        <i className="fa-solid fa-spinner fa-spin text-3xl text-[#123E23]"></i>
+                        <div className="text-xl lg:text-2xl text-[#123E23] mb-4">Loading users...</div>
+                        <i className="fa-solid fa-spinner fa-spin text-2xl lg:text-3xl text-[#123E23]"></i>
                     </div>
                 </div>
             </div>
@@ -260,11 +260,11 @@ export default function Users() {
 
     if (error) {
         return (
-            <div className="flex flex-row w-full h-screen">
+            <div className="flex flex-col lg:flex-row w-full h-screen">
                 <SideMenu />
-                <div className="body_contain flex-1 p-8 bg-[#FCFCF4] flex items-center justify-center">
+                <div className="body_contain flex-1 p-4 lg:p-8 bg-[#FCFCF4] flex items-center justify-center">
                     <div className="text-center">
-                        <div className="text-2xl text-red-500 mb-4">{error}</div>
+                        <div className="text-xl lg:text-2xl text-red-500 mb-4">{error}</div>
                         <button 
                             onClick={fetchUsers}
                             className="px-4 py-2 bg-[#123E23] text-white rounded-lg hover:bg-[#123E23]/80"
@@ -278,23 +278,23 @@ export default function Users() {
     }
 
     return (
-        <div className="flex flex-row w-full h-screen">
+        <div className="flex flex-col lg:flex-row w-full h-screen">
             <SideMenu />
-            <div className="body_contain flex-1 p-8 bg-[#FCFCF4]">
+            <div className="body_contain flex-1 p-4 lg:p-8 bg-[#FCFCF4] overflow-x-auto">
                 {/* Header */}
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold text-[#123E23]">Users ({totalUsers})</h1>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 lg:mb-6 gap-4 sm:gap-0">
+                    <h1 className="text-2xl lg:text-3xl font-bold text-[#123E23]">Users ({totalUsers})</h1>
                     <button className="admin-icon p-2 hover:bg-[#FCFCF4] rounded-lg transition-all duration-200">
-                        <img src={logo_ad} className="w-8 h-8" alt="Admin" />
+                        <img src={logo_ad} className="w-6 h-6 lg:w-8 lg:h-8" alt="Admin" />
                     </button>
                 </div>
 
                 {/* Table Container */}
                 <div className="bg-white rounded-xl shadow-md overflow-hidden border border-[#123E23]/20">
                     {/* Table Controls */}
-                    <div className="flex items-center justify-between p-4 border-b border-[#123E23]/10">
-                        <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 lg:p-4 border-b border-[#123E23]/10 gap-4 sm:gap-0">
+                        <div className="flex flex-wrap items-center gap-2 lg:gap-4 w-full sm:w-auto">
+                            <div className="flex items-center gap-2">
                                 <input 
                                     type="checkbox" 
                                     className="form-checkbox w-4 h-4 rounded border-[#123E23]/20" 
@@ -306,69 +306,76 @@ export default function Users() {
                             
                             {/* Bulk Actions */}
                             {selectedIds.length > 0 && (
-                                <div className="flex items-center space-x-2">
+                                <div className="flex flex-wrap items-center gap-1 lg:gap-2">
                                     <button
                                         onClick={handleBulkDelete}
                                         disabled={isDeleting}
-                                        className="px-3 py-1.5 text-sm bg-[#FFE9DA] !text-[#7A0E27] flex items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#FFE9DA] !text-[#7A0E27] flex items-center rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         {isDeleting ? (
                                             <>
-                                                <i className="fa-solid fa-spinner fa-spin mr-2"></i>
-                                                Deleting...
+                                                <i className="fa-solid fa-spinner fa-spin mr-1 lg:mr-2"></i>
+                                                <span className="hidden sm:inline">Deleting...</span>
+                                                <span className="sm:hidden">Del...</span>
                                             </>
                                         ) : (
                                             <>
-                                                <BadgeMinus className="w-4 h-4 self-center inline-block mr-2 " color="#7A0E27" />({selectedIds.length})
+                                                <BadgeMinus className="w-3 h-3 lg:w-4 lg:h-4 self-center inline-block mr-1 lg:mr-2" color="#7A0E27" />
+                                                <span className="hidden sm:inline">({selectedIds.length})</span>
+                                                <span className="sm:hidden">{selectedIds.length}</span>
                                             </>
                                         )}
                                     </button>
                                     
                                     <button
                                         onClick={() => handleBulkToggleAdmin(true)}
-                                        className="px-3 py-1.5 text-sm bg-[#F2FDE2] !text-[#1B6F14] rounded-lg"
+                                        className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#F2FDE2] !text-[#1B6F14] rounded-lg"
+                                        title="Make Admin"
                                     >
-                                        <ShieldUser className="w-4 h-4 inline-block " color="#1B6F14" />
+                                        <ShieldUser className="w-3 h-3 lg:w-4 lg:h-4 inline-block" color="#1B6F14" />
                                     </button>
                                     
                                     <button
                                         onClick={() => handleBulkToggleAdmin(false)}
-                                        className="px-3 py-1.5 text-sm bg-[#FFFCDA] !text-[#FCFCF4] rounded-lg"
+                                        className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#FFFCDA] !text-[#FCFCF4] rounded-lg"
+                                        title="Remove Admin"
                                     >
-                                        <ShieldX className="w-4 h-4 inline-block " color="#7A670E" />
+                                        <ShieldX className="w-3 h-3 lg:w-4 lg:h-4 inline-block" color="#7A670E" />
                                     </button>
                                     
                                     <button
                                         onClick={() => handleBulkToggleActive(true)}
-                                        className="px-3 py-1.5 text-sm bg-[#D5F4FF] !text-[#309EFF] rounded-lg"
+                                        className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#D5F4FF] !text-[#309EFF] rounded-lg"
+                                        title="Activate Users"
                                     >
-                                        <UserCheck className="w-4 h-4 inline-block" color="#092D7A" />
+                                        <UserCheck className="w-3 h-3 lg:w-4 lg:h-4 inline-block" color="#092D7A" />
                                     </button>
                                     
                                     <button
                                         onClick={() => handleBulkToggleActive(false)}
-                                        className="px-3 py-1.5 text-sm bg-[#FFEFCD] !text-[#FF7D05] rounded-lg "
+                                        className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#FFEFCD] !text-[#FF7D05] rounded-lg"
+                                        title="Deactivate Users"
                                     >
-                                        <UserMinus className="w-4 h-4 inline-block" color="#7A3B00" />
+                                        <UserMinus className="w-3 h-3 lg:w-4 lg:h-4 inline-block" color="#7A3B00" />
                                     </button>
                                 </div>
                             )}
                             
-                            <button className="px-3 py-1.5 text-sm bg-[#DDF4A6] text-[#123E23] rounded-lg hover:bg-[#DDF4A6]/70 transition-colors">
-                                <Filter className="w-3.5 h-3.5 inline-block mr-2" />
-                                Filter
+                            <button className="px-2 lg:px-3 py-1.5 text-xs lg:text-sm bg-[#DDF4A6] text-[#123E23] rounded-lg hover:bg-[#DDF4A6]/70 transition-colors">
+                                <Filter className="w-3 h-3 lg:w-3.5 lg:h-3.5 inline-block mr-1 lg:mr-2" />
+                                <span className="hidden sm:inline">Filter</span>
                             </button>
                         </div>
-                        <div className="text-sm text-[#123E23]/60">
+                        <div className="text-xs lg:text-sm text-[#123E23]/60 w-full sm:w-auto text-left sm:text-right">
                             {selectedIds.length} selected
                         </div>
                     </div>
 
                     {/* Bulk Action Confirmation Bar */}
                     {selectedIds.length > 0 && (
-                        <div className="bg-blue-50 border-b border-blue-200 px-4 py-2">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-blue-800">
+                        <div className="bg-blue-50 border-b border-blue-200 px-3 lg:px-4 py-2">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+                                <span className="text-xs lg:text-sm text-blue-800">
                                     <i className="fa-solid fa-info-circle mr-2"></i>
                                     {selectedIds.length} user(s) selected. Choose an action above.
                                 </span>
@@ -377,7 +384,7 @@ export default function Users() {
                                         setSelectedIds([]);
                                         setSelectAll(false);
                                     }}
-                                    className="text-sm text-blue-600 hover:text-blue-800 underline"
+                                    className="text-xs lg:text-sm text-blue-600 hover:text-blue-800 underline"
                                 >
                                     Clear Selection
                                 </button>
@@ -385,8 +392,91 @@ export default function Users() {
                         </div>
                     )}
 
-                    {/* Table */}
-                    <div className="overflow-x-auto">
+                    {/* Mobile Card View */}
+                    <div className="lg:hidden">
+                        {users.map((user) => (
+                            <div 
+                                key={user._id} 
+                                className={`border-b border-[#123E23]/10 p-4 ${
+                                    selectedIds.includes(user._id) ? 'bg-blue-50' : ''
+                                }`}
+                            >
+                                <div className="flex items-start justify-between mb-3">
+                                    <div className="flex items-center gap-3">
+                                        <input
+                                            type="checkbox"
+                                            className="form-checkbox w-4 h-4 rounded border-[#123E23]/20"
+                                            checked={selectedIds.includes(user._id)}
+                                            onChange={() => toggleSelect(user._id)}
+                                        />
+                                        <div>
+                                            <div className="font-medium text-[#123E23]">{user.username}</div>
+                                            <div className="text-sm text-[#123E23]/60">#{user._id.slice(-6)}</div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button 
+                                            className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
+                                            onClick={() => handleViewUser(user._id)}
+                                        >
+                                            <Eye className="w-4 h-4 text-[#123E23]" />
+                                        </button>
+                                        <button 
+                                            className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
+                                            onClick={() => handleDeleteUser(user._id)}
+                                        >
+                                            <Trash2 className="w-4 h-4 text-[#123E23]" />
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div className="text-sm text-[#123E23] mb-3 break-all">{user.email}</div>
+                                
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-[#123E23]/60">Admin:</span>
+                                            {user.role === 'admin' ? (
+                                                <BadgeCheck 
+                                                    className="w-4 h-4 cursor-pointer" 
+                                                    color="#22C55E"
+                                                    stroke="#22C55E"
+                                                    onClick={() => handleToggleUserStatus(user._id, 'admin')}
+                                                />
+                                            ) : (
+                                                <Badge 
+                                                    className="w-4 h-4 cursor-pointer" 
+                                                    color="#EF4444"
+                                                    onClick={() => handleToggleUserStatus(user._id, 'admin')}
+                                                />
+                                            )}
+                                        </div>
+                                        
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs text-[#123E23]/60">Active:</span>
+                                            {user.is_active ? (
+                                                <BadgeCheck 
+                                                    className="w-4 h-4 cursor-pointer" 
+                                                    color="#22C55E"
+                                                    stroke="#22C55E"
+                                                    onClick={() => handleToggleUserStatus(user._id, 'active')}
+                                                />
+                                            ) : (
+                                                <Badge
+                                                    className="w-4 h-4 cursor-pointer"
+                                                    color="#EF4444"
+                                                    onClick={() => handleToggleUserStatus(user._id, 'active')}
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Desktop Table - Your Exact Original Design */}
+                    <div className="hidden lg:block overflow-x-auto">
                         <table className="w-full text-sm">
                             <thead className="bg-[#F0F4E6] text-[#123E23]/70">
                                 <tr>
@@ -460,7 +550,7 @@ export default function Users() {
                                                     className="w-5 h-5 inline-block cursor-pointer"
                                                     color="#EF4444"
                                                     onClick={() => handleToggleUserStatus(user._id, 'active')}
-                                                ></Badge>
+                                                />
                                             )}
                                         </td>
                                         <td className="px-4 py-3 text-center">
@@ -486,7 +576,7 @@ export default function Users() {
                     </div>
 
                     {/* Pagination */}
-                    <div className="flex items-center justify-between px-4 py-3 border-t border-[#123E23]/10">
+                    <div className="flex flex-col sm:flex-row items-center justify-between px-3 lg:px-4 py-3 border-t border-[#123E23]/10 gap-4 sm:gap-0">
                         <button 
                             className="text-sm font-medium text-[#123E23] hover:bg-[#FCFCF4] px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
                             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}

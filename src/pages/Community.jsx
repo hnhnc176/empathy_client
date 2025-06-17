@@ -114,44 +114,55 @@ export default function Community() {
 
     return (
         <div className="relative min-h-screen">
-            <section className="body-content bg-[#FCFCF4] flex flex-col self-center p-[80px] gap-[80px] justify-evenly">
-                {/* Main content area with posts and sidebar */}
-                <div className="flex flex-row gap-[80px] justify-evenly">
-                    <main className="content flex flex-col gap-[32px] w-full items-center justify-center">
-                        <div className="search-bar-section flex items-center gap-[32px] w-full border-[none]">
-                            <SearchBar />
-                            <div className="search-bar-btn flex gap-[16px] w-fit">
+            <section className="body-content bg-[#FCFCF4] flex flex-col self-center !p-3 sm:p-4 lg:!p-[80px] gap-6 sm:gap-8 lg:gap-[80px] justify-evenly">
+                {/* Main content area with posts and sidebar - Mobile Responsive */}
+                <div className="flex flex-col lg:flex-row gap-6 lg:gap-[80px] justify-evenly">
+                    <main className="content flex flex-col gap-4 sm:gap-6 lg:gap-[32px] w-full items-center justify-center">
+                        {/* Search Bar Section - Mobile Responsive */}
+                        <div className="search-bar-section flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-6 lg:gap-[32px] w-full border-[none]">
+                            <div className="w-full sm:flex-1">
+                                <SearchBar />
+                            </div>
+                            <div className="search-bar-btn flex flex-wrap gap-2 sm:gap-3 lg:gap-[16px] w-full sm:w-fit justify-center sm:justify-start">
                                 <button
-                                    className={`topic-btn ${sortBy === 'new' ? 'bg-[#F0F4E6]' : ''}`}
+                                    className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-lg transition-colors ${sortBy === 'new' ? 'bg-[#F0F4E6]' : 'bg-white hover:bg-gray-50'} border border-gray-200`}
                                     onClick={() => handleSort('new')}
                                 >
-                                    <img src="src/assets/Group.svg" alt="clock" /> New
+                                    <img src="src/assets/Group.svg" alt="clock" className="w-3 h-3 sm:w-4 sm:h-4" /> 
+                                    <span className="hidden sm:inline">New</span>
                                 </button>
                                 <button
-                                    className={`topic-btn ${sortBy === 'top' ? 'bg-[#F0F4E6]' : ''}`}
+                                    className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-lg transition-colors ${sortBy === 'top' ? 'bg-[#F0F4E6]' : 'bg-white hover:bg-gray-50'} border border-gray-200`}
                                     onClick={() => handleSort('top')}
                                 >
-                                    <img src="src/assets/arr-up-right.svg" alt="arrow" /> Top
+                                    <img src="src/assets/arr-up-right.svg" alt="arrow" className="w-3 h-3 sm:w-4 sm:h-4" /> 
+                                    <span className="hidden sm:inline">Top</span>
                                 </button>
                                 <button
-                                    className={`topic-btn ${sortBy === 'hot' ? 'bg-[#F0F4E6]' : ''}`}
+                                    className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-lg transition-colors ${sortBy === 'hot' ? 'bg-[#F0F4E6]' : 'bg-white hover:bg-gray-50'} border border-gray-200`}
                                     onClick={() => handleSort('hot')}
                                 >
-                                    <img src="src/assets/hot.svg" alt="hot" /> Hot
+                                    <img src="src/assets/hot.svg" alt="hot" className="w-3 h-3 sm:w-4 sm:h-4" /> 
+                                    <span className="hidden sm:inline">Hot</span>
                                 </button>
                                 <button className="topic-btn-create">
-                                    <Link to="/createpost" className="create-post-btn w-[45px] h-[25px] rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-[14px] px-[10px] py-[5px] text-center">
+                                    <Link to="/createpost" className="create-post-btn w-8 h-8 sm:w-10 sm:h-8 lg:w-[45px] lg:h-[25px] rounded-full lg:rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-sm sm:text-base lg:text-[14px] px-2 sm:px-3 lg:px-[10px] py-1 sm:py-1.5 lg:py-[5px] text-center font-semibold">
                                         +
                                     </Link>
                                 </button>
                             </div>
                         </div>
 
-                        <div className="post-list flex flex-col gap-[10px] w-full">
+                        {/* Post List - Mobile Responsive */}
+                        <div className="post-list flex flex-col gap-2 sm:gap-3 lg:gap-[10px] w-full">
                             {loading ? (
-                                <div className="text-center p-4">Loading posts...</div>
+                                <div className="text-center p-4 sm:p-6 lg:p-4">
+                                    <div className="text-sm sm:text-base">Loading posts...</div>
+                                </div>
                             ) : error ? (
-                                <div className="text-center text-red-500 p-4">{error}</div>
+                                <div className="text-center text-red-500 p-4 sm:p-6 lg:p-4">
+                                    <div className="text-sm sm:text-base">{error}</div>
+                                </div>
                             ) : posts.length > 0 ? (
                                 posts.map(post => (
                                     <Post
@@ -163,12 +174,28 @@ export default function Community() {
                                     />
                                 ))
                             ) : (
-                                <div className="text-center p-4">No posts found</div>
+                                <div className="text-center p-4 sm:p-6 lg:p-4">
+                                    <div className="text-sm sm:text-base">No posts found</div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Mobile Pagination - Show below posts on mobile */}
+                        <div className="pagination-container w-full lg:hidden">
+                            {posts.length > 0 && (
+                                <div className="pagination-section w-full flex justify-center">
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={Math.max(totalPages, 1)}
+                                        onPageChange={setCurrentPage}
+                                    />
+                                </div>
                             )}
                         </div>
                     </main>
 
-                    <aside className="side-content sticky top-[80px] self-start">
+                    {/* Sidebar - Desktop Only */}
+                    <aside className="side-content hidden lg:block sticky top-[80px] self-start">
                         <SideTopics />
                         <div className="pagination-container w-full">
                             {posts.length > 0 && (
@@ -182,6 +209,11 @@ export default function Community() {
                             )}
                         </div>
                     </aside>
+
+                    {/* Mobile Side Topics - Below main content */}
+                    <div className="mobile-side-content lg:hidden w-full">
+                        <SideTopics />
+                    </div>
                 </div>
             </section>
 
