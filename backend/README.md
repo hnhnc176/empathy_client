@@ -83,9 +83,22 @@ PORT=3019
 JWT_SECRET=your_jwt_secret_key
 ```
 4. Start the server:
+
+**Development mode (with auto-restart):**
 ```
-node index.js
+npm run dev
 ```
+
+**Production mode:**
+```
+npm start
+```
+
+**Or directly with Node.js:**
+```
+node index.js
+```
+
 The server will start on http://localhost:3019 (or your specified PORT).
 
 ## 🔧 Dependencies
