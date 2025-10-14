@@ -1,12 +1,19 @@
 const express = require('express');
 const serverless = require('serverless-http');
 const cors = require('cors');
+const helmet = require('helmet');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const path = require('path');
 
 // Load environment variables
 dotenv.config();
+
+// Register models first (important for serverless)
+require('../../backend/server/src/models/User');
+require('../../backend/server/src/models/Post');
+require('../../backend/server/src/models/Comment');
+require('../../backend/server/src/models/Report');
+require('../../backend/server/src/models/Rating');
 
 // Import routes
 const postRoutes = require('../../backend/server/src/routes/postRoute');
@@ -22,21 +29,69 @@ const userSettingRoutes = require('../../backend/server/src/routes/userSettingRo
 
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: false, // Disable for Netlify
+  crossOriginEmbedderPolicy: false
 }));
+
+// CORS configuration
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173', 
+    'https://empathy-mental-health.netlify.app',
+    process.env.FRONTEND_URL
+  ].filter(Boolean),
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+}));
+
+// Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+// MongoDB connection with connection reuse for serverless
+let cachedConnection = null;
+
+async function connectToDatabase() {
+  if (cachedConnection) {
+    return cachedConnection;
+  }
+
+  try {
+    const connection = await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      serverSelectionTimeoutMS: 5000,
+      maxPoolSize: 10,
+    });
+    
+    cachedConnection = connection;
+    console.log('MongoDB connected for serverless function');
+    return connection;
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error;
+  }
+}
+
+// Middleware to ensure database connection
+app.use(async (req, res, next) => {
+  try {
+    await connectToDatabase();
+    next();
+  } catch (error) {
+    console.error('Database connection failed:', error);
+    res.status(500).json({ 
+      message: 'Database connection failed',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
+  }
+});
 
 // API Routes
 app.use('/api/posts', postRoutes);
