@@ -54,18 +54,18 @@ const Report = ({ contentId, contentType, currentUser, onClose }) => {
   };
 
   return (
-    <div className="max-w-xl mx-auto bg-green-100 p-6 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-green-900 mb-4">Submit Report</h2>
+    <div className="max-w-xl mx-auto bg-green-100 p-4 sm:p-6 rounded-lg shadow-md">
+      <h2 className="text-xl sm:text-2xl font-bold text-green-900 mb-4">Submit Report</h2>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block font-semibold text-green-900 mb-1">
+          <label className="block font-semibold text-green-900 mb-1 text-sm sm:text-base">
             Reason*
           </label>
           <select
             value={form.reason}
             onChange={(e) => setForm({ ...form, reason: e.target.value })}
-            className="w-full border border-green-800 rounded px-3 py-2"
+            className="w-full border border-green-800 rounded px-3 py-2 text-sm sm:text-base"
             required
           >
             <option value="">Select a reason</option>
@@ -76,30 +76,30 @@ const Report = ({ contentId, contentType, currentUser, onClose }) => {
         </div>
 
         <div className="mb-4">
-          <label className="block font-semibold text-green-900 mb-1">
+          <label className="block font-semibold text-green-900 mb-1 text-sm sm:text-base">
             Details*
           </label>
           <textarea
             value={form.details}
             onChange={(e) => setForm({ ...form, details: e.target.value })}
-            className="w-full border border-green-800 rounded px-3 py-2 min-h-[100px]"
+            className="w-full border border-green-800 rounded px-3 py-2 min-h-[100px] text-sm sm:text-base"
             placeholder="Please provide additional details about your report..."
             required
           />
         </div>
 
-        <div className="flex justify-end space-x-2">
+        <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-2 sm:space-x-0">
           <button
             type="button"
             onClick={onClose}
-            className="bg-gray-300 hover:bg-gray-400 text-black rounded-full px-4 py-2"
+            className="bg-gray-300 hover:bg-gray-400 text-black rounded-full px-4 py-2 text-sm sm:text-base order-2 sm:order-1"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="bg-green-900 hover:bg-green-800 text-white rounded-full px-4 py-2 disabled:opacity-50"
+            className="bg-green-900 hover:bg-green-800 text-white rounded-full px-4 py-2 disabled:opacity-50 text-sm sm:text-base order-1 sm:order-2"
           >
             {isSubmitting ? 'Submitting...' : 'Submit Report'}
           </button>

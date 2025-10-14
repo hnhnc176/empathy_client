@@ -1,7 +1,7 @@
 import React from 'react';
-import axiosInstance from '../config/axios';
-import { showSuccessToast, showErrorToast } from '../utils/toast';
-import { notificationService } from '../utils/notificationService';
+import axiosInstance from '../../config/axios';
+import { showSuccessToast, showErrorToast } from '../../utils/toast';
+import { notificationService } from '../../utils/notificationService';
 
 export default function ReportModal({
     isOpen,
@@ -13,7 +13,8 @@ export default function ReportModal({
     reportDetails,
     setReportDetails,
     isReportLoading,
-    setIsReportLoading
+    setIsReportLoading,
+    onReportSuccess // Add this prop
 }) {
     const handleReport = async () => {
         if (!reportReason || !reportDetails) {
@@ -57,6 +58,11 @@ export default function ReportModal({
             // Check for successful response based on your backend format
             if (response.data?.status === 'success') {
                 showSuccessToast('Report submitted successfully. Thank you for helping keep our community safe.');
+                
+                // Call onReportSuccess callback if provided
+                if (onReportSuccess) {
+                    onReportSuccess(post._id);
+                }
                 
                 // Send notification to POST OWNER (not reporter)
                 try {
@@ -128,14 +134,14 @@ export default function ReportModal({
 
     return (
         <div 
-            className="fixed inset-0 bg-black flex items-center justify-center p-4 z-[9999]"
+            className="fixed inset-0 flex items-center justify-center p-2 sm:p-4 z-[9999]"
             onClick={(e) => {
                 e.stopPropagation();
                 onClose();
             }}
         >
             <div 
-                className="bg-white rounded-xl shadow-2xl w-full max-w-[500px] max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-out"
+                className="bg-white rounded-xl shadow-2xl w-full max-w-[500px] max-h-[95vh] sm:max-h-[90vh] overflow-y-auto transform transition-all duration-300 ease-out mx-2 sm:mx-0 border-2 border-gray-200"
                 onClick={(e) => e.stopPropagation()}
                 style={{ 
                     animation: 'modalSlideIn 0.3s ease-out'
@@ -145,25 +151,25 @@ export default function ReportModal({
                     // Show ownership message
                     <>
                         {/* Header */}
-                        <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 px-6 py-4 border-b border-gray-200 rounded-t-xl">
-                            <h3 className="text-xl font-bold text-[#123E23] flex items-center gap-2">
-                                <span className="text-2xl">🚫</span> Cannot Report Own Post
+                        <div className="bg-gradient-to-r from-yellow-50 to-yellow-100 px-4 sm:px-6 py-4 border-b border-gray-200 rounded-t-xl">
+                            <h3 className="text-lg sm:text-xl font-bold text-[#123E23] flex items-center gap-2">
+                                <span className="text-xl sm:text-2xl">🚫</span> Cannot Report Own Post
                             </h3>
                         </div>
 
                         {/* Content */}
-                        <div className="p-6">
-                            <p className="text-gray-700 leading-relaxed text-center">
+                        <div className="p-4 sm:p-6">
+                            <p className="text-gray-700 leading-relaxed text-center text-sm sm:text-base">
                                 You cannot report your own post. If you want to remove this post, you can delete it instead.
                             </p>
                         </div>
 
                         {/* Footer */}
-                        <div className="px-6 py-4 bg-gray-50 rounded-b-xl border-t border-gray-200">
+                        <div className="px-4 sm:px-6 py-4 bg-gray-50 rounded-b-xl border-t border-gray-200">
                             <div className="flex justify-end gap-3">
                                 <button
                                     onClick={onClose}
-                                    className="px-6 py-2 text-gray-600 hover:bg-gray-200 rounded-xl transition-all duration-200 font-medium"
+                                    className="px-4 sm:px-6 py-2 text-gray-600 hover:bg-gray-200 rounded-xl transition-all duration-200 font-medium text-sm sm:text-base"
                                 >
                                     Close
                                 </button>
@@ -174,14 +180,14 @@ export default function ReportModal({
                     // Show report form
                     <>
                         {/* Header */}
-                        <div className="bg-[#F0F4E6] px-6 py-4 border-b border-gray-200 rounded-t-xl">
-                            <h3 className="text-xl font-bold text-[#123E23] flex items-center gap-2">
-                                <span className="text-2xl"></span> Report Post
+                        <div className="bg-[#F0F4E6] px-4 sm:px-6 py-4 border-b border-gray-200 rounded-t-xl">
+                            <h3 className="text-lg sm:text-xl font-bold text-[#123E23] flex items-center gap-2">
+                                <span className="text-xl sm:text-2xl"></span> Report Post
                             </h3>
                         </div>
 
                         {/* Content */}
-                        <div className="p-6 space-y-4">
+                        <div className="p-4 sm:p-6 space-y-4">
                             
 
                             <div>
@@ -191,7 +197,7 @@ export default function ReportModal({
                                 <select
                                     value={reportReason}
                                     onChange={(e) => setReportReason(e.target.value)}
-                                    className="w-full p-3 border-2 border-gray-300 rounded-xl focus:border-[#123E23] focus:ring-2 focus:ring-[#123E23]/20 transition-all duration-200 text-gray-700 "
+                                    className="w-full p-2 sm:p-3 border-2 border-gray-300 rounded-xl focus:border-[#123E23] focus:ring-2 focus:ring-[#123E23]/20 transition-all duration-200 text-gray-700 text-sm sm:text-base"
                                     required
                                 >
                                     <option value="">Select a reason</option>
@@ -214,7 +220,7 @@ export default function ReportModal({
                                     value={reportDetails}
                                     onChange={(e) => setReportDetails(e.target.value)}
                                     placeholder="Please provide additional details about why you're reporting this post. Be specific and factual."
-                                    className="w-full p-3 border-2 border-gray-300 rounded-xl h-[120px] focus:border-[#123E23] focus:ring-2 focus:ring-[#123E23]/20 transition-all duration-200 resize-none text-gray-700"
+                                    className="w-full p-2 sm:p-3 border-2 border-gray-300 rounded-xl h-[100px] sm:h-[120px] focus:border-[#123E23] focus:ring-2 focus:ring-[#123E23]/20 transition-all duration-200 resize-none text-gray-700 text-sm sm:text-base"
                                     required
                                     minLength={1}
                                     maxLength={500}
@@ -233,24 +239,25 @@ export default function ReportModal({
                         </div>
 
                         {/* Footer */}
-                        <div className="px-6 py-4 bg-[#F0F4E6] rounded-b-xl border-t border-gray-200">
-                            <div className="flex justify-end gap-3">
+                        <div className="px-4 sm:px-6 py-4 bg-[#F0F4E6] rounded-b-xl border-t border-gray-200">
+                            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
                                 <button
                                     onClick={onClose}
-                                    className="px-6 py-2 text-gray-600 hover:bg-gray-200 rounded-xl transition-all duration-200 font-medium"
+                                    className="px-4 sm:px-6 py-2 text-gray-600 hover:underline-offset-1 rounded-xl transition-all duration-200 font-medium text-sm sm:text-base order-2 sm:order-1"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     onClick={handleReport}
                                     disabled={!reportReason || !reportDetails || isReportLoading}
-                                    className={`px-6 py-2 bg-[#123E23] !text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl
+                                    className={`px-4 sm:px-6 py-2 bg-[#123E23] !text-white rounded-xl transition-all duration-200 font-medium shadow-lg hover:shadow-xl text-sm sm:text-base order-1 sm:order-2
                                         ${(!reportReason || !reportDetails || isReportLoading) ? ' cursor-not-allowed' : 'hover:scale-105'}`}
                                 >
                                     {isReportLoading ? (
-                                        <span className="flex items-center gap-2">
+                                        <span className="flex items-center justify-center gap-2">
                                             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                                            Submitting...
+                                            <span className="hidden sm:inline">Submitting...</span>
+                                            <span className="sm:hidden">...</span>
                                         </span>
                                     ) : (
                                         'Submit Report'

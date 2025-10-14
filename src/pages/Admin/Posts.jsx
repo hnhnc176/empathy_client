@@ -6,6 +6,7 @@ import { Eye, Trash2, Filter, BadgeMinus } from "lucide-react";
 import axiosInstance from "../../config/axios";
 import { useSelector } from 'react-redux';
 import { showSuccessToast, showErrorToast, showInfoToast } from '../../utils/toast.jsx';
+import PostDetailModal from '../../components/Admin/PostDetailModal';
 
 export default function Posts() {
     const [posts, setPosts] = useState([]);
@@ -16,6 +17,8 @@ export default function Posts() {
     const [totalPosts, setTotalPosts] = useState(0);
     const [selectAll, setSelectAll] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [selectedPost, setSelectedPost] = useState(null);
+    const [showPostModal, setShowPostModal] = useState(false);
     const postsPerPage = 10;
 
     useEffect(() => {
@@ -135,9 +138,13 @@ export default function Posts() {
     };
 
     const handleViewPost = (postId) => {
-        showInfoToast('View post details feature coming soon');
-        // Navigate to post detail page
-        // navigate(`/admin/posts/${postId}`);
+        const post = posts.find(p => p._id === postId);
+        if (post) {
+            setSelectedPost(post);
+            setShowPostModal(true);
+        } else {
+            showErrorToast('Post not found');
+        }
     };
 
     const formatDate = (dateString) => {
@@ -486,6 +493,16 @@ export default function Posts() {
                         </button>
                     </div>
                 </div>
+                
+                {/* Post Detail Modal */}
+                <PostDetailModal 
+                    post={selectedPost}
+                    isOpen={showPostModal}
+                    onClose={() => {
+                        setShowPostModal(false);
+                        setSelectedPost(null);
+                    }}
+                />
             </div>
         </div>
     );

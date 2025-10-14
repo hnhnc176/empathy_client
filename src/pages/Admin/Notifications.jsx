@@ -5,6 +5,8 @@ import report_ico from '../../assets/report-ico.svg';
 import { Eye, Trash2, Filter, BadgeMinus } from "lucide-react";
 import axiosInstance from '../../config/axios';
 import { showSuccessToast, showErrorToast, showInfoToast } from '../../utils/toast.jsx';
+import NotificationDetailModal from '../../components/Admin/NotificationDetailModal';
+import UserMultiSelect from '../../components/Admin/UserMultiSelect';
 
 export default function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -15,10 +17,12 @@ export default function Notifications() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalNotifications, setTotalNotifications] = useState(0);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [selectedNotification, setSelectedNotification] = useState(null);
+    const [showNotificationModal, setShowNotificationModal] = useState(false);
+    const [selectedUsers, setSelectedUsers] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
         content: '',
-        userIds: '',
         type: 'system'
     });
     const notificationsPerPage = 10;
@@ -71,36 +75,25 @@ export default function Notifications() {
             return;
         }
 
+        if (selectedUsers.length === 0) {
+            showErrorToast('Please select at least one user to notify');
+            return;
+        }
+
         try {
             setLoading(true);
-            
-            const userIdsArray = formData.userIds.trim() 
-                ? formData.userIds.split(',').map(id => id.trim()).filter(id => id.length > 0)
-                : [];
 
-            if (userIdsArray.length === 0) {
-                showErrorToast('Please specify valid user IDs');
-                return;
-            }
+            showInfoToast(`Sending notifications to ${selectedUsers.length} users...`);
 
-            // Validate user IDs format (MongoDB ObjectId format)
-            const mongoIdRegex = /^[0-9a-fA-F]{24}$/;
-            const invalidIds = userIdsArray.filter(id => !mongoIdRegex.test(id));
-            
-            if (invalidIds.length > 0) {
-                showErrorToast(`Invalid user ID format: ${invalidIds.join(', ')}. Please use valid MongoDB ObjectIds.`);
-                return;
-            }
-
-            // Create notifications for each user
-            const promises = userIdsArray.map(userId => 
+            // Create notifications for selected users
+            const promises = selectedUsers.map(user => 
                 axiosInstance.post('/api/notifications/create', {
-                    user_id: userId,
+                    user_id: user._id,
                     type: formData.type,
                     content: `${formData.title}: ${formData.content}`
                 }).catch(error => {
-                    console.error(`Failed to create notification for user ${userId}:`, error);
-                    return { error: true, userId, message: error.response?.data?.message };
+                    console.error(`Failed to create notification for user ${user._id}:`, error);
+                    return { error: true, userId: user._id, username: user.username, message: error.response?.data?.message };
                 })
             );
 
@@ -111,13 +104,15 @@ export default function Notifications() {
             const successes = results.filter(result => !result.error);
 
             if (errors.length > 0) {
-                showErrorToast(`Failed to send ${errors.length} notification(s). Check console for details.`);
+                const failedUsernames = errors.map(error => error.username).join(', ');
+                showErrorToast(`Failed to send to ${errors.length} user(s): ${failedUsernames}`);
                 console.error('Failed notifications:', errors);
             }
             
             if (successes.length > 0) {
                 showSuccessToast(`${successes.length} notification(s) sent successfully`);
-                setFormData({ title: '', content: '', userIds: '', type: 'system' });
+                setFormData({ title: '', content: '', type: 'system' });
+                setSelectedUsers([]);
                 fetchNotifications(); // Refresh the list
             }
             
@@ -225,7 +220,8 @@ export default function Notifications() {
             // Show final results
             if (totalSuccesses > 0) {
                 showSuccessToast(`Notifications sent to ${totalSuccesses} users successfully`);
-                setFormData({ title: '', content: '', userIds: '', type: 'system' });
+                setFormData({ title: '', content: '', type: 'system' });
+                setSelectedUsers([]);
                 fetchNotifications();
             }
             
@@ -242,7 +238,8 @@ export default function Notifications() {
     };
 
     const handleReset = () => {
-        setFormData({ title: '', content: '', userIds: '', type: 'system' });
+        setFormData({ title: '', content: '', type: 'system' });
+        setSelectedUsers([]);
     };
 
     const toggleSelect = (id) => {
@@ -330,7 +327,8 @@ export default function Notifications() {
     };
 
     const handleViewNotification = (notification) => {
-        showInfoToast('View notification details feature coming soon');
+        setSelectedNotification(notification);
+        setShowNotificationModal(true);
     };
 
     const formatDate = (dateString) => {
@@ -415,14 +413,16 @@ export default function Notifications() {
                                 className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-3 lg:mb-4 h-16 lg:h-20 text-sm lg:text-base"
                                 required
                             />
-                            <input
-                                type="text"
-                                name="userIds"
-                                value={formData.userIds}
-                                onChange={handleInputChange}
-                                placeholder="Send To Specific Users (User IDs separated by commas)"
-                                className="border border-[#123E23] bg-white rounded-lg p-2 w-full mb-3 lg:mb-4 text-sm lg:text-base"
-                            />
+                            <div className="mb-3 lg:mb-4">
+                                <label className="block text-sm font-medium text-[#123E23] mb-2">
+                                    Select Users to Notify
+                                </label>
+                                <UserMultiSelect
+                                    selectedUsers={selectedUsers}
+                                    onSelectionChange={setSelectedUsers}
+                                    placeholder="Choose users to send notification to..."
+                                />
+                            </div>
                             <select
                                 name="type"
                                 value={formData.type}
@@ -439,9 +439,9 @@ export default function Notifications() {
                                 <button 
                                     type="submit" 
                                     className="px-3 lg:px-4 py-2 bg-[#123E23] !text-white rounded-lg w-full text-sm lg:text-base"
-                                    disabled={loading || !formData.userIds.trim()}
+                                    disabled={loading || selectedUsers.length === 0}
                                 >
-                                    {loading ? 'Sending...' : 'Send to Specific Users'}
+                                    {loading ? 'Sending...' : `Send to Selected Users (${selectedUsers.length})`}
                                 </button>
                                 <button 
                                     type="button" 
@@ -769,6 +769,16 @@ export default function Notifications() {
                         </button>
                     </div>
                 </div>
+                
+                {/* Notification Detail Modal */}
+                <NotificationDetailModal 
+                    notification={selectedNotification}
+                    isOpen={showNotificationModal}
+                    onClose={() => {
+                        setShowNotificationModal(false);
+                        setSelectedNotification(null);
+                    }}
+                />
             </div>
         </div>
     );

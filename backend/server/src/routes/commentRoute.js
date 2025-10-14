@@ -20,6 +20,9 @@ router.get('/replies/:commentId', commentController.getReplies);
 // Get comments by post ID
 router.get('/post/:postId', commentController.getAllByPostId);
 
+// Get user comment count
+router.get('/user/:userId/count', commentController.getUserCommentCount);
+
 // Get a specific comment by ID
 router.get('/:id', commentController.getById);
 

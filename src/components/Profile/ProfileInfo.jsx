@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ProfilePic from './ProfilePic';
 import { Link } from 'react-router-dom';
-import axiosInstance from '../config/axios';
+import axiosInstance from '../../config/axios';
 
 export default function ProfileInfo() {
     const { user, isAuthenticated } = useSelector((state) => state.auth);

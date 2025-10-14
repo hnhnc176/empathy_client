@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import { showSuccessToast, showErrorToast, showInfoToast } from '../utils/toast.jsx';
-import Search from '../components/SearchBar';
-import Pic from '../components/ProfilePic';
+import Search from '../components/Layout/SearchBar';
+import Pic from '../components/Profile/ProfilePic';
 import axiosInstance from '../config/axios';
 
 export default function Setting() {

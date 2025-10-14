@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom';
-import Post from '../components/Post';
-import SearchBar from '../components/SearchBar';
+import Post from '../components/Posts/Post';
+import SearchBar from '../components/Layout/SearchBar';
 import axiosInstance from '../config/axios';
 import { showErrorToast } from '../utils/toast';
 
@@ -26,7 +26,7 @@ export default function Search() {
         const getCurrentUser = () => {
             try {
                 // Get user info from localStorage (most reliable method)
-                const token = localStorage.getItem('token');
+                const token = localStorage.getItem('sessionToken');
                 const userId = localStorage.getItem('userId') || localStorage.getItem('user_id');
                 const username = localStorage.getItem('username') || localStorage.getItem('user_username');
                 const email = localStorage.getItem('email') || localStorage.getItem('user_email');
@@ -102,8 +102,8 @@ export default function Search() {
         switch (type) {
             case 'new':
                 return sortedPosts.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-            case 'top':
-                return sortedPosts.sort((a, b) => (b.view_count || 0) - (a.view_count || 0));
+            case 'old':
+                return sortedPosts.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
             case 'hot':
                 // Hot could be based on recent likes + views + comments
                 return sortedPosts.sort((a, b) => {
@@ -142,40 +142,55 @@ export default function Search() {
                     <div className="search-bar-btn flex flex-wrap gap-2 sm:gap-3 lg:gap-[16px] w-full sm:w-fit justify-center sm:justify-start">
                         <button 
                             onClick={() => handleSortChange('new')}
-                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-full transition-colors ${
+                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 text-xs sm:text-sm lg:text-base rounded-lg transition-all duration-200 font-medium ${
                                 sortType === 'new' 
-                                    ? 'bg-[#123E23] text-white' 
-                                    : 'bg-white hover:bg-[#F0F4E6]'
-                            }`}
+                                    ? 'bg-[#123E23] text-white shadow-md' 
+                                    : 'bg-white text-[#123E23] hover:bg-[#F0F4E6] hover:shadow-sm'
+                            } border border-[#123E23]`}
                         >
-                            <img src={GroupIcon} alt="clock" className="w-3 h-3 sm:w-4 sm:h-4" /> 
-                            <span>New</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4">
+                                <path d="M12 6V12L16 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                            </svg>
+                            <span>Mới nhất</span>
                         </button>
                         <button 
-                            onClick={() => handleSortChange('top')}
-                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-full transition-colors ${
-                                sortType === 'top' 
-                                    ? 'bg-[#123E23] text-white' 
-                                    : 'bg-white hover:bg-[#F0F4E6]'
-                            }`}
+                            onClick={() => handleSortChange('old')}
+                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 text-xs sm:text-sm lg:text-base rounded-lg transition-all duration-200 font-medium ${
+                                sortType === 'old' 
+                                    ? 'bg-[#123E23] text-white shadow-md' 
+                                    : 'bg-white text-[#123E23] hover:bg-[#F0F4E6] hover:shadow-sm'
+                            } border border-[#123E23]`}
                         >
-                            <img src={ArrowIcon} alt="arrow" className="w-3 h-3 sm:w-4 sm:h-4" /> 
-                            <span>Top</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4">
+                                <path d="M3 3L21 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                <path d="M9 9V15L13 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                            </svg>
+                            <span>Cũ nhất</span>
                         </button>
                         <button 
                             onClick={() => handleSortChange('hot')}
-                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-2 sm:px-3 lg:px-4 py-1.5 sm:py-2 text-xs sm:text-sm lg:text-base rounded-full transition-colors ${
+                            className={`topic-btn flex items-center gap-1 sm:gap-2 px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 text-xs sm:text-sm lg:text-base rounded-lg transition-all duration-200 font-medium ${
                                 sortType === 'hot' 
-                                    ? 'bg-[#123E23] text-white' 
-                                    : 'bg-white hover:bg-[#F0F4E6]'
-                            }`}
+                                    ? 'bg-[#123E23] text-white shadow-md' 
+                                    : 'bg-white text-[#123E23] hover:bg-[#F0F4E6] hover:shadow-sm'
+                            } border border-[#123E23]`}
                         >
-                            <img src={HotIcon} alt="hot" className="w-3 h-3 sm:w-4 sm:h-4" /> 
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 sm:w-4 sm:h-4">
+                                <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12C11 10 9 9.5 9 7.5C9 6.5 9.5 5.5 10.5 5.5S12 6.5 12 7.5V8.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
+                            </svg>
                             <span>Hot</span>
                         </button>
                         <button className="topic-btn-create">
-                            <Link to="/createpost" className="create-post-btn w-8 h-6 sm:w-10 sm:h-7 lg:w-[45px] lg:h-[25px] rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-xs sm:text-sm lg:text-[14px] px-2 py-1 sm:px-3 sm:py-1.5 lg:px-[10px] lg:py-[5px] text-center hover:bg-[#123E23]/90 transition-colors">
-                                +
+                            <Link to="/createpost" className="create-post-btn w-auto h-8 sm:h-10 lg:h-[40px] rounded-lg bg-[#123E23] flex items-center justify-center cursor-pointer !text-white text-sm sm:text-base lg:text-[14px] px-3 sm:px-4 lg:px-5 py-2 sm:py-2.5 text-center font-medium hover:bg-[#0f2e1a] transition-all duration-200 shadow-sm">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 mr-1">
+                                    <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                                <span className="hidden sm:inline">Tạo bài viết</span>
+                                <span className="sm:hidden">Tạo</span>
                             </Link>
                         </button>
                     </div>
@@ -198,8 +213,11 @@ export default function Search() {
                             )}
                         </h2>
                         <div className="flex items-center gap-1 sm:gap-2">
-                            <span className="text-xs sm:text-sm text-gray-600">Sort:</span>
-                            <span className="text-xs sm:text-sm font-medium text-[#123E23] capitalize">{sortType}</span>
+                            <span className="text-xs sm:text-sm text-gray-600">Sắp xếp:</span>
+                            <span className="text-xs sm:text-sm font-medium text-[#123E23]">
+                                {sortType === 'new' ? 'Mới nhất' : 
+                                 sortType === 'old' ? 'Cũ nhất' : 'Hot'}
+                            </span>
                         </div>
                     </div>
 

@@ -1,6 +1,9 @@
 {
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
+    "cloudinary": "^2.7.0",
+    "mongodb": "^6.20.0",
+    "multer": "^2.0.2",
     "react-redux": "^9.2.0"
   }
 }

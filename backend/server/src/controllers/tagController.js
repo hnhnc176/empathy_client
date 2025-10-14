@@ -1,4 +1,5 @@
 const Tag = require('../models/Tag');
+const Post = require('../models/Post');
 const mongoose = require('mongoose');
 
 const tagController = {
@@ -60,6 +61,50 @@ const tagController = {
             res.status(500).json({
                 status: 'error',
                 message: error.message || 'Error fetching tags'
+            });
+        }
+    },
+
+    // New method to get popular tags from posts
+    getPopular: async (req, res) => {
+        try {
+            const limit = parseInt(req.query.limit) || 10;
+            
+            // Get all posts with their tags
+            const posts = await Post.find({}, 'tags').lean();
+            
+            // Count tag occurrences
+            const tagCounts = {};
+            posts.forEach(post => {
+                if (post.tags && Array.isArray(post.tags)) {
+                    post.tags.forEach(tag => {
+                        if (tag && tag.trim()) {
+                            const cleanTag = tag.trim().toLowerCase();
+                            tagCounts[cleanTag] = (tagCounts[cleanTag] || 0) + 1;
+                        }
+                    });
+                }
+            });
+
+            // Sort tags by count and format response
+            const popularTags = Object.entries(tagCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, limit)
+                .map(([name, count], index) => ({
+                    name,
+                    count,
+                    rank: index + 1
+                }));
+
+            res.status(200).json({
+                status: 'success',
+                data: popularTags
+            });
+        } catch (error) {
+            console.error('Error fetching popular tags:', error);
+            res.status(500).json({
+                status: 'error',
+                message: error.message || 'Error fetching popular tags'
             });
         }
     },

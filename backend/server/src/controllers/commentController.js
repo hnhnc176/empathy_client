@@ -214,6 +214,33 @@ const commentController = {
         }
     },
 
+    getUserCommentCount: async (req, res) => {
+        try {
+            if (!mongoose.Types.ObjectId.isValid(req.params.userId)) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'Invalid user ID format'
+                });
+            }
+
+            const count = await Comment.countDocuments({
+                user_id: req.params.userId,
+                is_deleted: false
+            });
+
+            res.status(200).json({
+                status: 'success',
+                data: { count }
+            });
+        } catch (error) {
+            console.error('Error getting user comment count:', error);
+            res.status(500).json({
+                status: 'error',
+                message: 'Error getting user comment count: ' + error.message
+            });
+        }
+    },
+
     delete: async (req, res) => {
         try {
             const comment = await Comment.findByIdAndUpdate(

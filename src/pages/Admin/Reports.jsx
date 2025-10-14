@@ -5,6 +5,7 @@ import { Eye, Trash2, Filter, SquarePen, BadgeMinus } from "lucide-react";
 import axiosInstance from '../../config/axios';
 import { showSuccessToast, showErrorToast, showInfoToast } from '../../utils/toast.jsx';
 import ReportAnswerForm from "../../components/Admin/ReportAdmin.jsx";
+import ReportDetailModal from '../../components/Admin/ReportDetailModal';
 
 export default function Reports() {
     const [reports, setReports] = useState([]);
@@ -18,6 +19,7 @@ export default function Reports() {
     const [selectedReport, setSelectedReport] = useState(null);
     const [showReportForm, setShowReportForm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showReportDetailModal, setShowReportDetailModal] = useState(false);
     const reportsPerPage = 10;
 
     useEffect(() => {
@@ -91,6 +93,11 @@ export default function Reports() {
     const handleViewReport = (report) => {
         setSelectedReport(report);
         setShowReportForm(true);
+    };
+
+    const handleViewReportDetail = (report) => {
+        setSelectedReport(report);
+        setShowReportDetailModal(true);
     };
 
     const handleCloseReportForm = () => {
@@ -348,7 +355,15 @@ export default function Reports() {
                                         <div className="flex items-center gap-2">
                                             <button 
                                                 className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
+                                                onClick={() => handleViewReportDetail(report)}
+                                                title="View Report Details"
+                                            >
+                                                <Eye className="w-4 h-4 text-[#123E23]" />
+                                            </button>
+                                            <button 
+                                                className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors"
                                                 onClick={() => handleViewReport(report)}
+                                                title="Edit Report"
                                             >
                                                 <SquarePen className="w-4 h-4 text-[#123E23]" />
                                             </button>
@@ -486,6 +501,13 @@ export default function Reports() {
                                             <td className="px-4 py-3 text-center">
                                                 <div className="flex items-center justify-center space-x-3">
                                                     <button 
+                                                        onClick={() => handleViewReportDetail(report)}
+                                                        className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors cursor-pointer"
+                                                        title="View report details"
+                                                    >
+                                                        <Eye className="w-5 h-5 text-[#123E23]" />
+                                                    </button>
+                                                    <button 
                                                         onClick={() => handleViewReport(report)}
                                                         className="p-1 hover:bg-[#FCFCF4] rounded-lg transition-colors cursor-pointer"
                                                         title="View and respond to report"
@@ -532,8 +554,8 @@ export default function Reports() {
 
                 {/* Report Answer Form Modal - Mobile Responsive */}
                 {showReportForm && selectedReport && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
-                        <div className="bg-white rounded-xl shadow-xl w-full max-w-[95vw] sm:max-w-2xl max-h-[95vh] overflow-y-auto">
+                    <div className="fixed inset-0 flex items-center justify-center z-50 p-2 sm:p-4">
+                        <div className="bg-white rounded-xl shadow-xl w-full max-w-[95vw] sm:max-w-2xl max-h-[95vh] overflow-y-auto border-2 border-gray-300">
                             <div className="sticky top-0 bg-white border-b border-[#123E23]/10 px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
                                 <h2 className="text-lg sm:text-xl font-bold text-[#123E23]">
                                     <span className="hidden sm:inline">Report Details & Response</span>
@@ -557,6 +579,16 @@ export default function Reports() {
                         </div>
                     </div>
                 )}
+
+                {/* Report Detail Modal */}
+                <ReportDetailModal 
+                    report={selectedReport}
+                    isOpen={showReportDetailModal}
+                    onClose={() => {
+                        setShowReportDetailModal(false);
+                        setSelectedReport(null);
+                    }}
+                />
             </div>
         </div>
     );

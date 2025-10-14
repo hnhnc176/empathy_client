@@ -1,10 +1,10 @@
+const mongoose = require('mongoose');
+const cloudinary = require('../config/cloudinary');
 const Post = require('../models/Post');
 const Like = require('../models/Like');
 const Comment = require('../models/Comment');
 const Save = require('../models/Save');
 const Report = require('../models/Report');
-const mongoose = require('mongoose');
-const { search } = require('../routes/reportRoute');
 
 const postController = {
     create: async (req, res) => {
@@ -25,17 +25,49 @@ const postController = {
                 });
             }
 
+            let imageUrl = '';
+            if (req.file) {
+                try {
+                    // Upload ảnh lên Cloudinary sử dụng buffer
+                    const result = await new Promise((resolve, reject) => {
+                        cloudinary.uploader.upload_stream(
+                            { 
+                                resource_type: 'image',
+                                folder: 'empathy_posts' // Optional: organize uploads in folder
+                            },
+                            (error, result) => {
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    resolve(result);
+                                }
+                            }
+                        ).end(req.file.buffer);
+                    });
+                    
+                    imageUrl = result.secure_url;
+                    console.log('Image uploaded successfully:', imageUrl);
+                } catch (uploadError) {
+                    console.error('Cloudinary upload error:', uploadError);
+                    return res.status(500).json({
+                        status: 'error',
+                        message: 'Failed to upload image'
+                    });
+                }
+            }
+
+            const tagsRaw = req.body.tags || '';
+            const tags = typeof tagsRaw === 'string'
+                ? tagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag)
+                : Array.isArray(tagsRaw) ? tagsRaw : [];
+
             const post = new Post({
-                _id: new mongoose.Types.ObjectId(),
                 user_id: req.body.user_id,
-                title: req.body.title.trim(),
-                content: req.body.content.trim(),
+                title: req.body.title,
+                content: req.body.content,
+                tags, // luôn là mảng
+                image: imageUrl,
                 created_at: new Date(),
-                updated_at: new Date(),
-                view_count: 0,
-                like_count: 0,
-                is_pinned: false,
-                tags: req.body.tags?.map(tag => tag.trim()) || []
             });
 
             const savedPost = await post.save();
@@ -146,7 +178,7 @@ const postController = {
             }
 
             // Validate required fields
-            if (!req.body.title && !req.body.content && !req.body.tags) {
+            if (!req.body.title && !req.body.content && !req.body.tags && !req.file) {
                 return res.status(400).json({
                     status: 'error',
                     message: 'No update data provided'
@@ -157,7 +189,46 @@ const postController = {
             const updateData = {};
             if (req.body.title) updateData.title = req.body.title.trim();
             if (req.body.content) updateData.content = req.body.content.trim();
-            if (req.body.tags) updateData.tags = req.body.tags.map(tag => tag.trim());
+            
+            // Process tags
+            if (req.body.tags) {
+                const tagsRaw = req.body.tags;
+                const tags = typeof tagsRaw === 'string'
+                    ? tagsRaw.split(',').map(tag => tag.trim()).filter(tag => tag)
+                    : Array.isArray(tagsRaw) ? tagsRaw.map(tag => tag.trim()).filter(tag => tag) : [];
+                updateData.tags = tags;
+            }
+            
+            // Handle image upload if provided
+            if (req.file) {
+                try {
+                    const result = await new Promise((resolve, reject) => {
+                        cloudinary.uploader.upload_stream(
+                            { 
+                                resource_type: 'image',
+                                folder: 'empathy_posts'
+                            },
+                            (error, result) => {
+                                if (error) {
+                                    reject(error);
+                                } else {
+                                    resolve(result);
+                                }
+                            }
+                        ).end(req.file.buffer);
+                    });
+                    
+                    updateData.image = result.secure_url;
+                    console.log('Image updated successfully:', result.secure_url);
+                } catch (uploadError) {
+                    console.error('Cloudinary upload error:', uploadError);
+                    return res.status(500).json({
+                        status: 'error',
+                        message: 'Failed to upload image'
+                    });
+                }
+            }
+            
             updateData.updated_at = new Date();
 
             const post = await Post.findByIdAndUpdate(
@@ -283,6 +354,34 @@ const postController = {
             res.status(500).json({
                 status: 'error',
                 message: error.message || 'Error searching posts'
+            });
+        }
+    },
+
+    // Get user's post count
+    getUserPostCount: async (req, res) => {
+        try {
+            const { userId } = req.params;
+
+            // Validate ObjectId
+            if (!mongoose.Types.ObjectId.isValid(userId)) {
+                return res.status(400).json({
+                    status: 'error',
+                    message: 'Invalid user ID format'
+                });
+            }
+
+            const count = await Post.countDocuments({ user_id: userId });
+
+            res.status(200).json({
+                status: 'success',
+                count: count
+            });
+        } catch (error) {
+            console.error('Error getting user post count:', error);
+            res.status(500).json({
+                status: 'error',
+                message: error.message || 'Error getting user post count'
             });
         }
     }

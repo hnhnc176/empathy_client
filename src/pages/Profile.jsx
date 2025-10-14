@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom'; 
-import Search from '../components/SearchBar';
-import Post from '../components/Post';
-import ProfileInfo from '../components/ProfileInfo';
-import Pagination from '../components/Pagination';
-import ReportModal from '../components/ReportModal';
+import Post from '../components/Posts/Post';
+import ProfileInfo from '../components/Profile/ProfileInfo';
+import Pagination from '../components/UI/Pagination';
+import ReportModal from '../components/Modals/ReportModal';
 import axiosInstance from '../config/axios';
 
 export default function Profile() {
@@ -15,6 +14,10 @@ export default function Profile() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [activeTab, setActiveTab] = useState('mine');
+    
+    // Search state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredPosts, setFilteredPosts] = useState([]);
     
     // Report modal state
     const [isReportModalOpen, setIsReportModalOpen] = useState(false);
@@ -114,16 +117,54 @@ export default function Profile() {
         setReportDetails('');
     };
 
-    const getTabTitle = () => {
-        const tabLabels = {
-            mine: 'My Posts',
-            save: 'Saved Posts',
-            like: 'Liked Posts',
-            comment: 'Commented Posts',
-            report: 'Reported Posts'
-        };
-        return tabLabels[activeTab] || 'Posts';
+    // Search functionality
+    const handleSearch = (query) => {
+        setSearchQuery(query);
+        console.log('Search query:', query);
+        console.log('Current posts:', posts);
+        
+        if (!query.trim()) {
+            setFilteredPosts([]);
+            return;
+        }
+
+        // Filter posts based on search query
+        const filtered = posts.filter(post => {
+            const searchLower = query.toLowerCase();
+            const matches = (
+                post.title?.toLowerCase().includes(searchLower) ||
+                post.content?.toLowerCase().includes(searchLower) ||
+                post.tags?.some(tag => tag.toLowerCase().includes(searchLower)) ||
+                post.authorDetails?.fullName?.toLowerCase().includes(searchLower) ||
+                post.authorDetails?.username?.toLowerCase().includes(searchLower)
+            );
+            return matches;
+        });
+
+        console.log('Filtered posts:', filtered);
+        setFilteredPosts(filtered);
     };
+
+    // Helper function to get current tab title
+    const getTabTitle = () => {
+        const currentTab = tabs.find(tab => tab.key === activeTab);
+        return currentTab ? currentTab.label : 'Posts';
+    };    // Reset search when changing tabs or posts
+    useEffect(() => {
+        setSearchQuery('');
+        setFilteredPosts([]);
+    }, [activeTab, posts]);
+
+    // Get posts to display (filtered or all)
+    const postsToDisplay = searchQuery ? filteredPosts : posts;
+    
+    console.log('Profile display debug:', {
+        searchQuery,
+        postsLength: posts.length,
+        filteredPostsLength: filteredPosts.length,
+        postsToDisplayLength: postsToDisplay.length,
+        activeTab
+    });
 
     // Debug info
     console.log('Profile Debug:', {
@@ -153,9 +194,9 @@ export default function Profile() {
                     <ProfileInfo />
 
                     {/* Menu and Posts Section - Mobile Responsive */}
-                    <div className="menu-post flex flex-col gap-4 sm:gap-6 lg:gap-[32px] items-center justify-center w-full">
+                    <div className="menu-post flex flex-col gap-4 sm:gap-6 lg:gap-[32px] px-2 items-center justify-center w-full h-fit overflow-hidden">
                         {/* Tab Menu - Mobile Responsive */}
-                        <div className="menu-post-list flex flex-row pt-6 sm:pt-12 lg:pt-[80px] gap-3 sm:gap-4 lg:gap-[32px] w-fit items-center justify-center text-sm sm:text-lg lg:text-[25px] overflow-x-auto scrollbar-hide">
+                        <div className="menu-post-list flex flex-row pt-6 sm:pt-12 lg:pt-[80px] gap-3 sm:gap-4 lg:gap-[32px] w-full h-fit items-center justify-center text-sm sm:text-lg lg:text-[25px] overflow-hidden scrollbar-hide">
                             {tabs.map(tab => (
                                 <div 
                                     key={tab.key}
@@ -186,19 +227,42 @@ export default function Profile() {
                                         </Link>
                                     )}
                                 </div>
+                                
+                                {/* Custom Search Bar for Profile */}
                                 <div className="search-bar w-full sm:w-auto">
-                                    <Search />
+                                    <div className="relative">
+                                        <input
+                                            type="text"
+                                            value={searchQuery}
+                                            onChange={(e) => handleSearch(e.target.value)}
+                                            placeholder={`Search in ${getTabTitle()}...`}
+                                            className="w-full sm:w-80 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#123E23] focus:border-transparent"
+                                        />
+                                        {searchQuery && (
+                                            <button
+                                                onClick={() => handleSearch('')}
+                                                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                            >
+                                                ✕
+                                            </button>
+                                        )}
+                                    </div>
+                                    {searchQuery && (
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Found {postsToDisplay.length} result(s) in {getTabTitle()}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 
                             {/* Posts Grid - Mobile Responsive */}
-                            <div className="post-list grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-[32px] w-full">
+                            <div className="post-list grid grid-cols-1 lg:grid-cols-2 gap-2 sm:gap-6 lg:gap-[32px] w-full">
                                 {loading ? (
                                     <div className="col-span-1 lg:col-span-2 text-center py-8">
                                         <div className="text-sm sm:text-base">Loading posts...</div>
                                     </div>
-                                ) : posts.length > 0 ? (
-                                    posts.map(post => (
+                                ) : postsToDisplay.length > 0 ? (
+                                    postsToDisplay.map(post => (
                                         <Post 
                                             key={post._id || post.id} 
                                             post={post} 
@@ -210,7 +274,10 @@ export default function Profile() {
                                 ) : (
                                     <div className="col-span-1 lg:col-span-2 text-center py-8">
                                         <div className="text-sm sm:text-base">
-                                            {!isAuthenticated ? 'Please sign in to view posts' : `No ${activeTab} posts found`}
+                                            {searchQuery ? 
+                                                `No results found for "${searchQuery}" in ${getTabTitle()}` : 
+                                                (!isAuthenticated ? 'Please sign in to view posts' : `No ${getTabTitle()} found`)
+                                            }
                                         </div>
                                     </div>
                                 )}

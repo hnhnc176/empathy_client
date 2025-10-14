@@ -17,9 +17,10 @@ export default function Signin() {
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
+    const fieldName = e.target.name || e.target.id.replace(/^(mobile-|desktop-)/, '');
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value
+      [fieldName]: e.target.value
     });
     setError(''); // Clear error when user types
   };
@@ -33,9 +34,8 @@ export default function Signin() {
       const response = await axiosInstance.post('/api/users/signin', formData);
       
       // Check for success status and data
-      // In handleSubmit function around line 37-41
       if (response.data?.status === 'success') {
-        const userData = response.data.data || response.data;
+        const userData = response.data.data;
         
         // Validate required fields - handle both token formats
         const token = userData.token || userData.sessionToken;
@@ -92,7 +92,7 @@ export default function Signin() {
   }
 
   return (
-    <section className="signin bg-[url('src/assets/shape-bg.png')] flex flex-col lg:flex-row bg-[#FCFCF4] w-full bg-cover bg-no-repeat items-center h-screen p-4 lg:p-0">
+    <section className="signin bg-[url('/src/assets/shape-bg.png')] flex flex-col lg:flex-row bg-[#FCFCF4] w-full bg-cover bg-no-repeat items-center h-screen p-4 lg:p-0">
       <ChevronLeft 
         className="back-button absolute top-3 left-3 lg:top-5 lg:left-5 text-[#123E23] cursor-pointer z-10" 
         size={24}
@@ -103,12 +103,12 @@ export default function Signin() {
       <div className="login-section lg:hidden flex flex-col items-center justify-center text-center w-full h-full gap-6 px-4">
         <div className="logo-container flex flex-col items-center justify-center gap-3">
           <div className="logo w-[60px] h-[60px]">
-            <span className="logo-icon w-full h-full"><img src="src/assets/logo to.png" className="w-full h-full object-contain" /></span>
+            <span className="logo-icon w-full h-full"><img src="/src/assets/logo to.png" className="w-full h-full object-contain" /></span>
           </div>
           <p className="brand-name text-[32px] font-medium" style={{ fontFamily: styles.font.logo}}>Empathy</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form flex flex-col gap-6 w-full max-w-sm" id="login-form">
+        <form onSubmit={handleSubmit} className="login-form flex flex-col gap-6 w-full max-w-sm" id="mobile-login-form">
           {error && (
             <div className="bg-red-50 text-red-500 p-3 rounded text-sm">
               {error}
@@ -117,7 +117,8 @@ export default function Signin() {
           <input 
             style={{...inputStyle, height: '48px', fontSize: '16px'}} 
             type="email" 
-            id="email" 
+            id="mobile-email" 
+            name="email"
             className="form-input" 
             placeholder="Email" 
             required 
@@ -127,7 +128,8 @@ export default function Signin() {
           <input 
             style={{...inputStyle, height: '48px', fontSize: '16px'}} 
             type="password" 
-            id="password" 
+            id="mobile-password" 
+            name="password"
             className="form-input" 
             placeholder="Password" 
             required 
@@ -163,12 +165,12 @@ export default function Signin() {
       <div className="hidden lg:flex login-section flex-col items-center justify-between text-center w-3/5 h-3/5 gap-10">
         <div className="logo-container flex flex-col items-center justify-center mb-[20px] gap-[10px]">
           <div className="logo w-[78px] h-[78px]">
-            <span className="logo-icon w-full h-full"><img src="src/assets/logo to.png" /></span>
+            <span className="logo-icon w-full h-full"><img src="/src/assets/logo to.png" /></span>
           </div>
           <p className="brand-name !text-[40px] font-medium" style={{ fontFamily: styles.font.logo}}>Empathy</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form flex flex-col gap-[40px] w-[45%] h-[fit-content]" id="login-form">
+        <form onSubmit={handleSubmit} className="login-form flex flex-col gap-[40px] w-[45%] h-[fit-content]" id="desktop-login-form">
           {error && (
             <div className="bg-red-50 text-red-500 p-2 rounded text-sm">
               {error}
@@ -177,7 +179,8 @@ export default function Signin() {
           <input 
             style={inputStyle} 
             type="email" 
-            id="email" 
+            id="desktop-email" 
+            name="email"
             className="form-input" 
             placeholder="Email" 
             required 
@@ -187,7 +190,8 @@ export default function Signin() {
           <input 
             style={inputStyle} 
             type="password" 
-            id="password" 
+            id="desktop-password" 
+            name="password"
             className="form-input" 
             placeholder="Password" 
             required 
@@ -215,7 +219,7 @@ export default function Signin() {
       </div>
 
       {/* Desktop Image - Hidden on Mobile */}
-      <img src="src/assets/Delivery.png" alt="Login Image" className="login-image hidden lg:block w-3/5 h-4/5" />
+      <img src="/src/assets/Delivery.png" alt="Login Image" className="login-image hidden lg:block w-3/5 h-4/5" />
     </section>
   );
 }

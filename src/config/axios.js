@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // Create axios instance with enhanced configuration
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3019',
+  // Temporarily use direct URL for debugging
+  baseURL: import.meta.env.DEV ? 'http://localhost:3019' : (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3019'),
   timeout: 15000, 
   withCredentials: true,
   headers: {
@@ -12,6 +13,15 @@ const axiosInstance = axios.create({
   retry: 3,
   retryDelay: (retryCount) => retryCount * 1000, // Progressive delay
 });
+
+// Log configuration for debugging
+if (import.meta.env.DEV) {
+  console.log('🔧 Axios Configuration:', {
+    baseURL: axiosInstance.defaults.baseURL,
+    isDev: import.meta.env.DEV,
+    viteApiBaseUrl: import.meta.env.VITE_API_BASE_URL
+  });
+}
 
 // Request interceptor with enhanced error handling
 axiosInstance.interceptors.request.use(
@@ -27,11 +37,13 @@ axiosInstance.interceptors.request.use(
       config.metadata = { startTime: new Date() };
 
       if (import.meta.env.DEV) {
-        console.log('API Request:', {
+        console.log('🚀 API Request:', {
+          fullUrl: `${config.baseURL}${config.url}`,
           url: config.url,
           method: config.method,
           data: config.data,
           params: config.params,
+          headers: config.headers,
           token: token ? 'Present' : 'Missing' // Debug token presence
         });
       }
@@ -50,7 +62,7 @@ axiosInstance.interceptors.response.use(
   (response) => {
     if (import.meta.env.DEV) {
       const duration = new Date() - response.config.metadata.startTime;
-      console.log('API Response:', {
+      console.log('✅ API Response:', {
         url: response.config.url,
         status: response.status,
         duration: `${duration}ms`,
@@ -61,6 +73,20 @@ axiosInstance.interceptors.response.use(
   },
   async (error) => {
     const { config, response } = error;
+
+    if (import.meta.env.DEV) {
+      console.error('❌ API Error Details:', {
+        url: config?.url,
+        fullUrl: `${config?.baseURL || ''}${config?.url || ''}`,
+        method: config?.method,
+        status: response?.status,
+        statusText: response?.statusText,
+        message: error.message,
+        data: response?.data,
+        headers: response?.headers,
+        retryAttempts: config?.retryCount || 0
+      });
+    }
 
     // Skip retry for specific status codes
     const skipRetryStatuses = [400, 401, 403, 422];
@@ -77,19 +103,8 @@ axiosInstance.interceptors.response.use(
       // Wait for the specified delay
       await new Promise(resolve => setTimeout(resolve, delay));
 
-      console.warn(`Retrying request (${config.retryCount}/${config.retry}):`, config.url);
+      console.warn(`🔄 Retrying request (${config.retryCount}/${config.retry}):`, config.url);
       return axiosInstance(config);
-    }
-
-    // Enhanced error logging
-    if (import.meta.env.DEV) {
-      console.error('API Error:', {
-        url: error.config?.url,
-        status: response?.status,
-        message: error.message,
-        data: response?.data,
-        retryAttempts: config.retryCount
-      });
     }
 
     // Handle specific error cases

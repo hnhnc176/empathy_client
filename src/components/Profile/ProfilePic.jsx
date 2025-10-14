@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import styles from '../style'
-import axiosInstance from '../config/axios';
+import styles from '../../style'
+import axiosInstance from '../../config/axios';
 import { useSelector } from 'react-redux';
 
 export default function ProfilePic() {

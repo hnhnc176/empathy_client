@@ -13,9 +13,11 @@ export default {
           background: '#FCFCF4',
         },
         fontFamily: {
-            buenard: ['Buenard', 'serif'],
-            manrope: ['Manrope', 'sans-serif'],
-            dmSans: ['DM Sans', 'sans-serif'],
+            'sans': ['Manrope', 'DM Sans', 'system-ui', '-apple-system', 'sans-serif'],
+            'serif': ['Buenard', 'Georgia', 'serif'],
+            'buenard': ['Buenard', 'serif'],
+            'manrope': ['Manrope', 'sans-serif'],
+            'dmSans': ['DM Sans', 'sans-serif'],
         }
       },
     },

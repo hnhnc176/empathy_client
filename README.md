@@ -227,7 +227,7 @@ backend/
    Create a `.env` file in the `backend/server` directory:
    ```env
    PORT=3019
-   MONGODB_URI=mongodb://localhost:27017/empathy
+   MONGODB_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/empathy?retryWrites=true&w=majority
    JWT_SECRET=your_jwt_secret_key
    JWT_EXPIRES_IN=7d
    EMAIL_HOST=smtp.gmail.com
@@ -246,14 +246,42 @@ backend/
 
 #### Database Setup
 
-1. **Install MongoDB** (if running locally)
+**MongoDB Atlas Setup** (Recommended - Cloud Database)
+
+1. **Create MongoDB Atlas Account**
+   - Go to [mongodb.com/atlas](https://www.mongodb.com/atlas)
+   - Sign up for a free account
+
+2. **Create a Cluster**
+   - Choose "Build a Database" → "M0 Sandbox" (Free tier)
+   - Select your preferred cloud provider and region
+   - Create cluster (this may take a few minutes)
+
+3. **Setup Database Access**
+   - Go to "Database Access" in the left sidebar
+   - Click "Add New Database User"
+   - Create a username and password
+   - Set user privileges to "Read and write to any database"
+
+4. **Setup Network Access**
+   - Go to "Network Access" in the left sidebar
+   - Click "Add IP Address"
+   - Choose "Allow Access from Anywhere" (0.0.0.0/0) for development
+   - For production, restrict to specific IP addresses
+
+5. **Get Connection String**
+   - Go to "Database" → "Connect" → "Connect your application"
+   - Copy the connection string
+   - Replace `<password>` with your database user password
+   - Replace `<database>` with your database name (e.g., "empathy")
+
+6. **Update Environment Variables**
+   - Update `MONGODB_URI` in your `backend/server/.env` file with the Atlas connection string
+
+**Local MongoDB** (Alternative - Local Development)
    - Download and install MongoDB from [mongodb.com](https://www.mongodb.com/try/download/community)
    - Start MongoDB service
-
-2. **Or use MongoDB Atlas** (cloud option)
-   - Create account at [mongodb.com/atlas](https://www.mongodb.com/atlas)
-   - Create cluster and get connection string
-   - Update `MONGODB_URI` in backend `.env` file
+   - Use connection string: `mongodb://localhost:27017/empathy`
 
 ### Available Scripts
 

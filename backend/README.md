@@ -1,5 +1,24 @@
 # EmpathyForum Server API Documentation
-A Node.js/Express REST API server for the EmpathyForum application - a social platform for empathetic discussions and community support.
+A Node.js/Express REST ## 🚀 Getting Started
+### Prerequisites
+- Node.js (v14 or higher)
+- MongoDB Atlas account (cloud database)
+- npm or yarn package manager
+
+### Installation
+1. Navigate to the server directory:
+```
+cd server
+```
+2. Install dependencies:
+```
+npm install
+```
+3. Create a .env file in the server root with the following variables:
+```
+PORT=3019
+MONGODB_URI=mongodb+srv://your_username:your_password@your_cluster.mongodb.net/empathyforum?retryWrites=true&w=majority
+JWT_SECRET=your_jwt_secret_keympathyForum application - a social platform for empathetic discussions and community support.
 
 ## 📁 Project Structure
 ```

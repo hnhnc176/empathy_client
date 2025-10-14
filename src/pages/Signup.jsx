@@ -21,9 +21,10 @@ export default function Signup() {
   const [showResendButton, setShowResendButton] = useState(false);
 
   const handleChange = (e) => {
+    const fieldName = e.target.name || e.target.id.replace(/^(mobile-|desktop-)/, '');
     setFormData({
       ...formData,
-      [e.target.id]: e.target.value
+      [fieldName]: e.target.value
     });
   };
 
@@ -140,7 +141,8 @@ export default function Signup() {
           <input
             style={{...inputStyle, height: '48px', fontSize: '16px'}}
             type="text"
-            id="username"
+            id="mobile-username"
+            name="username"
             className="form-input"
             placeholder="Username"
             required
@@ -150,7 +152,8 @@ export default function Signup() {
           <input
             style={{...inputStyle, height: '48px', fontSize: '16px'}}
             type="email"
-            id="email"
+            id="mobile-email"
+            name="email"
             className="form-input"
             placeholder="Email"
             required
@@ -160,7 +163,8 @@ export default function Signup() {
           <input
             style={{...inputStyle, height: '48px', fontSize: '16px'}}
             type="text"
-            id="fullName"
+            id="mobile-fullName"
+            name="fullName"
             className="form-input"
             placeholder="Full name"
             required
@@ -170,7 +174,8 @@ export default function Signup() {
           <input
             style={{...inputStyle, height: '48px', fontSize: '16px'}}
             type="text"
-            id="phoneNumber"
+            id="mobile-phoneNumber"
+            name="phoneNumber"
             className="form-input"
             placeholder="Phone number"
             required
@@ -180,7 +185,8 @@ export default function Signup() {
           <input
             style={{...inputStyle, height: '48px', fontSize: '16px'}}
             type="password"
-            id="password"
+            id="mobile-password"
+            name="password"
             className="form-input"
             placeholder="Password"
             required
@@ -190,7 +196,8 @@ export default function Signup() {
           <input
             style={{...inputStyle, height: '48px', fontSize: '16px'}}
             type="password"
-            id="confirmPassword"
+            id="mobile-confirmPassword"
+            name="confirmPassword"
             className="form-input"
             placeholder="Confirm password"
             required
@@ -265,7 +272,8 @@ export default function Signup() {
           <input
             style={inputStyle}
             type="text"
-            id="username"
+            id="desktop-username"
+            name="username"
             className="form-input"
             placeholder="Username"
             required
@@ -275,7 +283,8 @@ export default function Signup() {
           <input
             style={inputStyle}
             type="email"
-            id="email"
+            id="desktop-email"
+            name="email"
             className="form-input"
             placeholder="Email"
             required
@@ -285,7 +294,8 @@ export default function Signup() {
           <input
             style={inputStyle}
             type="text"
-            id="fullName"
+            id="desktop-fullName"
+            name="fullName"
             className="form-input"
             placeholder="Full name"
             required
@@ -295,7 +305,8 @@ export default function Signup() {
           <input
             style={inputStyle}
             type="text"
-            id="phoneNumber"
+            id="desktop-phoneNumber"
+            name="phoneNumber"
             className="form-input"
             placeholder="Phone number"
             required
@@ -305,7 +316,8 @@ export default function Signup() {
           <input
             style={inputStyle}
             type="password"
-            id="password"
+            id="desktop-password"
+            name="password"
             className="form-input"
             placeholder="Password"
             required
@@ -315,7 +327,8 @@ export default function Signup() {
           <input
             style={inputStyle}
             type="password"
-            id="confirmPassword"
+            id="desktop-confirmPassword"
+            name="confirmPassword"
             className="form-input"
             placeholder="Confirm password"
             required

@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef, Fragment } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Popover, Transition } from '@headlessui/react';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '../redux/slices/authSlice';
-import { showSuccessToast, showErrorToast, showInfoToast } from '../utils/toast';
-import axiosInstance from '../config/axios';
+import { logout, toggleAdminMode } from '../../redux/slices/authSlice';
+import { showSuccessToast, showErrorToast, showInfoToast } from '../../utils/toast';
+import axiosInstance from '../../config/axios';
 import { Bell, Menu, X, AlignJustify } from 'lucide-react'
-import user from "../assets/user.svg";
-import styles from "../style";
-import avatar from "../assets/avt.png";
+import user from "../../assets/user.svg";
+import styles from "../../style";
+import avatar from "../../assets/avt.png";
+import logoImg from "../../assets/Logo.png";
+import useAdminPermissions from "../../hooks/useAdminPermissions";
 
 export default function Header() {
     const timeoutDuration = 200;
@@ -18,33 +20,50 @@ export default function Header() {
     const notificationTimeOutRef = useRef();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const location = useLocation();
 
     // Mobile menu state
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const { user: currentUser, isAuthenticated } = useSelector((state) => state.auth);
+    const { isAdmin, isAdminMode, hasAdminPermissions } = useAdminPermissions();
 
     // Notification state
     const [notifications, setNotifications] = useState([]);
     const [notificationLoading, setNotificationLoading] = useState(false);
     const [notificationError, setNotificationError] = useState(null);
 
+    // Handle admin mode toggle
+    const handleAdminToggle = () => {
+        if (isAdmin) {
+            dispatch(toggleAdminMode());
+            // Navigate based on new mode
+            setTimeout(() => {
+                if (isAdminMode) {
+                    navigate('/community'); // Switch to user mode
+                } else {
+                    navigate('/admin'); // Switch to admin mode
+                }
+            }, 100);
+        }
+    };
+
     // Close mobile menu when route changes
     useEffect(() => {
         setIsMobileMenuOpen(false);
     }, [navigate]);
 
-    // Check if user is admin and redirect
-    useEffect(() => {
-        if (isAuthenticated && currentUser) {
-            // Check if user has admin role (adjust the property name based on your user object structure)
-            const isAdmin = currentUser.role === 'admin' || currentUser.isAdmin === true || currentUser.admin === true;
+    // Check if user is admin and redirect (DISABLED - Allow admin to browse as user)
+    // useEffect(() => {
+    //     if (isAuthenticated && currentUser) {
+    //         // Check if user has admin role (adjust the property name based on your user object structure)
+    //         const isAdmin = currentUser.role === 'admin' || currentUser.isAdmin === true || currentUser.admin === true;
 
-            if (isAdmin && !window.location.pathname.startsWith('/admin')) {
-                navigate('/admin');
-            }
-        }
-    }, [isAuthenticated, currentUser, navigate]);
+    //         if (isAdmin && !window.location.pathname.startsWith('/admin')) {
+    //             navigate('/admin');
+    //         }
+    //     }
+    // }, [isAuthenticated, currentUser, navigate]);
 
     // Load notifications when user is authenticated
     useEffect(() => {
@@ -360,8 +379,22 @@ export default function Header() {
         }
     }, [currentUser, isAuthenticated]);
 
+    // Helper function to check if a navigation link is active
+    const isActiveLink = (path) => {
+        return location.pathname === path;
+    };
+
+    // Helper function to get active link classes
+    const getNavLinkClass = (path, baseClass = "nav-link") => {
+        const isActive = isActiveLink(path);
+        return `${baseClass} ${isActive 
+            ? 'text-[#123E23] font-semibold border-b-2 border-[#123E23] pb-1' 
+            : 'text-[#123E23] hover:opacity-80 transition-opacity'
+        }`;
+    };
+
     return (
-        <header className="header flex flex-col justify-between items-center w-full z-20 relative">
+        <header className="header flex flex-col justify-between items-center w-full z-20 relative slide-in-bottom">
             {/* Announcement Bar - Phone Responsive */}
             <div className="announcement-bar w-full flex items-center justify-center font-medium text-xs sm:text-sm md:text-lg lg:text-xl py-2 sm:py-3 md:py-4 border-b-[2px]"
                 style={{ backgroundColor: styles.colors.secodary, fontFamily: styles.font.body }}>
@@ -374,7 +407,11 @@ export default function Header() {
                 
                 {/* Brand Logo - Phone Responsive */}
                 <div className="brand-logo flex items-center">
-                    <Link className="nav-link font-normal text-xl sm:text-2xl md:text-3xl lg:text-[40px]"
+                    <Link className={`nav-link font-normal text-xl sm:text-2xl md:text-3xl lg:text-[40px] ${
+                        isActiveLink("/home") || isActiveLink("/") 
+                            ? 'text-[#123E23] font-semibold' 
+                            : ''
+                    }`}
                         style={{ fontFamily: styles.font.logo }}
                         to="/home">
                         Empathy
@@ -385,15 +422,15 @@ export default function Header() {
                 <ul className="nav-menu hidden lg:flex items-center justify-between w-md gap-6 py-6 text-xl pl-8 border-l-[2px] border-[#000000]"
                     style={{ fontFamily: styles.font.body }}>
                     <li className="nav-item">
-                        <Link className="nav-link hover:opacity-80 transition-opacity" to="/about">About</Link>
+                        <Link className={getNavLinkClass("/about")} to="/about">About</Link>
                     </li>
                     <li className="nav-item">
-                        <Link className="nav-link hover:opacity-80 transition-opacity" to="/community">Community</Link>
+                        <Link className={getNavLinkClass("/community")} to="/community">Community</Link>
                     </li>
                     {isAuthenticated && (
                         <>
                             <li className="nav-item">
-                                <Link className="nav-link hover:opacity-80 transition-opacity" to="/profile">Profile</Link>
+                                <Link className={getNavLinkClass("/profile")} to="/profile">Profile</Link>
                             </li>
 
                             <li className="nav-item">
@@ -404,6 +441,7 @@ export default function Header() {
                                             <div
                                                 onMouseEnter={() => handleNotificationEnter(open)}
                                                 onMouseLeave={() => handleNotificationLeave(open)}
+                                                className=" flex items-center justify-center"
                                             >
                                                 <Popover.Button
                                                     ref={notificationTriggerRef}
@@ -441,9 +479,10 @@ export default function Header() {
                                                                 {unreadCount > 0 && (
                                                                     <button
                                                                         onClick={markAllAsRead}
-                                                                        className="text-sm text-[#123E23] hover:text-[#0f2f1a] transition-colors"
+                                                                        className="text-sm text-[#123E23] hover:text-[#0f2f1a] transition-colors flex items-center gap-1"
                                                                     >
-                                                                        Mark all as read
+                                                                        <i className="fa-solid fa-check-double"></i>
+                                                                        <span>Mark all read</span>
                                                                     </button>
                                                                 )}
                                                             </div>
@@ -471,33 +510,57 @@ export default function Header() {
                                                                     notifications.map((notification) => (
                                                                         <div
                                                                             key={notification.id}
-                                                                            className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50' : ''
+                                                                            className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50' : ''
                                                                                 }`}
+                                                                            style={{ padding: '8px' }}
                                                                             onClick={() => markAsRead(notification.id)}
                                                                         >
-                                                                            <div className="flex items-start gap-3">
+                                                                            <div className="flex items-start" style={{ gap: '8px' }}>
                                                                                 {/* Notification Icon */}
-                                                                                {getNotificationIcon(notification.type)}
+                                                                                <div className="flex-shrink-0" style={{ marginTop: '2px' }}>
+                                                                                    {getNotificationIcon(notification.type)}
+                                                                                </div>
 
                                                                                 {/* Notification Content */}
-                                                                                <div className="flex-1 !w-fit">
-                                                                                    <div className="flex flex-col items-start justify-between">
-                                                                                        <h4 className={`text-sm font-normal text-[#123E23] ${!notification.read ? 'font-normal' : ''
-                                                                                            }`}>
+                                                                                <div className="flex-1 min-w-0">
+                                                                                    <div className="flex items-start justify-between" style={{ marginBottom: '4px' }}>
+                                                                                        <h4 className={`line-clamp-2 ${!notification.read ? 'font-semibold' : 'font-medium'
+                                                                                            }`}
+                                                                                            style={{ 
+                                                                                                fontSize: '11px',
+                                                                                                lineHeight: '1.3',
+                                                                                                color: '#123E23'
+                                                                                            }}>
                                                                                             {notification.title}
                                                                                         </h4>
-                                                                                        <div className="flex items-center gap-2">
-                                                                                            <span className="!text-[10px] text-gray-500">
-                                                                                                {notification.time}
-                                                                                            </span>
-
-                                                                                        </div>
+                                                                                        {!notification.read && (
+                                                                                            <div className="bg-blue-500 rounded-full flex-shrink-0" 
+                                                                                                style={{ 
+                                                                                                    width: '6px', 
+                                                                                                    height: '6px', 
+                                                                                                    marginLeft: '8px', 
+                                                                                                    marginTop: '4px' 
+                                                                                                }}>
+                                                                                            </div>
+                                                                                        )}
                                                                                     </div>
-                                                                                    <p className="!text-xs text-gray-600 mt-1">
+                                                                                    
+                                                                                    <p className="line-clamp-2"
+                                                                                        style={{ 
+                                                                                            fontSize: '10px',
+                                                                                            lineHeight: '1.4',
+                                                                                            color: '#6b7280',
+                                                                                            marginBottom: '4px'
+                                                                                        }}>
                                                                                         {notification.message}
                                                                                     </p>
-
-
+                                                                                    
+                                                                                    <span style={{ 
+                                                                                        fontSize: '9px',
+                                                                                        color: '#9ca3af'
+                                                                                    }}>
+                                                                                        {notification.time}
+                                                                                    </span>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -542,25 +605,47 @@ export default function Header() {
                     <li className="nav-item">
                         <Popover className="relative">
                             {({ open }) => (
-                                <>
-                                    <div
-                                        onMouseEnter={() => handleEnter(open)}
-                                        onMouseLeave={() => handleLeave(open)}
+                                <div
+                                    onMouseEnter={() => handleEnter(open)}
+                                    onMouseLeave={() => handleLeave(open)}
+                                >
+                                    <Popover.Button ref={triggerRef} className="outline-none">
+                                        {isAdmin ? (
+                                            // Admin user - show toggle avatar
+                                            <div 
+                                                onDoubleClick={handleAdminToggle}
+                                                className="relative cursor-pointer"
+                                                title={isAdminMode ? 'Double-click to switch to User Mode' : 'Double-click to switch to Admin Mode'}
+                                            >
+                                                <img 
+                                                    src={isAdminMode ? logoImg : avatar} 
+                                                    alt="User" 
+                                                    className="w-8 h-8 rounded-full transition-all duration-300 hover:scale-105 hover:shadow-md" 
+                                                />
+                                                {!isAdminMode && (
+                                                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></div>
+                                                )}
+                                                {isAdminMode && (
+                                                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#123E23] rounded-full border border-white flex items-center justify-center">
+                                                        <i className="fa-solid fa-crown text-xs text-white"></i>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ) : (
+                                            // Regular user - normal avatar
+                                            <img src={isAuthenticated ? avatar : user} alt="User" className="w-8 h-8 rounded-full hover:scale-105 transition-transform duration-200" />
+                                        )}
+                                    </Popover.Button>
+                                    
+                                    <Transition
+                                        as={Fragment}
+                                        enter="transition ease-out duration-200"
+                                        enterFrom="opacity-0 translate-y-1"
+                                        enterTo="opacity-100 translate-y-0"
+                                        leave="transition ease-in duration-150"
+                                        leaveFrom="opacity-100 translate-y-0"
+                                        leaveTo="opacity-0 translate-y-1"
                                     >
-                                        <Popover.Button ref={triggerRef} className="outline-none">
-                                            <img src={isAuthenticated ? avatar : user} alt="User" className="w-8 h-8 rounded-full" />
-                                        </Popover.Button>
-                                    </div>
-                                    <div onMouseEnter={() => handleEnter(open)} onMouseLeave={() => handleLeave(open)}>
-                                        <Transition
-                                            as={Fragment}
-                                            enter="transition ease-out duration-200"
-                                            enterFrom="opacity-0 translate-y-1"
-                                            enterTo="opacity-100 translate-y-0"
-                                            leave="transition ease-in duration-150"
-                                            leaveFrom="opacity-100 translate-y-0"
-                                            leaveTo="opacity-0 translate-y-1"
-                                        >
                                             {isAuthenticated ? (
                                                 <Popover.Panel static
                                                     className="nav-popup absolute -right-8 mt-3 shadow-lg rounded-xl w-fit px-5 h-fit text-base bg-white z-50">
@@ -575,6 +660,23 @@ export default function Header() {
                                                                     <i className="fa-solid fa-envelope-circle-check"></i>
                                                                     <span>Verify Email</span>
                                                                 </Link>
+                                                            </li>
+                                                        )}
+                                                        
+                                                        {/* Admin Mode Indicator - Only for admin users */}
+                                                        {isAdmin && (
+                                                            <li className="popup-items py-3 w-full text-center border-b border-gray-100">
+                                                                <div className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium ${
+                                                                    isAdminMode 
+                                                                        ? 'bg-[#123E23] text-white' 
+                                                                        : 'bg-green-100 text-green-800'
+                                                                }`}>
+                                                                    <i className={`fa-solid ${isAdminMode ? 'fa-crown' : 'fa-user'}`}></i>
+                                                                    <span>{isAdminMode ? 'Admin Mode' : 'User Mode'}</span>
+                                                                </div>
+                                                                <div className="text-xs text-gray-500 mt-1">
+                                                                    Double-click avatar to toggle
+                                                                </div>
                                                             </li>
                                                         )}
                                                         <li className="popup-items py-5 w-full text-center">
@@ -593,17 +695,16 @@ export default function Header() {
                                                     className="nav-popup absolute -right-10 mt-7 shadow-lg rounded-xl w-24 h-fit text-base bg-white">
                                                     <ul className="popup-list flex gap-1.5 flex-col items-center justify-between">
                                                         <li className="popup-items hover:bg-gray-100 pt-5 pb-[5px] w-full text-center">
-                                                            <Link to="/signin" className="block px-4 pt-2">Sign In</Link>
+                                                            <Link to="/signin" className="block px-4 pt-2 text-[#123E23]">Sign In</Link>
                                                         </li>
                                                         <li className="popup-items hover:bg-gray-100 pb-5 pt-[5px] w-full text-center">
-                                                            <Link to="/signup" className="block px-4">Sign Up</Link>
+                                                            <Link to="/signup" className="block px-4 text-[#123E23] font-semibold">Sign Up</Link>
                                                         </li>
                                                     </ul>
                                                 </Popover.Panel>
                                             )}
                                         </Transition>
-                                    </div>
-                                </>
+                                </div>
                             )}
                         </Popover>
                     </li>
@@ -613,11 +714,37 @@ export default function Header() {
                 <div className="lg:hidden flex items-center gap-2 sm:gap-3">
                     {/* Mobile User Avatar - Phone Responsive */}
                     <div className="flex items-center">
-                        <img 
-                            src={isAuthenticated ? avatar : user} 
-                            alt="User" 
-                            className="w-6 h-6 sm:w-7 sm:h-7 rounded-full"
-                        />
+                        {isAdmin ? (
+                            // Admin user - show toggle avatar
+                            <div 
+                                onDoubleClick={handleAdminToggle}
+                                className="relative cursor-pointer p-1" 
+                                title={isAdminMode ? 'Double-click to switch to User Mode' : 'Double-click to switch to Admin Mode'}
+                            >
+                                <img 
+                                    src={isAdminMode ? logoImg : avatar} 
+                                    alt="User" 
+                                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full transition-all duration-200 hover:scale-105"
+                                />
+                                {!isAdminMode && (
+                                    <div className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full border border-white"></div>
+                                )}
+                                {isAdminMode && (
+                                    <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#123E23] rounded-full border border-white flex items-center justify-center">
+                                        <i className="fa-solid fa-crown text-xs text-white" style={{ fontSize: '6px' }}></i>
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            // Regular user - normal avatar  
+                            <div className="p-1">
+                                <img 
+                                    src={isAuthenticated ? avatar : user} 
+                                    alt="User" 
+                                    className="w-6 h-6 sm:w-7 sm:h-7 rounded-full hover:scale-105 transition-transform duration-200"
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Mobile Notifications - Phone Responsive */}
@@ -673,22 +800,52 @@ export default function Header() {
                                                         notifications.map((notification) => (
                                                             <div
                                                                 key={notification.id}
-                                                                className={`p-2 sm:p-3 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50' : ''
+                                                                className={`border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${!notification.read ? 'bg-blue-50' : ''
                                                                     }`}
+                                                                style={{ padding: '8px' }}
                                                                 onClick={() => markAsRead(notification.id)}
                                                             >
-                                                                <div className="flex items-start gap-2">
-                                                                    <div className="w-5 h-5 sm:w-6 sm:h-6 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center">
-                                                                        <i className="fa-solid fa-bell text-xs text-gray-600"></i>
+                                                                <div className="flex items-start" style={{ gap: '8px' }}>
+                                                                    <div className="flex-shrink-0" style={{ marginTop: '2px' }}>
+                                                                        {getNotificationIcon(notification.type)}
                                                                     </div>
                                                                     <div className="flex-1 min-w-0">
-                                                                        <h4 className="text-xs sm:text-sm font-medium text-[#123E23] truncate">
-                                                                            {notification.title}
-                                                                        </h4>
-                                                                        <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                                                                        <div className="flex items-start justify-between" style={{ marginBottom: '4px' }}>
+                                                                            <h4 className={`line-clamp-2 ${!notification.read ? 'font-semibold' : 'font-medium'
+                                                                                }`}
+                                                                                style={{ 
+                                                                                    fontSize: '11px',
+                                                                                    lineHeight: '1.3',
+                                                                                    color: '#123E23'
+                                                                                }}>
+                                                                                {notification.title}
+                                                                            </h4>
+                                                                            {!notification.read && (
+                                                                                <div className="bg-blue-500 rounded-full flex-shrink-0" 
+                                                                                    style={{ 
+                                                                                        width: '6px', 
+                                                                                        height: '6px', 
+                                                                                        marginLeft: '8px', 
+                                                                                        marginTop: '4px' 
+                                                                                    }}>
+                                                                                </div>
+                                                                            )}
+                                                                        </div>
+                                                                        
+                                                                        <p className="line-clamp-2"
+                                                                            style={{ 
+                                                                                fontSize: '10px',
+                                                                                lineHeight: '1.4',
+                                                                                color: '#6b7280',
+                                                                                marginBottom: '4px'
+                                                                            }}>
                                                                             {notification.message}
                                                                         </p>
-                                                                        <span className="text-[9px] sm:text-[10px] text-gray-500 mt-1 block">
+                                                                        
+                                                                        <span style={{ 
+                                                                            fontSize: '9px',
+                                                                            color: '#9ca3af'
+                                                                        }}>
                                                                             {notification.time}
                                                                         </span>
                                                                     </div>
@@ -727,29 +884,37 @@ export default function Header() {
             {/* Phone Responsive Mobile Dropdown Menu */}
             {isMobileMenuOpen && (
                 <div 
-                    className="lg:hidden w-full bg-white border-b-2 border-gray-200 shadow-md z-30"
-                    style={{ backgroundColor: styles.colors.background }}
+                    className="lg:hidden w-full border-b-2 border-gray-200 shadow-md z-30"
+                    style={{ backgroundColor: styles.colors.background, fontFamily: styles.font.body }}
                 >
-                    <nav className="px-2 sm:px-4 py-2" style={{ fontFamily: styles.font.body }}>
+                    <nav className="px-2 sm:px-4 py-2">
                         <ul className="space-y-0">
                             <li>
                                 <Link 
                                     to="/about" 
-                                    className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
+                                    className={`block py-2 sm:py-3 px-2 text-sm sm:text-base rounded-md transition-colors border-b border-gray-100 ${
+                                        isActiveLink("/about") 
+                                            ? 'bg-[#123E23] !text-white font-semibold' 
+                                            : 'hover:bg-gray-100 !text-[#123E23]'
+                                    }`}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                About
-                            </Link>
-                        </li>
-                        <li>
-                            <Link 
-                                to="/community" 
-                                className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                Community
-                            </Link>
-                        </li>
+                                >
+                                    About
+                                </Link>
+                            </li>
+                            <li>
+                                <Link 
+                                    to="/community" 
+                                    className={`block py-2 sm:py-3 px-2 text-sm sm:text-base rounded-md transition-colors border-b border-gray-100 ${
+                                        isActiveLink("/community") 
+                                            ? 'bg-[#123E23] !text-white font-semibold' 
+                                            : 'hover:bg-gray-100 !text-[#123E23]'
+                                    }`}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    Community
+                                </Link>
+                            </li>
                         {isAuthenticated ? (
                             <>
                                 {/* Show verification button for unverified users */}
@@ -767,7 +932,11 @@ export default function Header() {
                                 <li>
                                     <Link 
                                         to="/profile" 
-                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
+                                        className={`block py-2 sm:py-3 px-2 text-sm sm:text-base rounded-md transition-colors border-b border-gray-100 ${
+                                            isActiveLink("/profile") 
+                                                ? 'bg-[#123E23] !text-white font-semibold' 
+                                                : 'hover:bg-gray-100 !text-[#123E23]'
+                                        }`}
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Profile
@@ -791,7 +960,7 @@ export default function Header() {
                                 <li>
                                     <Link 
                                         to="/signin" 
-                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100"
+                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base hover:bg-gray-100 rounded-md transition-colors border-b border-gray-100 !text-[#123E23]"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Sign In
@@ -800,7 +969,7 @@ export default function Header() {
                                 <li>
                                     <Link 
                                         to="/signup" 
-                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base text-[#123E23] font-semibold hover:bg-green-50 rounded-md transition-colors"
+                                        className="block py-2 sm:py-3 px-2 text-sm sm:text-base !text-[#123E23] font-semibold hover:bg-green-50 rounded-md transition-colors"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Sign Up

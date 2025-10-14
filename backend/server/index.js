@@ -13,6 +13,7 @@ require('./src/models/User');
 require('./src/models/Post');
 require('./src/models/Comment');
 require('./src/models/Report');
+require('./src/models/Rating');
 
 // Then routes
 const reportRoutes = require('./src/routes/reportRoute');
@@ -24,6 +25,7 @@ const userSettingRoutes = require('./src/routes/userSettingRoute');
 const tagRoutes = require('./src/routes/tagRoute');
 const saveRoutes = require('./src/routes/saveRoute');
 const likeRoutes = require('./src/routes/likeRoute');
+const ratingRoutes = require('./src/routes/ratings');
 
 const app = express();
 const port = process.env.PORT || 3019;
@@ -31,7 +33,14 @@ const port = process.env.PORT || 3019;
 app.use(helmet());
  
 app.use(cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+    origin: [
+        'http://localhost:5173', 
+        'http://127.0.0.1:5173',
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:3001'
+    ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Range', 'X-Total-Count'],
@@ -84,6 +93,7 @@ app.use('/api/settings', userSettingRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/saves', saveRoutes);
 app.use('/api/likes', likeRoutes);
+app.use('/api/ratings', ratingRoutes);
 
 // Move this near the top, after imports
 const cleanupOldNotifications = async () => {

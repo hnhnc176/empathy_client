@@ -129,7 +129,7 @@ const EnhancedInput = ({
                             <div 
                                 key={level}
                                 className={`
-                                    h-1 flex-1 rounded-full transition-all duration-300
+                                    h-1 flex-1 rounded-full transition-all duration-300 
                                     ${
                                         level <= passwordStrength.score 
                                             ? passwordStrength.color 
@@ -197,25 +197,40 @@ const Stepper = ({ currentStep, steps, className = "" }) => {
                                             transition-all duration-500 ease-in-out transform hover:scale-110
                                             ${
                                                 isCompleted 
-                                                    ? 'bg-[#17B367] !text-white shadow-lg shadow-[#17B367]/30 animate-bounce' 
+                                                    ? 'bg-[#17B367] shadow-lg shadow-[#17B367]/30 animate-bounce' 
                                                     : isActive 
-                                                        ? 'bg-[#123E23] !text-white shadow-lg ring-4 ring-[#123E23]/20 animate-pulse' 
-                                                        : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+                                                        ? 'bg-[#123E23] shadow-lg ring-4 ring-[#123E23]/20 animate-pulse' 
+                                                        : 'bg-gray-200 hover:bg-gray-300'
                                             }
                                         `}
                                         style={{
                                             animationDuration: isCompleted ? '2s' : isActive ? '1.5s' : 'none',
-                                            animationIterationCount: isCompleted ? '1' : 'infinite'
+                                            animationIterationCount: isCompleted ? '1' : 'infinite',
+                                            color: isCompleted || isActive ? '#FFFFFF' : '#6B7280'
                                         }}
                                     >
                                         {isCompleted ? (
                                             <Check 
                                                 size={16} 
-                                                className="!text-white animate-bounce" 
-                                                style={{ animationDelay: '0.3s', animationDuration: '0.6s' }}
+                                                style={{ 
+                                                    color: '#FFFFFF',
+                                                    animationDelay: '0.3s', 
+                                                    animationDuration: '0.6s' 
+                                                }}
+                                                className="animate-bounce" 
                                             />
                                         ) : (
-                                            <span className={isActive ? 'animate-pulse' : ''}>
+                                            <span 
+                                                className={isActive ? 'animate-pulse' : ''}
+                                                style={{ 
+                                                    color: isActive ? '#FFFFFF' : '#6B7280',
+                                                    fontWeight: '600',
+                                                    fontSize: '14px',
+                                                    textShadow: isActive ? '0 0 2px rgba(0,0,0,0.3)' : 'none',
+                                                    display: 'block',
+                                                    lineHeight: '1'
+                                                }}
+                                            >
                                                 {stepNumber}
                                             </span>
                                         )}
@@ -305,6 +320,7 @@ export default function Forgot() {
     const [errors, setErrors] = useState({})
     const [isOtpSent, setIsOtpSent] = useState(false)
     const [isPasswordReset, setIsPasswordReset] = useState(false)
+    const [showPasswordRequirements, setShowPasswordRequirements] = useState(false)
 
     // Stepper configuration
     const steps = [
@@ -350,16 +366,25 @@ export default function Forgot() {
         }
         
         if (name === 'newPassword' && value) {
-            if (value.length < 8) {
-                setErrors(prev => ({ ...prev, newPassword: 'Password must be at least 8 characters' }))
-            } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
-                setErrors(prev => ({ ...prev, newPassword: 'Password must contain uppercase, lowercase, and number' }))
+            // Only show error if user has finished typing (more than 3 characters)
+            if (value.length > 3) {
+                if (value.length < 8) {
+                    setErrors(prev => ({ ...prev, newPassword: 'Password must be at least 8 characters' }))
+                } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+                    setErrors(prev => ({ ...prev, newPassword: 'Password must contain uppercase, lowercase, and number' }))
+                } else {
+                    // Clear error when password meets requirements
+                    setErrors(prev => ({ ...prev, newPassword: '' }))
+                }
             }
         }
         
         if (name === 'confirmPassword' && value && formData.newPassword) {
             if (value !== formData.newPassword) {
                 setErrors(prev => ({ ...prev, confirmPassword: 'Passwords do not match' }))
+            } else {
+                // Clear error when passwords match
+                setErrors(prev => ({ ...prev, confirmPassword: '' }))
             }
         }
     }
@@ -375,11 +400,18 @@ export default function Forgot() {
                 setIsValid(/^\d{6}$/.test(formData.otp))
                 break
             case 'form-c':
+                const hasMinLength = formData.newPassword && formData.newPassword.length >= 8;
+                const hasLowercase = formData.newPassword && /[a-z]/.test(formData.newPassword);
+                const hasUppercase = formData.newPassword && /[A-Z]/.test(formData.newPassword);
+                const hasNumber = formData.newPassword && /\d/.test(formData.newPassword);
+                const passwordsMatch = formData.newPassword && formData.confirmPassword && formData.newPassword === formData.confirmPassword;
+                
                 setIsValid(
-                    formData.newPassword &&
-                    formData.confirmPassword &&
-                    formData.newPassword === formData.confirmPassword &&
-                    formData.newPassword.length >= 8
+                    hasMinLength && 
+                    hasLowercase && 
+                    hasUppercase && 
+                    hasNumber && 
+                    passwordsMatch
                 )
                 break
             default:
@@ -556,27 +588,27 @@ export default function Forgot() {
     }
 
     return (
-        <section className="forgot-password flex bg-[#FCFCF4] flex-col items-center justify-center w-full min-h-screen lg:h-screen bg-[url('src/assets/shape-bg.png')] bg-cover bg-no-repeat p-4 lg:p-0">
+        <section className="forgot-password flex bg-[#FCFCF4] flex-col items-center justify-center w-full min-h-screen lg:h-screen bg-[url('src/assets/shape-bg.png')] bg-cover bg-no-repeat p-4 lg:p-0 page-enter">
             <ChevronLeft 
-                className="back-button absolute top-3 left-3 lg:top-5 lg:left-5 text-[#123E23] cursor-pointer z-10" 
+                className="back-button absolute top-3 left-3 lg:top-5 lg:left-5 text-[#123E23] cursor-pointer z-10 hover:scale-110 transition-transform duration-300" 
                 size={24} 
                 onClick={() => navigate("/signin")} 
             />
             
             {/* Mobile Layout */}
-            <div className="body-content lg:hidden flex flex-col items-center justify-start w-full min-h-screen py-16 px-4 overflow-y-auto">
+            <div className="body-content lg:hidden flex flex-col items-center justify-start w-full min-h-screen py-16 px-4 overflow-y-auto slide-in-bottom">
                 {/* Stepper Component for Mobile */}
-                <div className="w-full mb-6">
+                <div className="w-full mb-6 scale-in">
                     <Stepper currentStep={getCurrentStep()} steps={steps} />
                 </div>
                 
-                <h1 className="title text-[24px] font-bold text-[#123E23] mb-[20px] text-center" style={{ fontFamily: styles.font.body }}>
+                <h1 className="title text-[24px] font-bold text-[#123E23] mb-[20px] text-center slide-in-left" style={{ fontFamily: styles.font.body }}>
                     Forgot Password
                 </h1>
 
                 {/* Mobile Form A - Email Input */}
                 <form
-                    className={`form ${currentForm === 'form-a' ? 'flex' : 'hidden'} flex-col items-center justify-center gap-6 w-full max-w-sm`}
+                    className={`form ${currentForm === 'form-a' ? 'flex' : 'hidden'} flex-col items-center justify-center gap-6 w-full max-w-sm slide-in-right`}
                     onSubmit={(e) => handleSubmit(e, 'form-a')}
                 >
                     <p className="subtitle text-[14px] font-normal text-[#123E23] text-center">
@@ -588,7 +620,7 @@ export default function Forgot() {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className="email w-full h-[48px] border border-[#123E23] rounded-md text-center px-3 text-[14px] bg-white"
+                            className="email w-full h-[48px] border border-[#123E23] rounded-md text-center px-3 text-[14px] bg-white transition-all duration-300 hover:border-[#17B367] focus:border-[#17B367] focus:outline-none hover:scale-[1.02]"
                             style={errors.email ? { borderColor: '#EF4444' } : {}}
                             placeholder="Mymail@example.com"
                             required
@@ -696,42 +728,84 @@ export default function Forgot() {
 
                 {/* Mobile Form C - New Password */}
                 <form
-                    className={`form ${currentForm === 'form-c' ? 'flex' : 'hidden'} flex-col items-center justify-center gap-6 w-full max-w-sm`}
+                    className={`form ${currentForm === 'form-c' ? 'flex' : 'hidden'} flex-col items-center justify-center gap-6 w-full max-w-sm slide-in-right`}
                     onSubmit={(e) => handleSubmit(e, 'form-c')}
                 >
                     <p className="subtitle text-[14px] font-normal text-[#123E23] text-center">
                         Enter new password
                     </p>
-                    <div className="input-group w-full">
+                    
+                    <div className="input-group w-full relative">
                         <input
                             type="password"
                             name="newPassword"
                             value={formData.newPassword}
                             onChange={handleInputChange}
-                            className="password w-full h-[48px] border border-[#123E23] rounded-md text-center px-3 text-[14px] bg-white"
+                            onFocus={() => setShowPasswordRequirements(true)}
+                            onBlur={() => setShowPasswordRequirements(false)}
+                            className="password w-full h-[48px] border border-[#123E23] rounded-md text-center px-3 text-[14px] bg-white transition-all duration-300 hover:border-[#17B367] focus:border-[#17B367] focus:outline-none hover:scale-[1.02]"
                             style={errors.newPassword ? { borderColor: '#EF4444' } : {}}
-                            placeholder="New Password (min. 8 characters)"
+                            placeholder="New Password"
                             required
                             disabled={isLoading}
                             minLength="8"
+                            autoComplete="new-password"
+                            title=""
                         />
+                        
+                        {/* Password Requirements Popup - Mobile (Right Side) */}
+                        {showPasswordRequirements && (
+                            <div className="password-requirements absolute top-0 right-0 transform translate-x-full ml-2 w-64 bg-white border border-blue-200 rounded-md p-3 shadow-lg z-50 slide-in-right">
+                                <h4 className="text-sm font-semibold text-blue-800 mb-2">Password Requirements:</h4>
+                                <ul className="text-xs text-blue-700 space-y-1">
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && formData.newPassword.length >= 8 ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && formData.newPassword.length >= 8 ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        At least 8 characters
+                                    </li>
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && /[a-z]/.test(formData.newPassword) ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && /[a-z]/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        One lowercase letter
+                                    </li>
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && /[A-Z]/.test(formData.newPassword) ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && /[A-Z]/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        One uppercase letter
+                                    </li>
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && /\d/.test(formData.newPassword) ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && /\d/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        One number
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                        
                         {errors.newPassword && (
                             <p className="error-text text-red-500 text-sm mt-1 text-center">{errors.newPassword}</p>
                         )}
                     </div>
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        className="password w-full h-[48px] border border-[#123E23] rounded-md text-center px-3 text-[14px] bg-white"
-                        placeholder="Confirm Password"
-                        required
-                        disabled={isLoading}
-                    />
+                    
+                    <div className="input-group w-full">
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            className="password w-full h-[48px] border border-[#123E23] rounded-md text-center px-3 text-[14px] bg-white transition-all duration-300 hover:border-[#17B367] focus:border-[#17B367] focus:outline-none hover:scale-[1.02]"
+                            style={errors.confirmPassword ? { borderColor: '#EF4444' } : {}}
+                            placeholder="Confirm Password"
+                            required
+                            disabled={isLoading}
+                        />
+                        {errors.confirmPassword && (
+                            <p className="error-text text-red-500 text-sm mt-1 text-center">{errors.confirmPassword}</p>
+                        )}
+                    </div>
+                    
                     {formData.newPassword && formData.confirmPassword && formData.newPassword !== formData.confirmPassword && (
-                        <p className="error-text text-red-500 text-sm text-center">Passwords do not match</p>
+                        <div className="w-full text-center">
+                            <p className="error-text text-red-500 text-sm">Passwords do not match</p>
+                        </div>
                     )}
+                    
                     <button
                         style={{
                             backgroundColor: isValid && !isLoading ? '#123E23' : '#EAEAEA',
@@ -745,7 +819,7 @@ export default function Forgot() {
                             border: 'none'
                         }}
                         type="submit"
-                        className="submit"
+                        className="submit transition-all duration-300 hover:scale-105 active:scale-95"
                         disabled={!isValid || isLoading}
                     >
                         {isLoading ? (
@@ -778,11 +852,13 @@ export default function Forgot() {
             </div>
 
             {/* Desktop Layout - Unchanged */}
-            <div className="body-content hidden lg:flex flex-col items-center justify-center w-full">
+            <div className="body-content hidden lg:flex flex-col items-center justify-center w-full slide-in-bottom">
                 {/* Stepper Component */}
-                <Stepper currentStep={getCurrentStep()} steps={steps} />
+                <div className="scale-in">
+                    <Stepper currentStep={getCurrentStep()} steps={steps} />
+                </div>
                 
-                <h1 className="title text-[30px] font-bold text-[#123E23] mb-[20px]" style={{ fontFamily: styles.font.body }}>
+                <h1 className="title text-[30px] font-bold text-[#123E23] mb-[20px] slide-in-left" style={{ fontFamily: styles.font.body }}>
                     Forgot Password
                 </h1>
 
@@ -890,48 +966,89 @@ export default function Forgot() {
 
                 {/* Form C - New Password */}
                 <form
-                    className={`form ${currentForm === 'form-c' ? 'flex' : 'hidden'}`}
+                    className={`form ${currentForm === 'form-c' ? 'flex' : 'hidden'} slide-in-right`}
                     onSubmit={(e) => handleSubmit(e, 'form-c')}
                     style={formStyle}
                 >
                     <p className="subtitle text-[16px] font-normal text-[#123E23] mb-[10px]">
                         Enter new password
                     </p>
-                    <div className="input-group">
+                    
+                    <div className="input-group relative">
                         <input
                             type="password"
                             name="newPassword"
                             value={formData.newPassword}
                             onChange={handleInputChange}
+                            onFocus={() => setShowPasswordRequirements(true)}
+                            onBlur={() => setShowPasswordRequirements(false)}
                             className="password"
                             style={errors.newPassword ? inputErrorStyle : inputStyle}
-                            placeholder="New Password (min. 8 characters)"
+                            placeholder="New Password"
                             required
                             disabled={isLoading}
                             minLength="8"
+                            autoComplete="new-password"
+                            title=""
                         />
+                        
+                        {/* Password Requirements Popup - Desktop (Right Side) */}
+                        {showPasswordRequirements && (
+                            <div className="password-requirements absolute top-0 left-full ml-4 bg-white border border-blue-200 rounded-md p-4 shadow-lg z-50 scale-in" style={{ width: '280px' }}>
+                                <h4 className="text-sm font-semibold text-blue-800 mb-3">Password Requirements:</h4>
+                                <ul className="text-xs text-blue-700 space-y-2">
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && formData.newPassword.length >= 8 ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && formData.newPassword.length >= 8 ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        At least 8 characters
+                                    </li>
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && /[a-z]/.test(formData.newPassword) ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && /[a-z]/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        One lowercase letter
+                                    </li>
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && /[A-Z]/.test(formData.newPassword) ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && /[A-Z]/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        One uppercase letter
+                                    </li>
+                                    <li className={`flex items-center gap-2 ${formData.newPassword && /\d/.test(formData.newPassword) ? 'text-green-600' : ''}`}>
+                                        <span className={`w-2 h-2 rounded-full ${formData.newPassword && /\d/.test(formData.newPassword) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                                        One number
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                        
                         {errors.newPassword && (
                             <p className="error-text text-red-500 text-sm mt-1 text-center">{errors.newPassword}</p>
                         )}
                     </div>
-                    <input
-                        type="password"
-                        name="confirmPassword"
-                        value={formData.confirmPassword}
-                        onChange={handleInputChange}
-                        className="password"
-                        style={inputStyle}
-                        placeholder="Confirm Password"
-                        required
-                        disabled={isLoading}
-                    />
+                    
+                    <div className="input-group">
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleInputChange}
+                            className="password"
+                            style={errors.confirmPassword ? inputErrorStyle : inputStyle}
+                            placeholder="Confirm Password"
+                            required
+                            disabled={isLoading}
+                        />
+                        {errors.confirmPassword && (
+                            <p className="error-text text-red-500 text-sm mt-1 text-center">{errors.confirmPassword}</p>
+                        )}
+                    </div>
+                    
                     {formData.newPassword && formData.confirmPassword && formData.newPassword !== formData.confirmPassword && (
-                        <p className="error-text text-red-500 text-sm">Passwords do not match</p>
+                        <div className="text-center" style={{ width: '300px' }}>
+                            <p className="error-text text-red-500 text-sm">Passwords do not match</p>
+                        </div>
                     )}
+                    
                     <button
                         style={isValid && !isLoading ? submitButtonStyleActive : submitButtonDisabledStyle}
                         type="submit"
-                        className="submit"
+                        className="submit hover:scale-105 transition-transform duration-300"
                         disabled={!isValid || isLoading}
                     >
                         {isLoading ? (

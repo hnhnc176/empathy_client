@@ -170,7 +170,7 @@ const ReportAnswerForm = ({ report, currentAdmin, onUpdate, onClose }) => {
         currentAdmin,
         localStorage: localStorage.getItem('admin'),
         sessionStorage: sessionStorage.getItem('admin'),
-        token: localStorage.getItem('token') || sessionStorage.getItem('token')
+        token: localStorage.getItem('sessionToken') || sessionStorage.getItem('sessionToken')
       });
       return;
     }
@@ -243,7 +243,7 @@ const ReportAnswerForm = ({ report, currentAdmin, onUpdate, onClose }) => {
             allStorageData: {
               localStorage: localStorage.getItem('admin'),
               sessionStorage: sessionStorage.getItem('admin'),
-              token: localStorage.getItem('token') || sessionStorage.getItem('token')
+              token: localStorage.getItem('sessionToken') || sessionStorage.getItem('sessionToken')
             }
           },
           reportId: report._id,

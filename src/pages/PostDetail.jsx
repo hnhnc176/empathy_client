@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import axiosInstance from '../config/axios';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/Layout/SearchBar';
 import CreatePost from './CreatePost';
-import SideTopics from '../components/SideTopics';
-import Pagination from '../components/Pagination';
-import Comment from '../components/Comment';
+import SideTopics from '../components/Layout/SideTopics';
+import Pagination from '../components/UI/Pagination';
+import Comment from '../components/Posts/Comment';
+import RatingModal from '../components/Modals/RatingModal';
 import { toast } from 'react-toastify';
 import { notificationService } from '../utils/notificationService';
 
@@ -27,6 +28,8 @@ export default function PostDetail() {
     const [commentText, setCommentText] = useState('');
     const [comments, setComments] = useState([]);
     const [commentsLoading, setCommentsLoading] = useState(false);
+    const [showRatingModal, setShowRatingModal] = useState(false);
+    const [userCommentCount, setUserCommentCount] = useState(0);
     
     // Like functionality states
     const [isLiked, setIsLiked] = useState(false);
@@ -50,6 +53,25 @@ export default function PostDetail() {
             checkLikeStatus();
         }
     }, [post, user]);
+
+    // Check user's comment count
+    useEffect(() => {
+        if (user?._id) {
+            checkUserCommentCount();
+        }
+    }, [user?._id]);
+
+    const checkUserCommentCount = async () => {
+        try {
+            const response = await axiosInstance.get(`/api/comments/user/${user._id}/count`);
+            if (response.data?.status === 'success') {
+                setUserCommentCount(response.data.count || 0);
+            }
+        } catch (error) {
+            console.error('Error checking user comment count:', error);
+            setUserCommentCount(0);
+        }
+    };
 
     // Update the checkLikeStatus function
     const checkLikeStatus = async () => {
@@ -269,6 +291,16 @@ export default function PostDetail() {
                 setCommentText('');
                 setShowCommentForm(false);
                 showSuccessToast('Comment added successfully');
+
+                // Show rating modal if this is user's first comment
+                if (userCommentCount === 0) {
+                    setTimeout(() => {
+                        setShowRatingModal(true);
+                    }, 1000); // Show modal after success toast
+                }
+                
+                // Update comment count
+                setUserCommentCount(prev => prev + 1);
             } else {
                 throw new Error(response.data?.message || 'Failed to add comment');
             }
@@ -276,6 +308,15 @@ export default function PostDetail() {
             console.error('Error adding comment:', err);
             showErrorToast(err.message || 'Failed to add comment');
         }
+    };
+
+    const handleRatingSubmitted = (rating) => {
+        console.log('User rated:', rating);
+        setShowRatingModal(false);
+    };
+
+    const handleRatingModalClose = () => {
+        setShowRatingModal(false);
     };
 
     if (loading) return (
@@ -324,26 +365,10 @@ export default function PostDetail() {
             <main className="content flex flex-col gap-6 lg:gap-[40px] w-full lg:w-[fit-content] items-center justify-center">
                 {/* Search and Navigation Section */}
                 <div className="search-bar-section flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-[40px] w-full border-[none] lg:justify-between">
-                    <div className="w-full lg:w-auto">
+                    <div className="w-full lg:w-full">
                         <SearchBar />
                     </div>
-                    <div className="search-bar-btn flex flex-wrap gap-3 lg:gap-[24px] w-full lg:w-fit justify-center lg:justify-start">
-                        <div className="topic-btn flex items-center gap-2 px-3 py-2 text-sm lg:text-base bg-white rounded-lg border border-gray-200">
-                            <img src={clock} alt="clock" className="w-4 h-4" /> 
-                            <span className="hidden sm:inline">New</span>
-                        </div>
-                        <div className="topic-btn flex items-center gap-2 px-3 py-2 text-sm lg:text-base bg-white rounded-lg border border-gray-200">
-                            <img src={arrow} alt="arrow" className="w-4 h-4" /> 
-                            <span className="hidden sm:inline">Top</span>
-                        </div>
-                        <div className="topic-btn flex items-center gap-2 px-3 py-2 text-sm lg:text-base bg-white rounded-lg border border-gray-200">
-                            <img src={hot} alt="hot" className="w-4 h-4" /> 
-                            <span className="hidden sm:inline">Hot</span>
-                        </div>
-                        <div className="topic-btn-create">
-                            <Link to="/createpost" className='w-8 h-8 lg:w-[45px] lg:h-[25px] rounded-full lg:rounded-[100px] bg-[#123E23] flex items-center justify-center cursor-pointer !text-[#F0F4E6] text-sm lg:text-[14px] px-2 lg:px-[10px] py-1 lg:py-[5px] text-center'>+</Link>
-                        </div>
-                    </div>
+                    
                 </div>
 
                 {/* Post Detail Section */}
@@ -365,13 +390,19 @@ export default function PostDetail() {
                             {post.title}
                         </div>
                         <div className="post-content font-bold text-base lg:text-[18px] text-[#133018] space-y-4 lg:space-y-6">
-                            <p>{post.content}</p>
+                            <p className="whitespace-pre-wrap leading-relaxed">{post.content}</p>
                             {post.image && (
-                                <img
-                                    className="post-image w-full rounded-lg"
-                                    src={post.image}
-                                    alt="post content"
-                                />
+                                <div className="post-image-container">
+                                    <img
+                                        className="post-image w-full max-w-2xl mx-auto rounded-lg shadow-md"
+                                        src={post.image}
+                                        alt="Post content"
+                                        onError={(e) => {
+                                            console.error('Failed to load image:', post.image);
+                                            e.target.style.display = 'none';
+                                        }}
+                                    />
+                                </div>
                             )}
                         </div>
                     </div>
@@ -505,6 +536,14 @@ export default function PostDetail() {
             <div className="mobile-sidebar lg:hidden mt-6">
                 <SideTopics />
             </div>
+
+            {/* Rating Modal */}
+            <RatingModal 
+                isOpen={showRatingModal}
+                onClose={handleRatingModalClose}
+                onRatingSubmitted={handleRatingSubmitted}
+                message="How was your first commenting experience? Please rate us!"
+            />
         </section>
     );
 }

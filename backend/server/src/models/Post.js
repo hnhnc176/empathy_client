@@ -46,7 +46,12 @@ const postSchema = new mongoose.Schema({
     tags: [{
         type: String,
         trim: true
-    }]
+    }],
+    image: {
+        type: String,
+        trim: true,
+        default: ''
+    }
 }, {
     collection: 'post',
     timestamps: false

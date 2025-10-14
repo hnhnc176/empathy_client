@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import axiosInstance from '../config/axios';
+import axiosInstance from '../../config/axios';
 import { toast } from 'react-toastify';
-import { showErrorToast, showSuccessToast } from '../utils/toast';
-import { notificationService } from '../utils/notificationService';
+import { showErrorToast, showSuccessToast } from '../../utils/toast';
+import { notificationService } from '../../utils/notificationService';
 
 const Comment = ({ comment, postId, onCommentUpdate }) => {
     const [isReplying, setIsReplying] = useState(false);
@@ -239,7 +239,7 @@ const Comment = ({ comment, postId, onCommentUpdate }) => {
                                 onClick={() => handleDeleteComment(comment._id || comment.id)}
                                 title="Delete comment"
                             >
-                                <i className="fa-solid fa-minus text-red-600 hover:text-red-700 text-sm"></i>
+                                <i className="fa-solid fa-minus text-sm"></i>
                             </button>
                         )}
                     </div>

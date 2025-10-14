@@ -5,6 +5,7 @@ import {Eye, Trash2, Filter, BadgeMinus, Badge, BadgeCheck, BadgeAlert, ShieldUs
 import styles from "../../style";
 import axiosInstance from '../../config/axios';
 import { showSuccessToast, showErrorToast, showInfoToast } from '../../utils/toast.jsx';
+import UserDetailModal from '../../components/Admin/UserDetailModal';
 
 export default function Users() {
     const [selectedIds, setSelectedIds] = useState([]);
@@ -16,6 +17,8 @@ export default function Users() {
     const [usersPerPage] = useState(10);
     const [selectAll, setSelectAll] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [showUserModal, setShowUserModal] = useState(false);
 
     // Fetch users from backend
     useEffect(() => {
@@ -96,9 +99,13 @@ export default function Users() {
     };
 
     const handleViewUser = (userId) => {
-        showInfoToast('View user details feature coming soon');
-        // Navigate to user detail page
-        // navigate(`/admin/users/${userId}`);
+        const user = users.find(u => u._id === userId);
+        if (user) {
+            setSelectedUser(user);
+            setShowUserModal(true);
+        } else {
+            showErrorToast('User not found');
+        }
     };
 
     const handleDeleteUser = async (userId) => {
@@ -596,6 +603,16 @@ export default function Users() {
                         </button>
                     </div>
                 </div>
+                
+                {/* User Detail Modal */}
+                <UserDetailModal 
+                    user={selectedUser}
+                    isOpen={showUserModal}
+                    onClose={() => {
+                        setShowUserModal(false);
+                        setSelectedUser(null);
+                    }}
+                />
             </div>
         </div>
     );
