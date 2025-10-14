@@ -1,19 +1,9 @@
 [build]
   publish = "dist"
-  command = "npm run build:simple"
-  functions = "netlify/functions"
+  command = "npm install --include=dev && npm run build:simple"
 
 [build.environment]
   NODE_VERSION = "18"
-
-[functions]
-  node_bundler = "esbuild"
-
-# API redirects
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
-  status = 200
 
 # SPA redirects
 [[redirects]]
@@ -44,11 +34,3 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "max-age=31536000, immutable"
-
-# API headers
-[[headers]]
-  for = "/api/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
