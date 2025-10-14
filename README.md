@@ -173,7 +173,24 @@ backend/
             └── helpers.js # General helpers
 ```
 
-## 🚀 Getting Started
+## � Recent Updates & Fixes
+
+### Latest Release (October 2024)
+- **Fixed API Double Path Issue**: Resolved `/api/api/posts` error by correcting environment configuration
+- **Backend Migration**: Updated from Railway to Render deployment
+- **Asset Deployment**: All assets properly copied to public folder for production
+- **Service Worker Enhancement**: Improved API request handling to avoid interference
+- **Netlify Deployment**: Added comprehensive deployment configuration and helpers
+
+### Environment Configuration
+The project now supports multiple deployment environments:
+- **Development**: Local development with hot reload
+- **Production**: Optimized build for Netlify deployment
+- **Backend**: Deployed on Render at `https://empathy-backend.onrender.com`
+
+For detailed information about recent fixes, see `FIX_SUMMARY.md`.
+
+## �🚀 Getting Started
 
 ### Prerequisites
 - Node.js (v16 or higher)
