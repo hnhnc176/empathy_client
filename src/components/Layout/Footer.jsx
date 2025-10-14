@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styles from '../../style';
-import logo from '../../assets/logo.png';
+import logo from '../../assets/Logo.png';
 import { useState } from 'react';
 import { useEffect } from 'react';
 

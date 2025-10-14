@@ -41,6 +41,7 @@ app.use(cors({
         'http://127.0.0.1:3000',
         'http://127.0.0.1:3001',
         'https://empathyfoum.netlify.app',
+        'https://empathyforum.netlify.app',
         'https://empathy-mental-health.netlify.app',
         process.env.FRONTEND_URL
     ].filter(Boolean),
@@ -84,6 +85,26 @@ app.use((err, req, res, next) => {
 connectDB().catch(err => {
     console.error('Database connection error:', err);
     process.exit(1);
+});
+
+// Health check route
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        message: 'Empathy Backend API is running!',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0'
+    });
+});
+
+// API status route
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        status: 'healthy',
+        database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+        uptime: process.uptime(),
+        memory: process.memoryUsage()
+    });
 });
 
 // Routes

@@ -33,17 +33,22 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   
-  // Skip API requests - let them go directly to network
-  if (url.pathname.startsWith('/api/')) {
+  // Skip ALL API requests completely - let them go directly to network without any interference
+  if (url.pathname.startsWith('/api/') || url.hostname.includes('empathy-backend') || url.hostname.includes('onrender.com')) {
     console.log('[SW] Skipping API request:', url.pathname);
-    return; // Let the browser handle it normally
+    return; // Let the browser handle it normally without service worker interference
   }
   
-  // For other requests, try network first
+  // Only handle static assets and same-origin requests
+  if (url.origin !== location.origin) {
+    return; // Let external requests pass through normally
+  }
+  
+  // For other same-origin requests, try network first
   event.respondWith(
     fetch(event.request)
       .then(response => {
-        // Only cache successful responses for static assets
+        // Only cache successful responses for static assets (not API calls)
         if (response.ok && !url.pathname.startsWith('/api/')) {
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then(cache => {
