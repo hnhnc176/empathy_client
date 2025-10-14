@@ -1,10 +1,11 @@
 [build]
   publish = "dist"
-  command = "npm run build"
+  command = "npm run build:simple"
   functions = "netlify/functions"
 
 [build.environment]
   NODE_VERSION = "18"
+  NODE_ENV = "development"
 
 [functions]
   node_bundler = "esbuild"
