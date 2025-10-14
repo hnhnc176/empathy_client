@@ -39,8 +39,11 @@ app.use(cors({
         'http://localhost:3000',
         'http://localhost:3001',
         'http://127.0.0.1:3000',
-        'http://127.0.0.1:3001'
-    ],
+        'http://127.0.0.1:3001',
+        'https://empathyfoum.netlify.app',
+        'https://empathy-mental-health.netlify.app',
+        process.env.FRONTEND_URL
+    ].filter(Boolean),
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Range', 'X-Total-Count'],
